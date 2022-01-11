@@ -1,4 +1,7 @@
 #Tesis de cirugía en pacientes con colecistitis alitiásica
+import numpy
+import pandas
+import matplotlib
 from PIL.Image import TRANSPOSE
 import streamlit as st
 from streamlit.widgets import NoValue
