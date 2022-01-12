@@ -142,9 +142,37 @@ elif Glasgow <6:
     st.subheader("Neurológico")
     st.error(Ptneu)
 
+glas=st.checkbox("Glasgow")
+if glas==True:
+    st.image("Glasgow.jpeg")
+
 #Término de sección neurológica de SOFA
-with col2:
-    Bilisingre=st.number_input("Bilirrubinas")
+
+#Sección metabólica
+Bilisingre=st.number_input("Bilirrubinas",None,None,1.0,0.1)
+if Bilisingre < 1.2:
+    st.subheader("Metabólico")
+    biling=0
+    st.success(biling)
+elif Bilisingre >1.2 and Bilisingre <1.9:
+    st.subheader("Metabólico")
+    biling=1
+    st.success(biling)
+elif Bilisingre >2 and Bilisingre <=5.9:
+    st.subheader("Metabólico")
+    biling=2
+    st.warning(biling)
+elif Bilisingre >= 6.0 and Bilisingre <=11.9:
+    st.subheader("Metabólico")
+    biling=3
+    st.warning(biling)
+elif Bilisingre >=12:
+    st.subheader("Metabólico")
+    biling=4
+    st.error(biling)
+
+#Término de sección metabólica de SOFA
+
 col1,col2,col3=st.beta_columns(3)
 with col1:
     sisting=st.number_input("Sistólica de ingreso",1,None)
