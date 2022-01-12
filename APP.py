@@ -1,5 +1,6 @@
 #Tesis de cirugía en pacientes con colecistitis alitiásica
 import numpy
+from numpy.core.fromnumeric import ptp
 import pandas
 import matplotlib
 from PIL.Image import TRANSPOSE
@@ -75,7 +76,10 @@ elif NSS!="":
         Tipocxcardio=st.multiselect("Procedimientos cardiovasculares",["Cirugia cardiovascular","Cateterismo cardiaco","Reemplazo valvular"])
 st.subheader("Scores de ingreso")
 
+
+
 #Bloque de código para SOFA score
+#para un cuadro azul parecido a succes, error, y warningst.info("SOFA")
 SOFA = '<p style="font-family:Times; color:Yellow; font-size: 30px;">SOFA</p>'
 st.markdown(SOFA, unsafe_allow_html=True)
 col1,col2,col3=st.beta_columns(3)
@@ -86,11 +90,59 @@ with col2:
 with col3:
     PAFI=(PaO2/FiO2)*100
     st.number_input("PAFI",None,None,PAFI)
+col1,col2=st.beta_columns(2)
 with col1:
     ventmec=st.selectbox("¿Ventilación mecánica?",["No","Si"])
+
+#Puntaje respiratorio
+if PAFI > 400:
+    PtResp=0
+    st.subheader("Respiratorio")
+    st.success(PtResp)
+elif PAFI <400 and PAFI >300:
+        PtResp=1
+        st.subheader("Respiratorio")
+        st.success(PtResp)
+elif PAFI < 300 and ventmec=="No":
+        PtResp=2
+        st.subheader("Respiratorio")
+        st.warning(PtResp)
+elif PAFI< 200 and PAFI >100 and ventmec=="Si":
+        st.subheader("Respiratorio")
+        PtResp=3
+        st.warning(PtResp)
+elif PAFI < 100 and ventmec=="Si":
+    PtResp=4
+    st.subheader("Respiratorio")
+    st.error(PtResp)
+
+#Sección neurológica de SOFA
+
 col1,col2=st.beta_columns(2)
 with col1:
     Glasgow=st.number_input("Escala de coma de Glasgow",1,15,1,1)
+if Glasgow==15:
+    Ptneu=0
+    st.subheader("Neurológico")
+    st.success(Ptneu)
+elif Glasgow==13 or Glasgow==14:
+    Ptneu=1
+    st.subheader("Neurológico")
+    st.success(Ptneu)
+elif Glasgow==10 or Glasgow==11 or Glasgow==12:
+    Ptneu=2
+    st.subheader("Neurológico")
+    st.warning(Ptneu)
+elif Glasgow >=6 and Glasgow <= 9:
+    Ptneu=3
+    st.subheader("Neurológico")
+    st.warning(Ptneu)
+elif Glasgow <6:
+    Ptneu=4
+    st.subheader("Neurológico")
+    st.error(Ptneu)
+
+#Término de sección neurológica de SOFA
 with col2:
     Bilisingre=st.number_input("Bilirrubinas")
 col1,col2,col3=st.beta_columns(3)
@@ -111,6 +163,8 @@ with col1:
     plaqing=st.number_input("Plaquetas de ingreso x10*3/ml")
 with col2:
     creating=st.number_input("Creatinina de ingreso mg/dl")
+#Puntaje de SOFA
+
 
 #Termina bloque de código para SOFA score en streamlit
 
