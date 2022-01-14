@@ -4,8 +4,10 @@ from numpy.core.fromnumeric import ptp
 import pandas
 import matplotlib
 from PIL.Image import TRANSPOSE
+from sqlalchemy import false
 import streamlit as st
 from streamlit.widgets import NoValue
+from sympy import O
 st.title("CxColCardio")
 #'''Se buscará paciente con ID unico el NSS con agregado para no repetir el registro
 #por lo que debe ser completado'''
@@ -159,23 +161,23 @@ if glas == True:
 #Sección metabólica
 Bilisingre = st.number_input("Bilirrubinas", None, None, 1.0, 0.1)
 if Bilisingre < 1.2:
-    st.subheader("Metabólico")
+    st.subheader("Hígado")
     biling = 0
     st.success(biling)
 elif Bilisingre > 1.2 and Bilisingre < 1.9:
-    st.subheader("Metabólico")
+    st.subheader("Hígado")
     biling = 1
     st.success(biling)
 elif Bilisingre > 2 and Bilisingre <= 5.9:
-    st.subheader("Metabólico")
+    st.subheader("Hígado")
     biling = 2
     st.warning(biling)
 elif Bilisingre >= 6.0 and Bilisingre <= 11.9:
-    st.subheader("Metabólico")
+    st.subheader("Hígado")
     biling = 3
     st.warning(biling)
 elif Bilisingre >= 12:
-    st.subheader("Metabólico")
+    st.subheader("Hígado")
     biling = 4
     st.error(biling)
 
@@ -190,18 +192,83 @@ with col3:
     PAMing = ((diasting+diasting)+sisting)/3
     IntPAMing = int(PAMing)
     prueba = st.number_input("PAM ingreso", None, None, IntPAMing)
-    pruebs = int(prueba)
-dopamenos5 = st.checkbox(
-    "Dopamina < o = a 5 mcg/kg/min o dobutamina cualquier dósis")
-dopamas5 = st.checkbox(
-    "Dopamina > 5mcg/kg/min o epinefrina <0.1 mcg/kg/min o norepinefrina <0.1mcg/kg/min")
-dopamas15 = st.checkbox(
-    "Dopamina >15 mcg/kg/min o epinefrina o norepinefrina >0.1 mcg/kg/min")
+vasopres= st.selectbox("Uso de vasopresores",["Sin vasopresor","Dopamina < o = a 5 mcg/kg/min o dobutamina cualquier dósis","Dopamina > 5mcg/kg/min o epinefrina <0.1 mcg/kg/min o norepinefrina <0.1mcg/kg/min","Dopamina >15 mcg/kg/min o epinefrina o norepinefrina >0.1 mcg/kg/min"])
+if IntPAMing >70 and vasopres == "Sin vasopresor":
+    st.subheader("Cardiovascular")
+    carding = 0
+    st.success(carding)
+elif IntPAMing <70 and vasopres == "Sin vasopresor":
+    st.subheader("Cardiovascular")
+    carding = 1
+    st.success(carding)
+elif vasopres== "Dopamina < o = a 5 mcg/kg/min o dobutamina cualquier dósis":
+    st.subheader("Cardiovascular")
+    carding = 2
+    st.warning(carding)
+elif vasopres== "Dopamina > 5mcg/kg/min o epinefrina <0.1 mcg/kg/min o norepinefrina <0.1mcg/kg/min":
+    st.subheader("Cardiovascular")
+    carding = 3
+    st.warning(carding)
+elif vasopres== "Dopamina >15 mcg/kg/min o epinefrina o norepinefrina >0.1 mcg/kg/min":
+    st.subheader("Cardiovascular")
+    carding = 4
+    st.error(carding)
+
+
 col1, col2 = st.beta_columns(2)
 with col1:
-    plaqing = st.number_input("Plaquetas de ingreso x10*3/ml")
+    plaqing = st.number_input("Plaquetas de ingreso x10*3/ml",1,1000,150,1)
+    st.subheader("Coagulación")
+
+if plaqing >= 150:
+    sofplaqing=0
+    with col1:
+        st.success(sofplaqing)
+elif plaqing <150 and plaqing >= 100:
+    sofplaqing=1
+    with col1:
+        st.success(sofplaqing)
+elif plaqing <=100 and plaqing >= 50:
+    sofplaqing=2
+    with col1:
+        st.warning(sofplaqing)
+elif plaqing <=50 and plaqing >= 20:
+    sofplaqing=3
+    with col1:
+        st.warning(sofplaqing)
+elif plaqing <=20:
+    sofplaqing=4
+    with col1:
+        st.error(sofplaqing)
+
 with col2:
-    creating = st.number_input("Creatinina de ingreso mg/dl")
+    creating = st.number_input("Creatinina de ingreso mg/dl",1.0,10.0,1.0,0.1)
+    uresissofaingre=st.number_input("Uresis/dia",1,100000,1,1)
+    st.subheader("Renal")
+if creating <1.2 and uresissofaingre >500:
+    sofcreating=0
+    with col2:
+        st.success(sofcreating)
+elif creating >1.2 and creating <1.9 and uresissofaingre >500:
+    sofcreating=1
+    with col2:
+        st.success(sofcreating)
+elif creating >2 and creating <3.4 and uresissofaingre >500:
+    sofcreating=2
+    with col2:
+        st.warning(sofcreating)
+elif creating >3.5 and creating <4.9 or uresissofaingre <500:
+    sofcreating=3
+    with col2:
+        st.warning(sofcreating)
+elif creating >=5 or uresissofaingre <200:
+    sofcreating=4
+    with col2:
+        st.error(sofcreating)
+
+
+
+
 #Puntaje de SOFA
 
 
