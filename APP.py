@@ -266,12 +266,6 @@ elif creating >=5 or uresissofaingre <200:
     with col2:
         st.error(sofcreating)
 
-
-
-
-#Puntaje de SOFA
-
-
 #Termina bloque de código para SOFA score en streamlit
 
 st.subheader("Postoperatorio")
