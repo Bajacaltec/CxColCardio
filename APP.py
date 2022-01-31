@@ -52,10 +52,10 @@ elif NSS != "":
     with col2:
         usghall = st.multiselect("Hallazgos de ultrasonido", ["Engrosamiento de pared", "Líquido perivesicular", "Litiasis vesicular",
                                  "Distensión vesicular", "Gas intravesicular", "Lodo biliar", "Absceso perivesicular", "Anormalidad anatomíca"])
-    col1, col2 = st.beta_columns(2)
+        taclla= st.multiselect("Hallagos Tomográficos",["Engrosamiento de la pared","Líquido perivesicular","Pérdida de la captación del contraste","Gas dentro de la vesícula biliar"])
     with col1:
         usovasopr = st.selectbox("Uso de vasopresores", ["No", "Si"])
-    with col2:
+    with col1:
         if usovasopr == "Si":
             tipovasopr = st.multiselect("Que vasopresor se utilizó", [
                                         "Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"])
@@ -69,7 +69,7 @@ elif NSS != "":
     col1, col2 = st.beta_columns(2)
     with col1:
         sysint = st.multiselect("Sintomas compatibles con colecistitis aguda", [
-                                "Dolor en hipocondrio derecho", "Signo de Murphy", "Nausea y vómito"])
+                                "Dolor en hipocondrio derecho", "Signo de Murphy", "Nausea y vómito","Ictericia","Fiebre","Dolor abdominal difuso","Estreñimiento"])
     with col2:
         ASA = st.selectbox("ASA", ["I", "II", "III", "IV", "V", "VI"])
         asacheck = st.checkbox("ASA clasificación")
@@ -90,7 +90,7 @@ st.subheader("Scores de ingreso")
 
 #Bloque de código para SOFA score
 #para un cuadro azul parecido a succes, error, y warningst.info("SOFA")
-SOFA = '<p style="font-family:Times; color:Yellow; font-size: 30px;">SOFA</p>'
+SOFA = '<p style="font-family:Times; color:Blue; font-size: 30px;">SOFA</p>'
 st.markdown(SOFA, unsafe_allow_html=True)
 col1, col2, col3 = st.beta_columns(3)
 with col1:
