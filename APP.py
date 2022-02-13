@@ -49,6 +49,9 @@ elif NSS != "":
     with col1:
         comor = st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia",
                                "Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Otros"])
+        tab=st.checkbox("Tabaquismo")
+        if tab==True:
+            st.number_input("Cajetillas/año",1,7000,1,1)
     with col2:
         usghall = st.multiselect("Hallazgos de ultrasonido", ["Engrosamiento de pared", "Líquido perivesicular", "Litiasis vesicular",
                                  "Distensión vesicular", "Gas intravesicular", "Lodo biliar", "Absceso perivesicular", "Anormalidad anatomíca"])
@@ -63,9 +66,11 @@ elif NSS != "":
     with col1:
         ventprol = st.number_input(
             "Días con ventilación mecánica", 0, 100, 0, 1)
+        uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
     with col2:
         compli = st.selectbox(
             "Complicaciones postoperatorias (Clavien-Dindo", ["I", "II", "III", "IV", "V"])
+        cxcardio=st.selectbox("Qué tipo de procedimiento cardiovascular se realizó",["Ninguno","Cirugía abierta de corazón","Reemplazo valvular", "cateterismo cardiáco"])
     col1, col2 = st.beta_columns(2)
     with col1:
         sysint = st.multiselect("Sintomas compatibles con colecistitis aguda", [
@@ -268,5 +273,18 @@ elif creating >=5 or uresissofaingre <200:
 
 #Termina bloque de código para SOFA score en streamlit
 
-st.subheader("Postoperatorio")
-#Variables del postoperatorio
+st.subheader("Datos quirúrgicos")
+col1,col2=st.beta_columns(2)
+with col1:
+    tiempevolcx=st.number_input("Tiempo desde el inicio de los síntomas al tratamiento quirúrgico",0,600,0,1)
+    duracioncx=st.number_input("Duración de la cirugía (minutos)",1,700000,NoValue(),1)
+    recurrencia=st.checkbox("Recurrencia de lo síntomas")
+with col2:
+    tipocx=st.selectbox("Tipo de cirugía (abierta o laparoscopica)",["Laparoscopica","Abierta"])
+    convcx=st.checkbox("Conversión de cirugía laparoscopica a abierta")
+    timeppostqx=st.number_input("Días de estancia posterior a tratamiento quirúrgico de colecistitis",1,60000,1,1)
+mort=st.selectbox("Muerte en los primeros 30 días posquirúrgicos",["No","Si"])
+
+#Falta incluir laboratorios, y apache II
+
+#Despues programar base de datos y probarla
