@@ -9,7 +9,6 @@ from sqlalchemy import false
 import streamlit as st
 from streamlit.widgets import NoValue
 from sympy import O
-import Scoreing
 
 # ---------------------------------------------------------------------------- #
 #                            Ficha de identificación                           #
@@ -55,30 +54,28 @@ elif NSS != "":
 #                                 Antecedentes                                 #
 # ---------------------------------------------------------------------------- #
  #Antecedentes
-    st.subheader("Antecedentes")
-    col1, col2 = st.beta_columns(2)
-    with col1:
-        comor = st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia",
+st.subheader("Antecedentes")
+col1, col2,col3 = st.beta_columns(3)
+with col1:
+    comor = st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia",
                                "Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Otros"])
-        tab=st.checkbox("Tabaquismo")
-        if tab==True:
-            st.number_input("Cajetillas/año",1,7000,1,1)
- with col2:
-        Tipocxcardio = st.multiselect("Procedimientos cardiovasculares", [
+    tab=st.checkbox("Tabaquismo")
+    if tab==True:
+        st.number_input("Cajetillas/año",1,7000,1,1)
+with col2:
+    Tipocxcardio = st.multiselect("Procedimientos cardiovasculares", [
                                       "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular"])
-  with col1:
-        usovasopr = st.selectbox("Uso de vasopresores", ["No", "Si"])
-    with col1:
-        if usovasopr == "Si":
-            tipovasopr = st.multiselect("Que vasopresor se utilizó", [
+with col1:
+    usovasopr = st.selectbox("Uso de vasopresores", ["No", "Si"])
+    if usovasopr == "Si":
+        tipovasopr = st.multiselect("Que vasopresor se utilizó", [
                                         "Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"])
-    col1, col2 = st.beta_columns(2)
-    with col1:
-        ventprol = st.number_input(
+with col2:
+    ventprol = st.number_input(
             "Días con ventilación mecánica", 0, 100, 0, 1)
-        uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
-    with col2:
-        compli = st.selectbox(
+    uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
+with col1:
+    compli = st.selectbox(
             "Complicaciones postoperatorias (Clavien-Dindo", ["I", "II", "III", "IV", "V"])
 
 # ---------------------------------------------------------------------------- #
@@ -86,37 +83,38 @@ elif NSS != "":
 # ---------------------------------------------------------------------------- #
 #Laboratorios al ingreso
 #Sección de laboratorios
+st.subheader('Laboratorios de ingreso')
 sol1,sol2,sol3,sol4=st.beta_columns(4)
 with sol1:
-    ADE=st.number_input("ADE",0,100)
+    ADE=st.number_input("ADE",0,100,key='<ADE preqx>')
 with sol2:
-    PCR=st.number_input("PCR mg/dl"),0,700
+    PCR=st.number_input("PCR mg/dl",key='<pcr>')
 with sol3:
-    Leu=st.number_input("Leucocitos mm3",0,100000)
+    Leu=st.number_input("Leucocitos  mm3",0,100000)
 with sol4:
-    AST=st.number_input("AST",0,1000)
+    AST=st.number_input("AST",0,1000,key='<ast>')
 with sol1:
-    ALT=st.number_input("ALT",0,1000)
+    ALT=st.number_input("ALT ",0,1000)
 with sol2:
-    Bil=st.number_input("Bilirrubinas totales",0,100)
+    Bil=st.number_input("Bil tot ",0,100)
 with sol3:
-    FA=st.number_input("FA",0)
+    FA=st.number_input("FA ",0)
 with sol4:
-    INR=st.number_input("INR",0)
+    INR=st.number_input("INR ",0)
 with sol1:
-    GGT=st.number_input("GGT",0)
+    GGT=st.number_input("GGT ",0)
 with sol1:
-    NA=st.number_input('Sodio')
+    NA=st.number_input('Sodio ')
 with sol2:
-    K=st.number_input('Potasio')
+    K=st.number_input('Potasio ')
 with sol3:
-    pH=st.number_input("PH")
+    pH=st.number_input("PH ")
 with sol4:
-    Hto=st.number_input("Hematocrito")
-with sol1:
-    Creat=st.number_input("Creatinina")
+    Hto=st.number_input("Hematocrito ")
+with sol3:
+    Creat=st.number_input("Creatinina ")
 with sol2:
-    Leuc=st.number_input("Leucocitos")
+    Leuc=st.number_input("Leucocitos ")
 
     #Score de ingreso
 # ---------------------------------------------------------------------------- #
@@ -125,35 +123,31 @@ with sol2:
 
 
 #Sofa
-Scoreing.SOFA()
-
-Scoreing.apache()
-
+#Apache
 # ---------------------------------------------------------------------------- #
 #                                     CCLA                                     #
 # ---------------------------------------------------------------------------- #
-#CCLA
- col1, col2 = st.beta_columns(2)
-    with col1:
-        sysint = st.multiselect("Sintomas compatibles con colecistitis aguda", [
-                                "Dolor en hipocondrio derecho", "Signo de Murphy", "Nausea y vómito","Ictericia","Fiebre","Dolor abdominal difuso","Estreñimiento"])
-    with col2:
-        usghall = st.multiselect("Hallazgos de ultrasonido", ["Engrosamiento de pared", "Líquido perivesicular", "Litiasis vesicular",
-                                 "Distensión vesicular", "Gas intravesicular", "Lodo biliar", "Absceso perivesicular", "Anormalidad anatomíca"])
-        taclla= st.multiselect("Hallagos Tomográficos",["Engrosamiento de la pared","Líquido perivesicular","Pérdida de la captación del contraste","Gas dentro de la vesícula biliar"])
-    with col1:
-           with col2:
-        ASA = st.selectbox("ASA", ["I", "II", "III", "IV", "V", "VI"])
-        asacheck = st.checkbox("ASA clasificación")
-        if asacheck == True:
-            st.image("ASA.png")
-    col1, col2 = st.beta_columns(2)
-    with col1:
-        sevcole = st.selectbox("Severidad (Tokio 18)", [
-                               "Leve", "Moderado", "Severo"])
-        tokio = st.checkbox("Clasificación de Tokio 18")
-        if tokio == True:
-            st.image("Tokio.png")
+st.subheader("CCLA")
+col1, col2 = st.beta_columns(2)
+with col1:
+    sysint = st.multiselect("Sintomas compatibles con colecistitis aguda", [
+                            "Dolor en hipocondrio derecho", "Signo de Murphy", "Nausea y vómito","Ictericia","Fiebre","Dolor abdominal difuso","Estreñimiento"])
+with col2:
+    usghall = st.multiselect("Hallazgos de ultrasonido", ["Engrosamiento de pared", "Líquido perivesicular", "Litiasis vesicular",
+                                "Distensión vesicular", "Gas intravesicular", "Lodo biliar", "Absceso perivesicular", "Anormalidad anatomíca"])
+    taclla= st.multiselect("Hallagos Tomográficos",["Engrosamiento de la pared","Líquido perivesicular","Pérdida de la captación del contraste","Gas dentro de la vesícula biliar"])
+with col1:
+    ASA=st.selectbox("ASA", ["I", "II", "III", "IV", "V", "VI"])
+    asacheck = st.checkbox("ASA clasificación")
+    if asacheck == True:
+        st.image("ASA.png")
+col1, col2 = st.beta_columns(2)
+with col1:
+    sevcole = st.selectbox("Severidad (Tokio 18)", [
+                            "Leve", "Moderado", "Severo"])
+    tokio = st.checkbox("Clasificación de Tokio 18")
+    if tokio == True:
+        st.image("Tokio.png")
 
 
 # ---------------------------------------------------------------------------- #
@@ -222,19 +216,17 @@ with col2:
 #                           Evolución postquirúrgica                           #
 # ---------------------------------------------------------------------------- #
 #Evolucion postquirúrgica
-  with col1:
-        usovasopr = st.selectbox("Uso de vasopresores", ["No", "Si"])
-    with col1:
-        if usovasopr == "Si":
-            tipovasopr = st.multiselect("Que vasopresor se utilizó", [
-                                        "Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"])
-    col1, col2 = st.beta_columns(2)
-    with col1:
-        ventprol = st.number_input(
-            "Días con ventilación mecánica", 0, 100, 0, 1)
-        uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
-    with col2:
-        compli = st.selectbox(
-            "Complicaciones postoperatorias (Clavien-Dindo", ["I", "II", "III", "IV", "V"])
+with col1:
+    usovasopr = st.selectbox("Uso de vasopresores", ["No", "Si"],key='>Postqxvasopres')
+with col1:
+    if usovasopr == "Si":
+        tipovasopr = st.multiselect("Que vasopresor se utilizó", [
+                                    "Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"])
+col1, col2 = st.beta_columns(2)
+with col1:
+    ventprol = st.number_input("Días con ventilación mecánica", 0, 100, 0, 1,key='<Postqxventilación>')
+    uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1,key='<uci>')
+with col2:
+    compli = st.selectbox("Complicaciones postoperatorias (Clavien-Dindo", ["I", "II", "III", "IV", "V"],key='<estamera>')
 recur=st.selectbox('Recurrencia de los síntomas',['No','Si'])
 mort=st.selectbox("Muerte en los primeros 30 días posquirúrgicos",["No","Si"])
