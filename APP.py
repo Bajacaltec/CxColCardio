@@ -10,6 +10,8 @@ import streamlit as st
 from streamlit.widgets import NoValue
 from sympy import O
 
+from Scoreing import Neu, Resp, metabolica
+
 # ---------------------------------------------------------------------------- #
 #                            Ficha de identificación                           #
 # ---------------------------------------------------------------------------- #
@@ -120,8 +122,32 @@ with sol2:
 # ---------------------------------------------------------------------------- #
 #                               Score de ingreso                               #
 # ---------------------------------------------------------------------------- #
+#Sofa
+
+st.subheader("SOFA de ingreso")
+col1, col2, col3 = st.beta_columns(3)
+with col1:
+    PaO2 = st.number_input("PaO2 en mmHg", 1, None, 1)
+with col2:
+    FiO2 = st.number_input("FiO2 %", 1, None)
+with col3:
+    ventmec = st.selectbox("¿Ventilación mecánica?", ["No", "Si"])
+Resp(PaO2,FiO2,ventmec)
+
+# ---------------------------------------------------------------------------- #
+#                                  Neurológico                                 #
+# ---------------------------------------------------------------------------- #
+with col1:
+    Glasgow = st.number_input("Escala de coma de Glasgow", 1, 15, 1, 1)
+Neu(Glasgow)
+
+# ---------------------------------------------------------------------------- #
+#                                  Metabólica                                  #
+# ---------------------------------------------------------------------------- #
+metabolica(Bil)
 
 
+#TEnemos que continuar con el SOFA vamos en metabólica terminada
 #Sofa
 #Apache
 # ---------------------------------------------------------------------------- #

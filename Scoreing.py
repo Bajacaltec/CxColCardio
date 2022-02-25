@@ -1,188 +1,60 @@
 #APACHE II
 import streamlit as st
 
-def SOFA():
-    st.subheader("SOFA de ingreso")
-    col1, col2, col3 = st.beta_columns(3)
-    with col1:
-        PaO2 = st.number_input("PaO2 en mmHg", 1, None, 1)
-    with col2:
-        FiO2 = st.number_input("FiO2 %", 1, None)
-    with col3:
-        PAFI = (PaO2/FiO2)*100
-        st.number_input("PAFI", None, None, PAFI)
-    col1, col2 = st.beta_columns(2)
-    with col1:
-        ventmec = st.selectbox("¿Ventilación mecánica?", ["No", "Si"])
-
+# ---------------------------------------------------------------------------- #
+#                             Puntaje respiratorio                             #
+# ---------------------------------------------------------------------------- #
+def Resp(PaO2,FiO2,ventmec):
+    PAFI = (PaO2/FiO2)*100
     #Puntaje respiratorio
-    if PAFI > 400:
+    if PAFI >= 400 and ventmec=="No":
         PtResp = 0
-        st.subheader("Respiratorio")
-        st.success(PtResp)
-    elif PAFI < 400 and PAFI > 300:
+    elif PAFI < 400 and PAFI >= 300 and ventmec=="No":
         PtResp = 1
-        st.subheader("Respiratorio")
-        st.success(PtResp)
     elif PAFI < 300 and ventmec == "No":
         PtResp = 2
-        st.subheader("Respiratorio")
-        st.warning(PtResp)
-    elif PAFI < 200 and PAFI > 100 and ventmec == "Si":
-        st.subheader("Respiratorio")
+    #Revisar la escala por que hay un hueco desde el  menos de 300 al 200 con ventilación mecánica que no definen cual es el puntaje
+    elif PAFI <= 299 and PAFI >= 100 and ventmec == "Si":
         PtResp = 3
-        st.warning(PtResp)
     elif PAFI < 100 and ventmec == "Si":
         PtResp = 4
-        st.subheader("Respiratorio")
-        st.error(PtResp)
-
-    #Sección neurológica de SOFA
-
-    col1, col2 = st.beta_columns(2)
-    with col1:
-        Glasgow = st.number_input("Escala de coma de Glasgow", 1, 15, 1, 1)
+    #Pasar esto al final en una tabla final para resultado de puntajes y PAFI
+    st.text(PAFI)
+    st.text(PtResp)
+# ---------------------------------------------------------------------------- #
+#                              Puntaje neurológico                             #
+# ---------------------------------------------------------------------------- #
+def Neu(Glasgow):
     if Glasgow == 15:
         Ptneu = 0
-        st.subheader("Neurológico")
-        st.success(Ptneu)
     elif Glasgow == 13 or Glasgow == 14:
         Ptneu = 1
-        st.subheader("Neurológico")
-        st.success(Ptneu)
     elif Glasgow == 10 or Glasgow == 11 or Glasgow == 12:
         Ptneu = 2
-        st.subheader("Neurológico")
-        st.warning(Ptneu)
     elif Glasgow >= 6 and Glasgow <= 9:
         Ptneu = 3
-        st.subheader("Neurológico")
-        st.warning(Ptneu)
     elif Glasgow < 6:
         Ptneu = 4
-        st.subheader("Neurológico")
-        st.error(Ptneu)
-
+    st.write(Glasgow)
     glas = st.checkbox("Glasgow")
     if glas == True:
         st.image("Glasgow.jpeg")
 
-    #Término de sección neurológica de SOFA
-
-    #Sección metabólica
-    Bilisingre = st.number_input("Bilirrubinas", None, None, 1.0, 0.1)
+# ---------------------------------------------------------------------------- #
+#                                Metabólica SOFA                               #
+# ---------------------------------------------------------------------------- #
+def metabolica(Bilisingre):
     if Bilisingre < 1.2:
-        st.subheader("Hígado")
         biling = 0
-        st.success(biling)
     elif Bilisingre > 1.2 and Bilisingre < 1.9:
-        st.subheader("Hígado")
         biling = 1
-        st.success(biling)
     elif Bilisingre > 2 and Bilisingre <= 5.9:
-        st.subheader("Hígado")
         biling = 2
-        st.warning(biling)
     elif Bilisingre >= 6.0 and Bilisingre <= 11.9:
-        st.subheader("Hígado")
         biling = 3
-        st.warning(biling)
     elif Bilisingre >= 12:
-        st.subheader("Hígado")
         biling = 4
-        st.error(biling)
-
-    #Término de sección metabólica de SOFA
-
-    col1, col2, col3 = st.beta_columns(3)
-    with col1:
-        sisting = st.number_input("Sistólica de ingreso", 1, None)
-    with col2:
-        diasting = st.number_input("Diastólica de ingreso", 1, None)
-    with col3:
-        PAMing = ((diasting+diasting)+sisting)/3
-        IntPAMing = int(PAMing)
-        prueba = st.number_input("PAM ingreso", None, None, IntPAMing)
-    vasopres= st.selectbox("Uso de vasopresores",["Sin vasopresor","Dopamina < o = a 5 mcg/kg/min o dobutamina cualquier dósis","Dopamina > 5mcg/kg/min o epinefrina <0.1 mcg/kg/min o norepinefrina <0.1mcg/kg/min","Dopamina >15 mcg/kg/min o epinefrina o norepinefrina >0.1 mcg/kg/min"])
-    if IntPAMing >70 and vasopres == "Sin vasopresor":
-        st.subheader("Cardiovascular")
-        carding = 0
-        st.success(carding)
-    elif IntPAMing <70 and vasopres == "Sin vasopresor":
-        st.subheader("Cardiovascular")
-        carding = 1
-        st.success(carding)
-    elif vasopres== "Dopamina < o = a 5 mcg/kg/min o dobutamina cualquier dósis":
-        st.subheader("Cardiovascular")
-        carding = 2
-        st.warning(carding)
-    elif vasopres== "Dopamina > 5mcg/kg/min o epinefrina <0.1 mcg/kg/min o norepinefrina <0.1mcg/kg/min":
-        st.subheader("Cardiovascular")
-        carding = 3
-        st.warning(carding)
-    elif vasopres== "Dopamina >15 mcg/kg/min o epinefrina o norepinefrina >0.1 mcg/kg/min":
-        st.subheader("Cardiovascular")
-        carding = 4
-        st.error(carding)
+    st.write("Las bilis son")
+    st.write(biling)
 
 
-    col1, col2 = st.beta_columns(2)
-    with col1:
-        plaqing = st.number_input("Plaquetas de ingreso x10*3/ml",1,1000,150,1)
-        st.subheader("Coagulación")
-
-    if plaqing >= 150:
-        sofplaqing=0
-        with col1:
-            st.success(sofplaqing)
-    elif plaqing <150 and plaqing >= 100:
-        sofplaqing=1
-        with col1:
-            st.success(sofplaqing)
-    elif plaqing <=100 and plaqing >= 50:
-        sofplaqing=2
-        with col1:
-            st.warning(sofplaqing)
-    elif plaqing <=50 and plaqing >= 20:
-        sofplaqing=3
-        with col1:
-            st.warning(sofplaqing)
-    elif plaqing <=20:
-        sofplaqing=4
-        with col1:
-            st.error(sofplaqing)
-
-    with col2:
-        creating = st.number_input("Creatinina de ingreso mg/dl",1.0,10.0,1.0,0.1)
-        uresissofaingre=st.number_input("Uresis/dia",1,100000,1,1)
-        st.subheader("Renal")
-    if creating <1.2 and uresissofaingre >500:
-        sofcreating=0
-        with col2:
-            st.success(sofcreating)
-    elif creating >1.2 and creating <1.9 and uresissofaingre >500:
-        sofcreating=1
-        with col2:
-            st.success(sofcreating)
-    elif creating >2 and creating <3.4 and uresissofaingre >500:
-        sofcreating=2
-        with col2:
-            st.warning(sofcreating)
-    elif creating >3.5 and creating <4.9 or uresissofaingre <500:
-        sofcreating=3
-        with col2:
-            st.warning(sofcreating)
-    elif creating >=5 or uresissofaingre <200:
-        sofcreating=4
-        with col2:
-            st.error(sofcreating)
-    SOFA()
-def apa(PAMing):
-    st.subheader('APACHE II')
-    PAMapacheing=PAMing
-    col1,col2,col3=st.beta_columns(3)
-    with col1:
-        Temp=st.number_input("Temp rectal °C",20,41)
-    with col2:
-        OX=
-    with col
