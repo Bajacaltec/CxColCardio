@@ -9,6 +9,7 @@ from sqlalchemy import false
 import streamlit as st
 from streamlit.widgets import NoValue
 from sympy import O
+from Backup import Bilisingre, PtResp, Ptneu
 
 from Scoreing import Neu, Resp, cardio, coagulacion, metabolica, urinario
 
@@ -187,6 +188,11 @@ coagulacion(plaqing)
 urinario(creating,uresising)
 #Sofa
 #Apache
+# ---------------------------------------------------------------------------- #
+#                                     SOFA                                     #
+# ---------------------------------------------------------------------------- #
+# SOFA=[PtResp,Ptneu]
+# st.write(SOFA)
 # ---------------------------------------------------------------------------- #
 #                                     CCLA                                     #
 # ---------------------------------------------------------------------------- #
