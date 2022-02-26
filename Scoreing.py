@@ -57,4 +57,61 @@ def metabolica(Bilisingre):
     st.write("Las bilis son")
     st.write(biling)
 
+# ---------------------------------------------------------------------------- #
+#                                Cardiovascular                                #
+# ---------------------------------------------------------------------------- #
+def cardio(diasting,sisting):
+    PAMing = ((diasting+diasting)+sisting)/3
+    IntPAMing = int(PAMing)
+    vasopres= st.selectbox("Uso de vasopresores",["Sin vasopresor","Dopamina < o = a 5 mcg/kg/min o dobutamina cualquier dósis","Dopamina > 5mcg/kg/min o epinefrina <0.1 mcg/kg/min o norepinefrina <0.1mcg/kg/min","Dopamina >15 mcg/kg/min o epinefrina o norepinefrina >0.1 mcg/kg/min"])
+    if IntPAMing >70 and vasopres == "Sin vasopresor":
+        st.subheader("Cardiovascular")
+        carding = 0
+    elif IntPAMing <70 and vasopres == "Sin vasopresor":
+        st.subheader("Cardiovascular")
+        carding = 1
+    elif vasopres== "Dopamina < o = a 5 mcg/kg/min o dobutamina cualquier dósis":
+        st.subheader("Cardiovascular")
+        carding = 2
+    elif vasopres== "Dopamina > 5mcg/kg/min o epinefrina <0.1 mcg/kg/min o norepinefrina <0.1mcg/kg/min":
+        st.subheader("Cardiovascular")
+        carding = 3
+    elif vasopres== "Dopamina >15 mcg/kg/min o epinefrina o norepinefrina >0.1 mcg/kg/min":
+        st.subheader("Cardiovascular")
+        carding = 4
+    st.write("Cardio")
+    st.write(carding)
 
+# ---------------------------------------------------------------------------- #
+#                                  Coagulación                                 #
+# ---------------------------------------------------------------------------- #
+def coagulacion(plaqing):
+    if plaqing >= 150:
+        sofplaqing=0
+    elif plaqing <150 and plaqing >= 100:
+        sofplaqing=1
+    elif plaqing <=100 and plaqing >= 50:
+        sofplaqing=2
+    elif plaqing <=50 and plaqing >= 20:
+        sofplaqing=3
+    elif plaqing <=20:
+        sofplaqing=4
+    st.write("Plaquetas")
+    st.write(sofplaqing)
+
+# ---------------------------------------------------------------------------- #
+#                                   urinario                                   #
+# ---------------------------------------------------------------------------- #
+def urinario(creating,uresisingre):
+    if creating <1.2 and uresisingre >500:
+        sofcreating=0
+    elif creating >1.2 and creating <1.9 and uresisingre >500:
+        sofcreating=1
+    elif creating >2 and creating <3.4 and uresisingre >500:
+        sofcreating=2
+    elif creating >3.5 and creating <4.9 or uresisingre <500:
+        sofcreating=3
+    elif creating >=5 or uresisingre <200:
+        sofcreating=4
+    st.write('uresis')
+    st.write(sofcreating)

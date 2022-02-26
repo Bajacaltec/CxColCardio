@@ -10,7 +10,7 @@ import streamlit as st
 from streamlit.widgets import NoValue
 from sympy import O
 
-from Scoreing import Neu, Resp, metabolica
+from Scoreing import Neu, Resp, cardio, coagulacion, metabolica, urinario
 
 # ---------------------------------------------------------------------------- #
 #                            Ficha de identificación                           #
@@ -80,6 +80,27 @@ with col1:
     compli = st.selectbox(
             "Complicaciones postoperatorias (Clavien-Dindo", ["I", "II", "III", "IV", "V"])
 
+
+# ---------------------------------------------------------------------------- #
+#                              Vitales de ingreso                              #
+# ---------------------------------------------------------------------------- #
+st.subheader("Signos vitales de ingreso")
+vol1,vol2,vol3,vol4=st.beta_columns(4)
+with vol1:
+    FC=st.number_input("FC/min")
+with vol2:
+    FR=st.number_input("Fr/min")
+with vol3:
+    Sisting=st.number_input('Sistólica')
+with vol4:
+    Diasting=st.number_input('Diastólica')
+with vol1:
+    Temping=st.number_input('T°C')
+with vol2:
+    uresising=st.number_input("Uresis/dia",1,100000,1,1)
+
+
+
 # ---------------------------------------------------------------------------- #
 #                            Laboratorios de ingreso                           #
 # ---------------------------------------------------------------------------- #
@@ -114,9 +135,11 @@ with sol3:
 with sol4:
     Hto=st.number_input("Hematocrito ")
 with sol3:
-    Creat=st.number_input("Creatinina ")
+    creating=st.number_input("Creatinina ")
 with sol2:
     Leuc=st.number_input("Leucocitos ")
+with sol3:
+    plaqing=st.number_input("Plaquetas")
 
     #Score de ingreso
 # ---------------------------------------------------------------------------- #
@@ -147,7 +170,21 @@ Neu(Glasgow)
 metabolica(Bil)
 
 
-#TEnemos que continuar con el SOFA vamos en metabólica terminada
+# ---------------------------------------------------------------------------- #
+#                                Cardiovasculas                                #
+# ---------------------------------------------------------------------------- #
+cardio(Diasting,Sisting)
+
+#Cardio listo
+# ---------------------------------------------------------------------------- #
+#                                  Coagulación                                 #
+# ---------------------------------------------------------------------------- #
+coagulacion(plaqing)
+
+# ---------------------------------------------------------------------------- #
+#                                   Urinario                                   #
+# ---------------------------------------------------------------------------- #
+urinario(creating,uresising)
 #Sofa
 #Apache
 # ---------------------------------------------------------------------------- #
