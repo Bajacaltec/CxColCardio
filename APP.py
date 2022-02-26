@@ -9,8 +9,6 @@ from sqlalchemy import false
 import streamlit as st
 from streamlit.widgets import NoValue
 from sympy import O
-from Backup import Bilisingre, PtResp, Ptneu
-
 from Scoreing import Neu, Resp, cardio, coagulacion, metabolica, urinario
 
 # ---------------------------------------------------------------------------- #
@@ -164,24 +162,19 @@ Resp(PaO2,FiO2,ventmec)
 with col1:
     Glasgow = st.number_input("Escala de coma de Glasgow", 1, 15, 1, 1)
 Neu(Glasgow)
-
 # ---------------------------------------------------------------------------- #
 #                                  Metabólica                                  #
 # ---------------------------------------------------------------------------- #
 metabolica(Bil)
-
-
 # ---------------------------------------------------------------------------- #
 #                                Cardiovasculas                                #
 # ---------------------------------------------------------------------------- #
 cardio(Diasting,Sisting)
-
 #Cardio listo
 # ---------------------------------------------------------------------------- #
 #                                  Coagulación                                 #
 # ---------------------------------------------------------------------------- #
 coagulacion(plaqing)
-
 # ---------------------------------------------------------------------------- #
 #                                   Urinario                                   #
 # ---------------------------------------------------------------------------- #
@@ -191,7 +184,9 @@ urinario(creating,uresising)
 # ---------------------------------------------------------------------------- #
 #                                     SOFA                                     #
 # ---------------------------------------------------------------------------- #
-# SOFA=[PtResp,Ptneu]
+puntoresping=Resp.PtResp
+st.subheader("Prueba")
+st.write(puntoresping)
 # st.write(SOFA)
 # ---------------------------------------------------------------------------- #
 #                                     CCLA                                     #

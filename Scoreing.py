@@ -6,19 +6,18 @@ def Resp(PaO2,FiO2,ventmec):
     PAFI = (PaO2/FiO2)*100
     #Puntaje respiratorio
     if PAFI >= 400 and ventmec=="No":
-        PtResp = 0
+        Resp.PtResp = 0
     elif PAFI < 400 and PAFI >= 300 and ventmec=="No":
-        PtResp = 1
+        Resp.PtResp = 1
     elif PAFI < 300 and ventmec == "No":
-        PtResp = 2
+        Resp.PtResp = 2
     #Revisar la escala por que hay un hueco desde el  menos de 300 al 200 con ventilación mecánica que no definen cual es el puntaje
     elif PAFI <= 299 and PAFI >= 100 and ventmec == "Si":
-        PtResp = 3
+        Resp.PtResp = 3
     elif PAFI < 100 and ventmec == "Si":
-        PtResp = 4
+        Resp.PtResp = 4
     #Pasar esto al final en una tabla final para resultado de puntajes y PAFI
     st.text(PAFI)
-    st.text(PtResp)
 # ---------------------------------------------------------------------------- #
 #                              Puntaje neurológico                             #
 # ---------------------------------------------------------------------------- #
