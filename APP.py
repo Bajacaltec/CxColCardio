@@ -7,8 +7,6 @@ import matplotlib
 from PIL.Image import TRANSPOSE
 from sqlalchemy import false
 import streamlit as st
-from streamlit.widgets import NoValue
-from sympy import O
 from Scoreing import Neu, Resp, cardio, coagulacion, metabolica, urinario
 
 # ---------------------------------------------------------------------------- #
