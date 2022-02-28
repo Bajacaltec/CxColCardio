@@ -7,7 +7,7 @@ import matplotlib
 from PIL.Image import TRANSPOSE
 from sqlalchemy import false
 import streamlit as st
-from Scoreing import Neu, Resp, cardio, coagulacion, metabolica, urinario
+from Scoreing import Neu, Resp, cardio, coag, metabol, urin
 
 # ---------------------------------------------------------------------------- #
 #                            Ficha de identificación                           #
@@ -18,43 +18,36 @@ st.title("CxColCardio")
 nss = st.text_input(
     "Registrar paciente con NSS colocar agregado sin espacios")
 NSS = nss.upper()  # Hace el input de nss en mayuscular para que no falle el if con mayuscula
-if NSS == "":
-    st.image("CMN SXXI.jpeg", None, 600, 500)
-    buscar = st.text_input("Busqueda de paciente")
-elif NSS != "":
-    st.sidebar.markdown("Registra los datos del nuevo paciente")
-    st.sidebar.image("CMN SXXI.jpeg", None)
-    col1, col2 = st.beta_columns(2)
-    with col1:
-        nom = st.text_input("Nombre del paciente")
-    with col2:
-        edad = st.number_input("Edad", 1, 120, 1)
-    col1, col2, col3 = st.beta_columns(3)
-    with col1:
-        peso = st.number_input("Peso", 1, None, 1, 1)
-    with col2:
-        talla = st.number_input("Talla", 0.1, None, 1.0, 0.1)
-    with col3:
-        imc = peso/talla**2
-        indiceMC = st.number_input("IMC", 1.0, None, imc, 0.1)
-    Genero = "F" in NSS
-    if Genero == True:
-        #Para modificar el markdown con HTML se usa ese codigo de abajo
-        #willkomen = '<p style="font-family:Times; color:Brown; font-size: 60px;">Bienvenida</p>'
-        #st.markdown(willkomen, unsafe_allow_html=True)
-        Genero = "Femenino"
-        st.write("Bienvenida", " se esta completando el registro de ", nom)
-    else:
-        st.write("Bienvenido", " se esta completando el registro de", nom)
-        Genero = "Masculino"
 
-#Antecedentes del paciente
+st.sidebar.image("CMN SXXI.jpeg", None)
+col1, col2, col3 = st.columns(3)
+with col1:
+    nom = st.text_input("Nombre del paciente")
+with col2:
+    edad = st.number_input("Edad", 1, 120, 1)
+with col3:
+    peso = st.number_input("Peso", 1, None, 1, 1)
+with col1:
+    talla = st.number_input("Talla", 0.1, None, 1.0, 0.1)
+with col2:
+    imc = peso/talla**2
+    indiceMC = st.number_input("IMC", 1.0, None, imc, 0.1)
+Genero = "F" in NSS
+if Genero == True:
+    #Para modificar el markdown con HTML se usa ese codigo de abajo
+    #willkomen = '<p style="font-family:Times; color:Brown; font-size: 60px;">Bienvenida</p>'
+    #st.markdown(willkomen, unsafe_allow_html=True)
+    Genero = "Femenino"
+    st.write("Bienvenida", " se esta completando el registro de ", nom)
+else:
+    st.write("Bienvenido", " se esta completando el registro de", nom)
+    Genero = "Masculino"
+
 # ---------------------------------------------------------------------------- #
 #                                 Antecedentes                                 #
 # ---------------------------------------------------------------------------- #
  #Antecedentes
 st.subheader("Antecedentes")
-col1, col2,col3 = st.beta_columns(3)
 with col1:
     comor = st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia",
                                "Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Otros"])
@@ -82,7 +75,7 @@ with col1:
 #                              Vitales de ingreso                              #
 # ---------------------------------------------------------------------------- #
 st.subheader("Signos vitales de ingreso")
-vol1,vol2,vol3,vol4=st.beta_columns(4)
+vol1,vol2,vol3,vol4=st.columns(4)
 with vol1:
     FC=st.number_input("FC/min")
 with vol2:
@@ -104,7 +97,7 @@ with vol2:
 #Laboratorios al ingreso
 #Sección de laboratorios
 st.subheader('Laboratorios de ingreso')
-sol1,sol2,sol3,sol4=st.beta_columns(4)
+sol1,sol2,sol3,sol4=st.columns(4)
 with sol1:
     ADE=st.number_input("ADE",0,100,key='<ADE preqx>')
 with sol2:
@@ -138,14 +131,12 @@ with sol2:
 with sol3:
     plaqing=st.number_input("Plaquetas")
 
-    #Score de ingreso
 # ---------------------------------------------------------------------------- #
 #                               Score de ingreso                               #
 # ---------------------------------------------------------------------------- #
-#Sofa
 
 st.subheader("SOFA de ingreso")
-col1, col2, col3 = st.beta_columns(3)
+col1, col2, col3 = st.columns(3)
 with col1:
     PaO2 = st.number_input("PaO2 en mmHg", 1, None, 1)
 with col2:
@@ -154,43 +145,27 @@ with col3:
     ventmec = st.selectbox("¿Ventilación mecánica?", ["No", "Si"])
 Resp(PaO2,FiO2,ventmec)
 
-# ---------------------------------------------------------------------------- #
-#                                  Neurológico                                 #
-# ---------------------------------------------------------------------------- #
 with col1:
     Glasgow = st.number_input("Escala de coma de Glasgow", 1, 15, 1, 1)
 Neu(Glasgow)
-# ---------------------------------------------------------------------------- #
-#                                  Metabólica                                  #
-# ---------------------------------------------------------------------------- #
-metabolica(Bil)
-# ---------------------------------------------------------------------------- #
-#                                Cardiovasculas                                #
-# ---------------------------------------------------------------------------- #
+metabol(Bil)
 cardio(Diasting,Sisting)
-#Cardio listo
-# ---------------------------------------------------------------------------- #
-#                                  Coagulación                                 #
-# ---------------------------------------------------------------------------- #
-coagulacion(plaqing)
-# ---------------------------------------------------------------------------- #
-#                                   Urinario                                   #
-# ---------------------------------------------------------------------------- #
-urinario(creating,uresising)
-#Sofa
-#Apache
-# ---------------------------------------------------------------------------- #
-#                                     SOFA                                     #
-# ---------------------------------------------------------------------------- #
-puntoresping=Resp.PtResp
-st.subheader("Prueba")
-st.write(puntoresping)
-# st.write(SOFA)
+coag(plaqing)
+urin(creating,uresising)
+Sofapt=(Resp.PtResp+Neu.Ptneu+metabol.biling+cardio.carding+coag.sofplaqing+urin.sofcreating)
+xol1,xol2,xol3=st.columns(3)
+with xol2:
+    st.subheader("SOFA score")
+with xol3:
+    st.info(Sofapt)
+#Termina SOFA
+
+
 # ---------------------------------------------------------------------------- #
 #                                     CCLA                                     #
 # ---------------------------------------------------------------------------- #
 st.subheader("CCLA")
-col1, col2 = st.beta_columns(2)
+col1, col2 = st.columns(2)
 with col1:
     sysint = st.multiselect("Sintomas compatibles con colecistitis aguda", [
                             "Dolor en hipocondrio derecho", "Signo de Murphy", "Nausea y vómito","Ictericia","Fiebre","Dolor abdominal difuso","Estreñimiento"])
@@ -203,7 +178,7 @@ with col1:
     asacheck = st.checkbox("ASA clasificación")
     if asacheck == True:
         st.image("ASA.png")
-col1, col2 = st.beta_columns(2)
+col1, col2 = st.columns(2)
 with col1:
     sevcole = st.selectbox("Severidad (Tokio 18)", [
                             "Leve", "Moderado", "Severo"])
@@ -219,7 +194,7 @@ with col1:
 
 st.subheader("Laboratorios previos a la cirugía")
 
-tol1,tol2,tol3,tol4=st.beta_columns(4)
+tol1,tol2,tol3,tol4=st.columns(4)
 with tol1:
     ADEcx=st.number_input("ADE",0,100)
 with tol2:
@@ -264,10 +239,10 @@ with tol2:
 # ---------------------------------------------------------------------------- #
 
 st.subheader("Datos de la cirugía")
-col1,col2=st.beta_columns(2)
+col1,col2=st.columns(2)
 with col1:
     tiempevolcx=st.number_input("Tiempo desde el inicio de los síntomas al tratamiento quirúrgico",0,600,0,1)
-    duracioncx=st.number_input("Duración de la cirugía (minutos)",1,700000,NoValue(),1)
+    duracioncx=st.number_input("Duración de la cirugía (minutos)",1,700000,1,1)
     recurrencia=st.checkbox("Recurrencia de lo síntomas")
 with col2:
     tipocx=st.selectbox("Tipo de cirugía (abierta o laparoscopica)",["Laparoscopica","Abierta"])

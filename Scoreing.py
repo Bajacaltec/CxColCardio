@@ -23,16 +23,15 @@ def Resp(PaO2,FiO2,ventmec):
 # ---------------------------------------------------------------------------- #
 def Neu(Glasgow):
     if Glasgow == 15:
-        Ptneu = 0
+        Neu.Ptneu = 0
     elif Glasgow == 13 or Glasgow == 14:
-        Ptneu = 1
+        Neu.Ptneu = 1
     elif Glasgow == 10 or Glasgow == 11 or Glasgow == 12:
-        Ptneu = 2
+        Neu.Ptneu = 2
     elif Glasgow >= 6 and Glasgow <= 9:
-        Ptneu = 3
+        Neu.Ptneu = 3
     elif Glasgow < 6:
-        Ptneu = 4
-    st.write(Glasgow)
+        Neu.Ptneu = 4
     glas = st.checkbox("Glasgow")
     if glas == True:
         st.image("Glasgow.jpeg")
@@ -40,20 +39,18 @@ def Neu(Glasgow):
 # ---------------------------------------------------------------------------- #
 #                                Metabólica SOFA                               #
 # ---------------------------------------------------------------------------- #
-def metabolica(Bilisingre):
+def metabol(Bilisingre):
     if Bilisingre < 1.2:
-        biling = 0
+        metabol.biling = 0
     elif Bilisingre > 1.2 and Bilisingre < 1.9:
-        biling = 1
+        metabol.biling = 1
     elif Bilisingre > 2 and Bilisingre <= 5.9:
-        biling = 2
+        metabol.biling = 2
     elif Bilisingre >= 6.0 and Bilisingre <= 11.9:
-        biling = 3
+        metabol.biling = 3
     elif Bilisingre >= 12:
-        biling = 4
-    st.write("Las bilis son")
-    st.write(biling)
-
+        metabol.biling = 4
+   
 # ---------------------------------------------------------------------------- #
 #                                Cardiovascular                                #
 # ---------------------------------------------------------------------------- #
@@ -62,53 +59,45 @@ def cardio(diasting,sisting):
     IntPAMing = int(PAMing)
     vasopres= st.selectbox("Uso de vasopresores",["Sin vasopresor","Dopamina < o = a 5 mcg/kg/min o dobutamina cualquier dósis","Dopamina > 5mcg/kg/min o epinefrina <0.1 mcg/kg/min o norepinefrina <0.1mcg/kg/min","Dopamina >15 mcg/kg/min o epinefrina o norepinefrina >0.1 mcg/kg/min"])
     if IntPAMing >70 and vasopres == "Sin vasopresor":
-        st.subheader("Cardiovascular")
-        carding = 0
+        cardio.carding = 0
     elif IntPAMing <70 and vasopres == "Sin vasopresor":
-        st.subheader("Cardiovascular")
-        carding = 1
+        cardio.carding = 1
     elif vasopres== "Dopamina < o = a 5 mcg/kg/min o dobutamina cualquier dósis":
-        st.subheader("Cardiovascular")
-        carding = 2
+        cardio.carding = 2
     elif vasopres== "Dopamina > 5mcg/kg/min o epinefrina <0.1 mcg/kg/min o norepinefrina <0.1mcg/kg/min":
-        st.subheader("Cardiovascular")
-        carding = 3
+        cardio.carding = 3
     elif vasopres== "Dopamina >15 mcg/kg/min o epinefrina o norepinefrina >0.1 mcg/kg/min":
-        st.subheader("Cardiovascular")
-        carding = 4
-    st.write("Cardio")
-    st.write(carding)
+        cardio.carding = 4
+   
 
 # ---------------------------------------------------------------------------- #
 #                                  Coagulación                                 #
 # ---------------------------------------------------------------------------- #
-def coagulacion(plaqing):
+def coag(plaqing):
     if plaqing >= 150:
-        sofplaqing=0
+        coag.sofplaqing=0
     elif plaqing <150 and plaqing >= 100:
-        sofplaqing=1
+        coag.sofplaqing=1
     elif plaqing <=100 and plaqing >= 50:
-        sofplaqing=2
+        coag.sofplaqing=2
     elif plaqing <=50 and plaqing >= 20:
-        sofplaqing=3
+        coag.sofplaqing=3
     elif plaqing <=20:
-        sofplaqing=4
-    st.write("Plaquetas")
-    st.write(sofplaqing)
+        coag.sofplaqing=4
+   
 
 # ---------------------------------------------------------------------------- #
 #                                   urinario                                   #
 # ---------------------------------------------------------------------------- #
-def urinario(creating,uresisingre):
+def urin(creating,uresisingre):
     if creating <1.2 and uresisingre >500:
-        sofcreating=0
+        urin.sofcreating=0
     elif creating >1.2 and creating <1.9 and uresisingre >500:
-        sofcreating=1
+        urin.sofcreating=1
     elif creating >2 and creating <3.4 and uresisingre >500:
-        sofcreating=2
+        urin.sofcreating=2
     elif creating >3.5 and creating <4.9 or uresisingre <500:
-        sofcreating=3
+        urin.sofcreating=3
     elif creating >=5 or uresisingre <200:
-        sofcreating=4
-    st.write('uresis')
-    st.write(sofcreating)
+        urin.sofcreating=4
+   
