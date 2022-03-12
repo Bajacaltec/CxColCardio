@@ -34,5 +34,37 @@ def PAM(diasting,sisting):
         
 #APACHE frecuencia cardiáca falta
 
+def fc(fc):
+    if fc>=179:
+        fcpt=4
+    elif fc>=140 and fc <=179:
+        fcpt=3
+    elif fc >=110 and fc<=129:
+        fcpt=2
+    elif fc>=70 and fc<=109:
+        fcpt=0
+    elif fc>=55 and fc <=69:
+        fcpt=2
+    elif fc>=40 and fc<=54:
+        fcpt=3
+    elif fc<=50:
+        fcpt=4
+
+def fr(fr):
+    if fr>=49:
+        frpt=4
+    elif fr>=35 and fr <=49:
+        frpt=3
+    elif fr>=25 and fr <=34:
+        frpt=1
+    elif fr>=12 and fr <=24:
+        frpt=0
+    elif fr>=10 and fr <=11:
+        frpt=1
+    elif fr >=6 and fr <=9:
+        frpt=2
+    elif fr <=6:
+        fr=4
+#Pendiente oxigenación no le entiendo :/
 
     
