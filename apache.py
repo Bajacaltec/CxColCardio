@@ -67,4 +67,92 @@ def fr(fr):
         fr=4
 #Pendiente oxigenación no le entiendo :/
 
+def ph(ph):
+    if ph >=7.9:
+        phpt=4
+    elif ph>=7.6 and ph>=7.69:
+        phpt=3
+    elif ph>=7.5 and ph<=7.59:
+        phpt=1
+    elif ph>=7.33 and ph<=7.49:
+        phpt=0
+    elif ph>=7.25 and ph<=7.32:
+        phpt=2
+    elif ph>=7.15 and ph<=7.24:
+        phpt=3
+    elif ph<=7.15:
+        phpt=4
+def na(na):
+    if na>=179:
+        napt=4
+    elif na>=160 and na<=179:
+        napt=3
+    elif na>=155 and na <=159:
+        napt=2
+    elif na>=150 and na<=154:
+        napt=1
+    elif na>=130 and na <=149:
+        napt=0
+    elif na>=120 and na <=129:
+        napt=2
+    elif na>=111 and na <=119:
+        napt=3
+    elif na<=111:
+        napt=4
+        
+def k(k):
+    if k>=6.9:
+        kpt=4
+    elif k>=6 and k<=6.9:
+        kpt=3
+    elif k>=5.5 and k<=5.9:
+        kpt=1
+    elif k>= 3.5 and k<=5.4:
+        kpt=0
+    elif k>=3 and k<=3.4:
+        kpt=1
+    elif k>=2.5 and k<=2.9:
+        kpt=2
+    elif k<=2.5:
+        kpt=4
+
+def creat(creat):
+    if creat >=3.4:
+        creatpt=4
+    elif creat>=2.0 and creat <=3.4:
+        creatpt=3
+    elif creat >=1.5 and creat <=1.9:
+        creatpt=2
+    elif creat >=0.6 and creat <=1.4:
+        creatpt=0
+    elif creat <=0.6:
+        creatpt=2
+def hto(hto):
+    if hto>=59.9:
+        htopt=4
+    elif hto>=50 and hto<=59.9:
+        htopt=2
+    elif hto>=46 and hto<=49.9:
+        htopt=1
+    elif hto>=30 and hto<=45.9:
+        htopt=0
+    elif hto>=20 and hto<=29.9:
+        htopt=2
+    elif hto<=20:
+        htopt=4
+def leu(leu):
+    if leu>=39.9:
+        leupt=4
+    elif leu>=20 and leu<=39.9:
+        leupt=2
+    elif leu>=15 and leu<=19.9:
+        leupt=1
+    elif leu>=3 and leu<=14.9:
+        leupt=0
+    elif leu>=1 and leu<=2.9:
+        leupt=2
+    elif leu<=1
+    leupt=4
+    
+
     
