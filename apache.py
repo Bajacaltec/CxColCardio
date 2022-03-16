@@ -153,6 +153,22 @@ def leu(leu):
         leupt=2
     elif leu<=1
     leupt=4
+def cronic(comorb):
+    print("")
+    #Ver lo de los crónicos como se califica
+    
+def edad(edad):
+    if edad<=44:
+        edadpt=0
+    elif edad>=45 and edad <=64:
+        edadpt=1
+   # elif edad>=55 and edad <=64: #parece un erro en el puntaje de edad
+    #    edadpt=2
+    elif edad>=65 and edad<=74:
+        edadpt=5
+    elif edad>=75:
+        edadpt=6
+    
     
 
     
