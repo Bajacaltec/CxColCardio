@@ -23,7 +23,7 @@ if NSS == "":
 elif NSS != "":
     st.sidebar.markdown("Registra los datos del nuevo paciente")
     st.sidebar.image("CMN SXXI.jpeg", None)
-    col1, col2 = st.beta_columns(2)
+    col1, col2 = eta_columns(2)
     with col1:
         nom = st.text_input("Nombre del paciente")
     with col2:

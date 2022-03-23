@@ -66,7 +66,30 @@ def fr(fr):
     elif fr <=6:
         fr=4
 #Pendiente oxigenación no le entiendo :/
-
+def o2(fio2,aaDO2,pao2):
+    if fio2>=50:
+        if aaDO2>=499:
+            o2pt=4
+        elif aaDO2>=350 and aaDO2<=499:
+            o2pt=3
+        elif aaDO2>=200 and aaDO2<=349:
+            o2pt=2
+        elif aaDO2>=200:
+            o2pt=0
+    elif fio2<=50:
+        if pao2>=70:
+            o2pt=0
+        elif pao2>=61 and pao2<=70:
+            o2pt=1
+        elif pao2>=55 and pao2<=60:
+            o2pt=3
+        elif pao2<55:
+            o2pt=4
+        
+        
+            
+        
+        
 def ph(ph):
     if ph >=7.9:
         phpt=4
