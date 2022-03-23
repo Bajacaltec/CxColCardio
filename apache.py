@@ -199,6 +199,4 @@ def cronicos(cronicosapache):
             ptestado=2
         elif estadoqx=='Urgencia':
             ptestado=5
-    
-
-    
+  

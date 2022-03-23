@@ -4,7 +4,9 @@ import numpy as np
 import pandas as pd
 import sqlite3
 
+#Base de datos
 con = sqlite3.connect('Basecxcolcardio.db')
+cur = con.cursor()
 
 
 # ---------------------------------------------------------------------------- #
@@ -279,3 +281,13 @@ if menu=='Registro':
 # ---------------------------------------------------------------------------- #
 #                               Análisis de datos                              #
 # ---------------------------------------------------------------------------- #
+# Insert a row of data
+    cur.execute('''CREATE TABLE IF NOT EXISTS nombre
+              (Nombre TEXT, Edad INT, NSS INT)''')
+
+    cur.execute("INSERT INTO nombre-edad VALUES ('?','?','?')",(nom,edad,nss))
+
+    # Save (commit) the changes
+    con.commit()
+    
+    con.close()
