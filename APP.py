@@ -1,14 +1,11 @@
-#Inicio del programa
-
-from itsdangerous import NoneAlgorithm
-import numpy
-from numpy.core.fromnumeric import ptp
-import pandas
-import matplotlib
-from PIL.Image import TRANSPOSE
-from sqlalchemy import false
 import streamlit as st
 from Scoreing import Neu, Resp, cardio, coag, metabol, urin
+import numpy as np
+import pandas as pd
+import sqlite3
+
+con = sqlite3.connect('Basecxcolcardio.db')
+
 
 # ---------------------------------------------------------------------------- #
 #                            Ficha de identificación                           #
@@ -16,12 +13,11 @@ from Scoreing import Neu, Resp, cardio, coag, metabol, urin
 st.title("CxColCardio")
 #'''Se buscará paciente con ID unico el NSS con agregado para no repetir el registro
 #por lo que debe ser completado'''
-menu=st.sidebar.selectbox('Menú',['Registro','Resultados','Base'])
+menu=st.sidebar.selectbox('Menú',['Registro','Resultados','Base de datos'])
 if menu=='Registro':
     nss = st.text_input(
         "Registrar paciente con NSS colocar agregado sin espacios")
     NSS = nss.upper()  # Hace el input de nss en mayuscular para que no falle el if con mayuscula
-
     st.sidebar.image("CMN SXXI.jpeg", None)
     col1, col2, col3 = st.columns(3)
     with col1:
@@ -51,21 +47,22 @@ if menu=='Registro':
     # ---------------------------------------------------------------------------- #
     #Antecedentes
     st.subheader("Antecedentes")
-    with col1:
+    with col3:
         comor = st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia",
                                 "Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Otros"])
         tab=st.checkbox("Tabaquismo")
         if tab==True:
             st.number_input("Cajetillas/año",1,7000,1,1)
-    with col2:
+        cronicosapache=st.multiselect('Enfermedades crónicas para APACHEII',['Ninguna','Cirrosis confirmada (biopsia) ', 'NYHA Clase IV','EPOC Grave (ej. Hipercapnia, O2 domiciliario, HT pulmonar)','Diálisis crónica','Inmunocomprometidos'])
+    with col1:
         Tipocxcardio = st.multiselect("Procedimientos cardiovasculares", [
                                         "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular"])
-    with col1:
+    with col2:
         usovasopr = st.selectbox("Uso de vasopresores", ["No", "Si"])
         if usovasopr == "Si":
             tipovasopr = st.multiselect("Que vasopresor se utilizó", [
                                             "Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"])
-    with col2:
+    with col3:
         ventprol = st.number_input(
                 "Días con ventilación mecánica", 0, 100, 0, 1)
         uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
@@ -131,7 +128,7 @@ if menu=='Registro':
         creating=st.number_input("Creatinina ")
     with sol2:
         Leuc=st.number_input("Leucocitos ")
-    with sol3:
+    with sol4:
         plaqing=st.number_input("Plaquetas")
 
     # ---------------------------------------------------------------------------- #
@@ -163,6 +160,11 @@ if menu=='Registro':
     with xol3:
         st.info(Sofapt)
     #Termina SOFA
+
+# ---------------------------------------------------------------------------- #
+#                                   APACHEII                                   #
+# ---------------------------------------------------------------------------- #
+
 
 
     # ---------------------------------------------------------------------------- #
@@ -271,3 +273,9 @@ if menu=='Registro':
         compli = st.selectbox("Complicaciones postoperatorias (Clavien-Dindo", ["I", "II", "III", "IV", "V"],key='<estamera>')
     recur=st.selectbox('Recurrencia de los síntomas',['No','Si'])
     mort=st.selectbox("Muerte en los primeros 30 días posquirúrgicos",["No","Si"])
+
+
+
+# ---------------------------------------------------------------------------- #
+#                               Análisis de datos                              #
+# ---------------------------------------------------------------------------- #

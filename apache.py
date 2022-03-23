@@ -32,8 +32,6 @@ def PAM(diasting,sisting):
     elif PAMing<=50:
         ptpam=4
         
-#APACHE frecuencia cardiáca falta
-
 def fc(fc):
     if fc>=179:
         fcpt=4
@@ -65,7 +63,7 @@ def fr(fr):
         frpt=2
     elif fr <=6:
         fr=4
-#Pendiente oxigenación no le entiendo :/
+
 def o2(fio2,aaDO2,pao2):
     if fio2>=50:
         if aaDO2>=499:
@@ -174,8 +172,8 @@ def leu(leu):
         leupt=0
     elif leu>=1 and leu<=2.9:
         leupt=2
-    elif leu<=1
-    leupt=4
+    elif leu<=1:
+        leupt=4
 def cronic(comorb):
     print("")
     #Ver lo de los crónicos como se califica
@@ -191,7 +189,16 @@ def edad(edad):
         edadpt=5
     elif edad>=75:
         edadpt=6
-    
+        
+def cronicos(cronicosapache):
+    if cronicos!="":
+        estadoqx=st.selectbox("Estado",['No quirúrgico','Programado','Urgencia'])
+        if estadoqx=='No quirúrgico':
+            ptestado=5
+        elif estadoqx=='Programado':
+            ptestado=2
+        elif estadoqx=='Urgencia':
+            ptestado=5
     
 
     
