@@ -3,6 +3,8 @@ from Scoreing import Neu, Resp, cardio, coag, metabol, urin
 import numpy as np
 import pandas as pd
 import sqlite3
+import matplotlib.pyplot as plt
+import numpy as np
 
 #Base de datos
 con = sqlite3.connect('Basecxcolcardio.db')
@@ -276,7 +278,7 @@ if menu=='Registro':
     recur=st.selectbox('Recurrencia de los síntomas',['No','Si'])
     mort=st.selectbox("Muerte en los primeros 30 días posquirúrgicos",["No","Si"])
 
-
+    regis=st.button("Registrar")
 
 # ---------------------------------------------------------------------------- #
 #                               Análisis de datos                              #
@@ -284,10 +286,18 @@ if menu=='Registro':
 # Insert a row of data
     cur.execute('''CREATE TABLE IF NOT EXISTS nombre
               (Nombre TEXT, Edad INT, NSS INT)''')
+    if regis==True:
+        cur.execute("INSERT INTO nombre VALUES (?,?,?)",(nom,edad,nss))
+        con.commit()
+        con.close()
+        
+        
+elif menu=='Resultados':
+    sumedad=cur.execute('''Select sum(Edad),sum(NSS) FROM nombre''')
 
-    cur.execute("INSERT INTO nombre-edad VALUES ('?','?','?')",(nom,edad,nss))
-
-    # Save (commit) the changes
-    con.commit()
-    
-    con.close()
+    sum=sumedad.fetchone()
+    chart_data = pd.DataFrame(sum)
+    lista=[23,45]
+    st.dataframe(chart_data)
+    st.bar_chart(chart_data)    
+    con.close() 
