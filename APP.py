@@ -1,5 +1,5 @@
 import streamlit as st
-from Scoreing import Neu, Resp, cardio, coag, metabol, urin
+from SOFAing import Neu, Resp, cardio, coag, metabol, urin
 import numpy as np
 import pandas as pd
 import sqlite3

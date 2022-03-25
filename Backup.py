@@ -8,7 +8,7 @@ from sqlalchemy import false
 import streamlit as st
 from streamlit.widgets import NoValue
 from sympy import O
-import Scoreing
+import SOFAing
 
 
 st.title("CxColCardio")
@@ -319,7 +319,7 @@ elif creating >=5 or uresissofaingre <200:
 
 #Sección de APACHE II previo a la cirugía
 st.number_input("Bloodpresure")
-Scoreing.apa(PAMing)
+SOFAing.apa(PAMing)
 
 
 #Despues programar base de datos y probarla
