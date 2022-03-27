@@ -5,7 +5,7 @@ import pandas as pd
 import sqlite3
 import matplotlib.pyplot as plt
 import numpy as np
-
+import censo
 #Base de datos
 con = sqlite3.connect('Basecxcolcardio.db')
 cur = con.cursor()
@@ -17,7 +17,7 @@ cur = con.cursor()
 st.title("CxColCardio")
 #'''Se buscará paciente con ID unico el NSS con agregado para no repetir el registro
 #por lo que debe ser completado'''
-menu=st.sidebar.selectbox('Menú',['Registro','Resultados','Base de datos'])
+menu=st.sidebar.selectbox('Menú',['Registro','Resultados','Censo'])
 if menu=='Registro':
     nss = st.text_input(
         "Registrar paciente con NSS colocar agregado sin espacios")
@@ -301,3 +301,7 @@ elif menu=='Resultados':
     st.dataframe(chart_data)
     st.bar_chart(chart_data)    
     con.close() 
+elif menu=="Censo":
+    censo.insertar()
+    censo.censo()
+    
