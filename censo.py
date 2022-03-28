@@ -1,6 +1,8 @@
+from mailbox import NoSuchMailboxError
 import streamlit as st
 import sqlite3
 import pandas as pd
+import numpy as np
 def insertar():
     con = sqlite3.connect('censo.db')
     cur = con.cursor()
@@ -22,12 +24,8 @@ def censo():
     con = sqlite3.connect('censo.db')
     cur = con.cursor()
     sumedad=cur.execute('''Select* FROM nombre''')
-    df=sumedad.fetchone()
-    for row in df:
-        col1,col2=st.columns(2)
-        with col1:
-            st.subheader(df)
-        with col2:
-            st.checkbox('Censado')
+    df=sumedad.fetchall()
+    st.subheader(df)
+    pd.DataFrame(out.tolist())
     con.close() 
     
