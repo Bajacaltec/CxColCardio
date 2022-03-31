@@ -8,7 +8,7 @@ from sqlalchemy import false
 import streamlit as st
 from streamlit.widgets import NoValue
 from sympy import O
-import SOFAing
+import Paginas.SOFAing as SOFAing
 
 
 st.title("CxColCardio")

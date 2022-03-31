@@ -43,4 +43,5 @@ selection = aggrid_interactive_table(df=iris)
 
 if selection:
     st.write("You selected:")
-    st.json(selection["selected_rows"])
+    x=st.json(selection["selected_rows"])
+    st.subheader(x)
