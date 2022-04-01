@@ -63,12 +63,11 @@ def buscar(nombre):
     fe=cur.fetchall()
     st.success('Resultados de búsqueda')
     st.dataframe(fe)
-    xer=cur.execute('''DELETE FROM cxcolcardio WHERE Captura=No''')
-    con.commit()
-    con.close()
+   
     borrar=st.button('Borrar')
     if borrar== True:
         sumedad=cur.execute('''DELETE FROM cxcolcardio WHERE Nombre=(?)''',(nombre))
+        st.error("Registro borrado")
         con.commit()
         con.close
         

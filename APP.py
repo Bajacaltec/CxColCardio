@@ -50,6 +50,8 @@ if menú=='Censo':
             regis_censo=st.button("Registrar en el censo")
             if regis_censo==True:
                 censo.insertar(nombre,edad,NSS,diagnostico,genero,captura)
+    
+        
     censo.visualizacion ()
 
 
