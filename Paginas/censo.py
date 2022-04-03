@@ -5,10 +5,10 @@ import sqlite3
 import pandas as pd
 import numpy as np
 
-def insertar(nombre,edad,NSS,diagnostico,genero,captura):
+def insertar(nombre,edad,NSS,diagnostico,genero,fecha,captura):
     con = sqlite3.connect('Basededatos.db')
     cur = con.cursor()
-    cur.execute("INSERT INTO cxcolcardio VALUES (?,?,?,?,?,?)",(nombre,edad,NSS,diagnostico,genero,captura))
+    cur.execute("INSERT INTO cxcolcardio VALUES (?,?,?,?,?,?,?)",(nombre,edad,NSS,diagnostico,genero,fecha,captura))
     con.commit()
     con.close()
     st.subheader("Paciente ya registrado")
@@ -44,7 +44,7 @@ def crear_tabla():
     con = sqlite3.connect('Basededatos.db')
     cur = con.cursor()
     cur.execute('''CREATE TABLE IF NOT EXISTS cxcolcardio
-              (Nombre TEXT, Edad INT, NSS TEXT PRIMARY KEY, Diagnostico TEXT, Genero TEXT, Captura TEXT)''')
+              (Nombre TEXT, Edad INT, NSS TEXT PRIMARY KEY, Diagnostico TEXT, Genero TEXT, Fecha DATE, Captura TEXT)''')
     con.commit()
     con.close()
     
@@ -52,7 +52,7 @@ def visualizacion():
     con = sqlite3.connect('Basededatos.db')
     cur = con.cursor()
     dxu=pd.read_sql_query("SELECT * from cxcolcardio", con)
-    st.table(dxu)
+    df=st.table(dxu)
     con.commit()
     con.close
     

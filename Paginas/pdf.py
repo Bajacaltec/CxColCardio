@@ -4,12 +4,9 @@ from datetime import date
 import streamlit as st
 from streamlit.components.v1 import iframe
 
-st.set_page_config(layout="centered", page_icon="🎓", page_title="Diploma Generator")
-st.title("🎓 Diploma PDF Generator")
+st.set_page_config(layout="centered", page_icon="🎓", page_title="Censo")
+st.title("Censo")
 
-st.write(
-    "This app shows you how you can use Streamlit to make a PDF generator app in just a few lines of code!"
-)
 
 left, right = st.columns(2)
 
@@ -40,7 +37,7 @@ if submit:
         date=date.today().strftime("%B %d, %Y"),
     )
 
-    pdf = pdfkit.from_string(html, False)
+    pdf = pdfkit.
     st.balloons()
 
     right.success("🎉 Your diploma was generated!")

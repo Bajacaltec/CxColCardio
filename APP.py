@@ -1,4 +1,5 @@
 from operator import truth
+from tkinter import Menu
 import streamlit as st
 from sympy import true
 from Paginas.SOFAing import Neu, Resp, cardio, coag, metabol, urin
@@ -8,7 +9,15 @@ import sqlite3
 import matplotlib.pyplot as plt
 import numpy as np
 import Paginas.censo as censo
-#Base de datos
+import resultados
+from functools import reduce
+import numpy
+import operator
+from itertools import chain
+  
+
+
+
 
 con = sqlite3.connect('/Users/alonso/CxColCardio/otraprueba.db')
 cur = con.cursor()
@@ -30,7 +39,7 @@ if menú=='Censo':
             cur = con.cursor()
             sumedad=cur.execute('''Select Nombre FROM cxcolcardio''')
             nom=cur.fetchall()
-            nombre=st.selectbox('Nombre',nom)
+            nombre=st.selectbox('Nombre',nom) 
             busqueda=st.checkbox('Buscar')
             if busqueda==True:
                 censo.buscar(nombre)
@@ -42,19 +51,29 @@ if menú=='Censo':
             nombre=st.text_input('Nombre completo')
             NSS=st.text_input("NSS")
             edad=st.number_input('Edad',1,120,1,1)
-            prediagnostico=st.multiselect('Diagnóstico',{'CCLA':1,'Colelitiasis':2,'Piocolecisto':3})
+            prediagnostico=st.multiselect('Diagnóstico',['CCLA','Colelitiasis','Piocolecisto','Colecistitis alitiásica','Colasco','Hidrocolecisto'])
             #no se pueden grabar listas en sql, con repr se hacen strings y se guardan, para separarlos tendremos que utilizar otro codigo posteriormente
             diagnostico=repr(prediagnostico)
             genero=st.text_input('Genero')
             captura=st.checkbox('Capturado')
+            fecha=st.date_input("Fecha de ingreso")
+
             regis_censo=st.button("Registrar en el censo")
             if regis_censo==True:
-                censo.insertar(nombre,edad,NSS,diagnostico,genero,captura)
+                censo.insertar(nombre,edad,NSS,diagnostico,genero,fecha,captura)
     
         
     censo.visualizacion ()
 
 
+elif menú=='Capturar datos':
+    st.subheader('Captura de datos')
+
+elif menú=='Resultados':
+    st.image('resultados.png',None,400)
+    resultados.edad()
+    resultados.contar_genero()
+    
         
         
     
