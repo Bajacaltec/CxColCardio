@@ -51,7 +51,7 @@ def crear_tabla():
 def visualizacion():
     con = sqlite3.connect('Basededatos.db')
     cur = con.cursor()
-    dxu=pd.read_sql_query("SELECT * from cxcolcardio", con)
+    dxu=pd.read_sql_query("SELECT * from cxcolcardio order by Nombre", con)
     df=st.table(dxu)
     con.commit()
     con.close
