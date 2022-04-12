@@ -1,5 +1,6 @@
 from operator import truth
 from tkinter import Menu
+from pytest import hookspec
 import streamlit as st
 from sympy import true
 import numpy as np
@@ -15,6 +16,7 @@ import operator
 import Captura
   
 
+columna="ALTER TABLE cxcolcardio ADD COLUMN Cama {TEXT]" 
 
 
 
@@ -43,10 +45,8 @@ if menú=='Censo':
     #Expander para registrar paciente
     with col2:
         with st.expander('Registrar paciente'):
-            nem=(st.text_input('Nombre completo'))
-            nombre=nem.upper()
-            NeSS=st.text_input("NSS (10 digitos de NSS,ej. 10101010101F89OR","",16)
-            NSS=NeSS.upper()
+            nombre=(st.text_input('Nombre completo'))
+            NSS=st.text_input("NSS (10 digitos de NSS,ej. 10101010101F89OR","",16)
             Genero = "F" in NSS
             if Genero == True:
             #Para modificar el markdown con HTML se usa ese codigo de abajo
@@ -61,6 +61,7 @@ if menú=='Censo':
             prediagnostico=st.multiselect('Diagnóstico',['CCLA','Colelitiasis','Piocolecisto','Colecistitis alitiásica','Colasco','Hidrocolecisto'])
             #no se pueden grabar listas en sql, con repr se hacen strings y se guardan, para separarlos tendremos que utilizar otro codigo posteriormente
             diagnostico=repr(prediagnostico)
+            hosp=st.selectbox('Hospital',['Especialidades','Cardio'])
             captura=st.checkbox('Capturado')
             fecha=st.date_input("Fecha de ingreso")
 
