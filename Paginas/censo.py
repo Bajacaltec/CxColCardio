@@ -5,10 +5,12 @@ import sqlite3
 import pandas as pd
 import numpy as np
 
-def insertar(nombre,edad,NSS,diagnostico,genero,fecha,captura):
+def insertar(nombre,edad,NSS,diagnostico,genero,fecha,captura,hosp):
     con = sqlite3.connect('Basededatos.db')
     cur = con.cursor()
-    cur.execute("INSERT INTO cxcolcardio VALUES (?,?,?,?,?,?,?)",(nombre,edad,NSS,diagnostico,genero,fecha,captura))
+    cur.execute("""ALTER TABLE cxcolcardio ADD COLUMN hospital TEXT""")
+
+    cur.execute("INSERT INTO cxcolcardio VALUES (?,?,?,?,?,?,?,?)",(nombre,edad,NSS,diagnostico,genero,fecha,captura,hosp))
     con.commit()
     con.close()
     st.subheader("Paciente ya registrado")

@@ -16,15 +16,15 @@ import operator
 import Captura
   
 
-columna="ALTER TABLE cxcolcardio ADD COLUMN Cama {TEXT]" 
 
 
 
 con = sqlite3.connect('/Users/alonso/CxColCardio/otraprueba.db')
 cur = con.cursor()
+
 menú=st.sidebar.selectbox("Menú",['Censo','Capturar datos','Resultados'])
 st.sidebar.image("/Users/alonso/CxColCardio/Paginas/Imagenes/CMN SXXI.jpeg", None)
-    
+ 
 #Censo, incluye la tabla de los pacientes del estudio, seleccionar y borrar datos
 if menú=='Censo':
     st.image('Censo.png',None,200)
@@ -67,7 +67,7 @@ if menú=='Censo':
 
             regis_censo=st.button("Registrar en el censo")
             if regis_censo==True:
-                censo.insertar(nombre,edad,NSS,diagnostico,Genero,fecha,captura)
+                censo.insertar(nombre,edad,NSS,diagnostico,Genero,fecha,captura,hosp)
     with st.expander('Censo',expanded=True):
         censo.visualizacion ()
 
