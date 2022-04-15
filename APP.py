@@ -61,13 +61,16 @@ if menú=='Censo':
             prediagnostico=st.multiselect('Diagnóstico',['CCLA','Colelitiasis','Piocolecisto','Colecistitis alitiásica','Colasco','Hidrocolecisto'])
             #no se pueden grabar listas en sql, con repr se hacen strings y se guardan, para separarlos tendremos que utilizar otro codigo posteriormente
             diagnostico=repr(prediagnostico)
-            hosp=st.selectbox('Hospital',['Especialidades','Cardio'])
+            hosp=st.selectbox('Hospital',['Especialidades','Cardio','Ambos'])
             captura=st.checkbox('Capturado')
             fecha=st.date_input("Fecha de ingreso")
 
             regis_censo=st.button("Registrar en el censo")
             if regis_censo==True:
                 censo.insertar(nombre,edad,NSS,diagnostico,Genero,fecha,captura,hosp)
+    with col1:
+        with st.expander('Modificar'):
+            censo.modificar()
     with st.expander('Censo',expanded=True):
         censo.visualizacion ()
 
