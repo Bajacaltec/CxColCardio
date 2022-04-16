@@ -109,6 +109,10 @@ def modificar():
     #El WHERE toma la última variable que se pone en los paréntesis
     if insertar_datos==True:
             cur.execute("UPDATE cxcolcardio SET Nombre=?,Edad=?,NSS=?,Diagnostico=?,Genero=?,Fecha=?,Captura=?,Hospital=? WHERE Nombre=?",(nom_modificar,edad_modificar,nss_modificar,dx_modificar,gen_modificar,fecha_modificar,captura_modificar,hospital_modificar,nom_modificar))
+            st.success('Modificación exitosa')
+            st.balloons()
+            con.commit()
+    
 
         
     con.commit()
