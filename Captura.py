@@ -3,22 +3,35 @@ import numpy as np
 import pandas as pd
 import sqlite3
 from Paginas.SOFAing import Neu, Resp, cardio, coag, metabol, urin
-
+from itertools import chain
+  
+      
 def ficha_id():
     with st.expander('Identificación y somatometría'):
         con = sqlite3.connect('Basededatos.db')
         cur = con.cursor()
+        col1,col2=st.columns(2)
+        
         sumedad=cur.execute('''Select Nombre FROM cxcolcardio''')
         nom=cur.fetchall()
+        res = []
+        for i in chain(*nom):
+            res.append(i)
+          
+        with col1:
+            nombre=(st.selectbox('Nombre',res), )
+        con.commit()
+        con.close()
+        con = sqlite3.connect('Basededatos.db')
+        cur = con.cursor()
         
-        nombre=st.selectbox('Nombre',nom) 
-        nssbase=cur.execute('''Select Nss FROM cxcolcardio WHERE Nombre=(?)''',nombre)
-        guu,=(cur.fetchone())
-        NSS=st.text_input("NSS",guu)
-        edad=st.number_input('Edad',1,120,1,1)
+        recabar=cur.execute("SELECT * FROM cxcolcardio WHERE Nombre=(?)",(nombre))
+        bas,=cur.fetchall()
+        with col2:
+            NSS=st.text_input("NSS",bas[2])
+        with col1:
+            edad=st.number_input('Edad',1,200,bas[1])
         col1,col2,col3=st.columns(3)
-        st.subheader('Captura de datos')
-        st.title("CxColCardio")
         with col1:
             global peso
             peso = st.number_input("Peso", 1, None, 1, 1)
@@ -33,21 +46,19 @@ def ficha_id():
             #willkomen = '<p style="font-family:Times; color:Brown; font-size: 60px;">Bienvenida</p>'
             #st.markdown(willkomen, unsafe_allow_html=True)
             Genero = "Femenino"
-            st.write("Bienvenida", " se esta completando el registro de ", nombre)
         else:
-            st.write("Bienvenido", " se esta completando el registro de", nombre)
             Genero = "Masculino"
             
 def antecedentes():
     with st.expander('Antecedentes'):
-        st.subheader("Antecedentes")
         col1,col2,col3=st.columns(3)
-        with col3:
+        with col1:
             comor = st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia",
                                     "Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Otros"])
-            tab=st.checkbox("Tabaquismo")
-            if tab==True:
-                st.number_input("Cajetillas/año",1,7000,1,1)
+            with col2:
+                tab=st.selectbox("Tabaquismo",['No','Si'])
+                if tab=='Si':
+                    st.number_input("Cajetillas/año",1,7000,1,1)
             cronicosapache=st.multiselect('Enfermedades crónicas para APACHEII',['Ninguna','Cirrosis confirmada (biopsia) ', 'NYHA Clase IV','EPOC Grave (ej. Hipercapnia, O2 domiciliario, HT pulmonar)','Diálisis crónica','Inmunocomprometidos'])
         with col1:
             Tipocxcardio = st.multiselect("Procedimientos cardiovasculares", [
@@ -61,13 +72,12 @@ def antecedentes():
             ventprol = st.number_input(
                     "Días con ventilación mecánica", 0, 100, 0, 1)
             uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
-        with col1:
+        with col3:
             compli = st.selectbox(
                     "Complicaciones postoperatorias (Clavien-Dindo)", ["I", "II", "III", "IV", "V"])
 
 def vitales_ingreso():
      with st.expander('Signos vitales'):
-        st.subheader("Signos vitales de ingreso")
         vol1,vol2,vol3,vol4=st.columns(4)
         with vol1:
             FC=st.number_input("FC/min",1,300,80,1)
@@ -87,22 +97,17 @@ def vitales_ingreso():
         with vol3:
             tiempocuant=st.number_input('Horas de la cuantificación',1,24,24)
             ukghr=float((uresising/peso)/tiempocuant)
-        st.subheader('Uresis por kg por hora')
-        st.warning(ukghr)
 
 
 def labs_ingreso():
     #Laboratorios al ingreso
     #Sección de laboratorios
     with st.expander('Laboratorios de ingreso'):
-        st.subheader('Laboratorios de ingreso')
         sol1,sol2,sol3,sol4=st.columns(4)
         with sol1:
             ADE=st.number_input("ADE",0,100,key='<ADE preqx>')
         with sol2:
             PCR=st.number_input("PCR mg/dl",key='<pcr>')
-        with sol3:
-            Leu=st.number_input("Leucocitos  mm3",0,100000)
         with sol4:
             AST=st.number_input("AST",0,1000,key='<ast>')
         with sol1:
@@ -134,8 +139,7 @@ def labs_ingreso():
             plaqing=st.number_input("Plaquetas")
 
 def SOFA():
-    with st.expander('SOFA de ingreso'):
-        st.subheader("SOFA de ingreso")
+    with st.expander('SOFA/Ingreso'):
         col1, col2, col3 = st.columns(3)
         with col1:
             PaO2 = st.number_input("PaO2 en mmHg", 1, None, 1)
@@ -146,23 +150,20 @@ def SOFA():
             ventmec = st.selectbox("¿Ventilación mecánica?", ["No", "Si"])
         Resp(PaO2,FiO2,ventmec)
 
-        with col1:
+        with col2:
             Glasgow = st.number_input("Escala de coma de Glasgow", 1, 15, 1, 1)
         Neu(Glasgow)
         metabol(Bil)
         cardio(Diasting,Sisting)
         coag(plaqing)
         urin(creating,uresising)
-        calcular_sofa=st.checkbox('Calcular SOFA')
-        if calcular_sofa==True:
-            Sofapt=(Resp.PtResp+Neu.Ptneu+metabol.biling+cardio.carding+coag.sofplaqing+urin.sofcreating)            
-            st.subheader("SOFA score")
-            st.info(Sofapt)
+        Sofapt=(Resp.PtResp+Neu.Ptneu+metabol.biling+cardio.carding+coag.sofplaqing+urin.sofcreating)            
+        st.write(Sofapt)
+            
         #Termina SOFA
         
 def sintomas_ccla():
-     with st.expander('síntomas de CCLA'):
-        st.subheader("CCLA")
+     with st.expander('Síntomas de CCLA'):
         col1, col2 = st.columns(2)
         with col1:
             sysint = st.multiselect("Sintomas compatibles con colecistitis aguda", [
@@ -170,23 +171,22 @@ def sintomas_ccla():
         with col2:
             usghall = st.multiselect("Hallazgos de ultrasonido", ["Engrosamiento de pared", "Líquido perivesicular", "Litiasis vesicular",
                                         "Distensión vesicular", "Gas intravesicular", "Lodo biliar", "Absceso perivesicular", "Anormalidad anatomíca"])
-            taclla= st.multiselect("Hallagos Tomográficos",["Engrosamiento de la pared","Líquido perivesicular","Pérdida de la captación del contraste","Gas dentro de la vesícula biliar"])
+            talla= st.multiselect("Hallazgos tomográficos",["Engrosamiento de la pared","Líquido perivesicular","Pérdida de la captación del contraste","Gas dentro de la vesícula biliar"])
         with col1:
             ASA=st.selectbox("ASA", ["I", "II", "III", "IV", "V", "VI"])
             asacheck = st.checkbox("ASA clasificación")
             if asacheck == True:
-                st.image("ASA.png")
+                st.image("/Users/alonso/CxColCardio/Paginas/Imagenes/ASA.png")
         col1, col2 = st.columns(2)
         with col1:
             sevcole = st.selectbox("Severidad (Tokio 18)", [
                                     "Leve", "Moderado", "Severo"])
             tokio = st.checkbox("Clasificación de Tokio 18")
             if tokio == True:
-                st.image("Tokio.png")
+                st.image("/Users/alonso/CxColCardio/Paginas/Imagenes/Tokio.png")
                 
 def labs_preqx():
     with st.expander('Laboratorios previos a la cirugía'):
-        st.subheader("Laboratorios previos a la cirugía")
 
         tol1,tol2,tol3,tol4=st.columns(4)
         with tol1:
@@ -215,14 +215,13 @@ def labs_preqx():
             pHcx=st.number_input("PH")
         with tol4:
             Htocx=st.number_input("Hematocrito")
-        with tol1:
+        with tol3:
             Creatcx=st.number_input("Creatinina")
         with tol2:
             Leuccx=st.number_input("Leucocitos")
             
 def datos_cirugia():
      with st.expander("Datos de la cirugía"):
-        st.subheader("Datos de la cirugía")
         col1,col2=st.columns(2)
         with col1:
             tiempevolcx=st.number_input("Tiempo desde el inicio de los síntomas al tratamiento quirúrgico",0,600,0,1)

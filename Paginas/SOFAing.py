@@ -17,7 +17,6 @@ def Resp(PaO2,FiO2,ventmec):
     elif PAFI < 100 and ventmec == "Si":
         Resp.PtResp = 4
     #Pasar esto al final en una tabla final para resultado de puntajes y PAFI
-    st.text(PAFI)
 # ---------------------------------------------------------------------------- #
 #                              Puntaje neurológico                             #
 # ---------------------------------------------------------------------------- #

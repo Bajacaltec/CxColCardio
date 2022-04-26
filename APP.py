@@ -22,7 +22,7 @@ import Captura
 con = sqlite3.connect('/Users/alonso/CxColCardio/otraprueba.db')
 cur = con.cursor()
 
-menú=st.sidebar.selectbox("Menú",['Censo','Capturar datos','Resultados'])
+menú=st.sidebar.selectbox("Menú",['Censo','Capturar datos','Resultados','Prueba'])
 st.sidebar.image("/Users/alonso/CxColCardio/Paginas/Imagenes/CMN SXXI.jpeg", None)
  
 #Censo, incluye la tabla de los pacientes del estudio, seleccionar y borrar datos
@@ -70,6 +70,7 @@ if menú=='Censo':
                 censo.insertar(nombre,edad,NSS,diagnostico,Genero,fecha,captura,hosp)
     with col1:
         with st.expander('Modificar'):
+            st.cache(persist=True)
             censo.modificar()
     with st.expander('Censo',expanded=True):
         censo.visualizacion ()
@@ -86,6 +87,24 @@ elif menú=='Capturar datos':
     Captura.datos_cirugia()
     Captura.datos_postcirugia()
     Captura.registrarcapturaenbase()
+    con = sqlite3.connect('DB.db')
+    cur = con.cursor()
+    cur.execute('''CREATE TABLE IF NOT EXISTS Base
+              (Nombre TEXT, Edad INT, NSS INT PRIMARY KEY, Peso INT, Talla INT, IMC REAL, 
+              Crónicos TEXT, Tabaquismo TEXT, Cajetillas INT, Diasventmec INT,Crónicosapache TEXT, 
+              Vasopresores TEXT, PRoccardio TEXT, Complicacionespostop TEXT, 
+              FCing INT, FRing INT, Sising INT, Diasing INT, Temping REAL, Uresising INT, 
+              Horasing INT, ADEing INT, PCRing REAL, ASTing INT, ALTing INT, Biltoting REAL,
+              FAing INT, INRing INT, GGTing INT, King REAL, PHing REAL, Hematocritoing INT, Naing INT, 
+              Leuing INT, Creating REAL, Plaquetasing INT, PAO2ing INT, FIO2ing INT, Ventilacionmec TEXT, AaDO2ing INT, 
+              Glasgowing INT, Vasopresor TEXT, Sintomascompatccla TEXT, Hallazusg TEXT, asa TEXT, Hallazgtom TEXT, 
+              Tokyo TEXT, ADEpreqx INT, PCRpreqx INT, Leupreqx INT, ASTpreqx INT, ALTpreqx INT, 
+              Biltotpreqx INT, FApreqx INT, INRpreqx INT, GGTpreqx INT, Kpreqx INT, PHpreqx INT, 
+              HTOpreqx INT, NApreqx INT,Creatpreqx INT, Tiempoinsintqx INT, tipoqx TEXT, Duracionqx INT, Conversión BOOL, 
+              Diasestancia INT, postqxvasopresor TEXT, Comppostqx TEXT, Ventmecpostqx INT, DIasUCIpreqx INT, 
+              Recurrsint TEXT, Muerte TEXT)''')
+    con.commit()
+    con.close()
     
 elif menú=="Censo":
     censo.insertar()
@@ -100,6 +119,15 @@ elif menú=='Resultados':
     resultados.edad()
     resultados.contar_genero()
     
+elif menú=='Prueba':
+    with st.form('Prueba',clear_on_submit=True):
+        with st.expander('Prueba'):
+            st.selectbox('Prueba',['Si','No'])
+        submited=st.form_submit_button('Registra')
+        if submited==True:
+            st.write('Exitoso')
+            
+  
         
         
     
