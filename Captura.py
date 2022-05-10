@@ -1,4 +1,5 @@
 from distutils.log import error
+from locale import ALT_DIGITS
 from sqlalchemy import true
 import streamlit as st
 import numpy as np
@@ -76,15 +77,16 @@ def antecedentes():
             cronicosapache=str(st.multiselect('Enfermedades crónicas para APACHEII',['Ninguna','Cirrosis confirmada (biopsia) ', 'NYHA Clase IV','EPOC Grave (ej. Hipercapnia, O2 domiciliario, HT pulmonar)','Diálisis crónica','Inmunocomprometidos']))
         with col1:
             global Tipocxcardio
-            Tipocxcardio = st.multiselect("Procedimientos cardiovasculares", [
-                                            "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular"])
+            Tipocxcardio =str(st.multiselect("Procedimientos cardiovasculares", [
+                                            "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular"]))
         with col2:
             global usovasopr
-            usovasopr = st.selectbox("Uso de vasopresores previos a cirugía por CCLA", ["No", "Si"])
+            usovasopr = str(st.selectbox("Uso de vasopresores previos a cirugía por CCLA", ["No", "Si"]))
             if usovasopr == "Si":
                 global tipovasopr
-                tipovasopr = st.multiselect("Que vasopresor se utilizó", [
-                                                "Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"])
+                tipovasopr = str(st.multiselect("Que vasopresor se utilizó", ["Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"]))
+            else:
+                tipovasopr='NA'
         with col3:
             global ventprol
             ventprol = st.number_input(
@@ -100,8 +102,10 @@ def vitales_ingreso():
      with st.expander('Signos vitales'):
         vol1,vol2,vol3,vol4=st.columns(4)
         with vol1:
+            global FC
             FC=st.number_input("FC/min",1,300,80,1)
         with vol2:
+            global FR
             FR=st.number_input("Fr/min",1,300,20,1)
         with vol3:
             global Sisting
@@ -110,12 +114,15 @@ def vitales_ingreso():
             global Diasting
             Diasting=st.number_input('Diastólica',1,300,80,1)
         with vol1:
+            global Temping
             Temping=st.number_input('T°C',34.1,45.1,37.1,0.1)
         with vol2:
             global uresising
             uresising=st.number_input("Uresis/dia",1,100000,1,1)
         with vol3:
+            global tiempocuant
             tiempocuant=st.number_input('Horas de la cuantificación',1,24,24)
+            global ukghr
             ukghr=float((uresising/peso)/tiempocuant)
 
 
@@ -125,34 +132,46 @@ def labs_ingreso():
     with st.expander('Laboratorios de ingreso'):
         sol1,sol2,sol3,sol4=st.columns(4)
         with sol1:
+            global ADE
             ADE=st.number_input("ADE",0,100,key='<ADE preqx>')
         with sol2:
+            global PCR
             PCR=st.number_input("PCR mg/dl",key='<pcr>')
         with sol4:
+            global AST
             AST=st.number_input("AST",0,1000,key='<ast>')
         with sol1:
+            global ALT
             ALT=st.number_input("ALT ",0,1000)
         with sol2:
             global Bil
             Bil=st.number_input("Bil tot ",0,100)
         with sol3:
+            global FA
             FA=st.number_input("FA ",0)
         with sol4:
+            global INR
             INR=st.number_input("INR ",0)
         with sol1:
+            global GGT
             GGT=st.number_input("GGT ",0)
         with sol1:
+            global NA
             NA=st.number_input('Sodio',1,200,140)
         with sol2:
+            global K
             K=st.number_input('Potasio ')
         with sol3:
+            global pH
             pH=st.number_input("PH ")
         with sol4:
+            global Hto
             Hto=st.number_input("Hematocrito ")
         with sol3:
             global creating
             creating=st.number_input("Creatinina ")
         with sol2:
+            global Leuc
             Leuc=st.number_input("Leucocitos ")
         with sol4:
             global plaqing
@@ -275,7 +294,7 @@ def registrarcapturaenbase():
         if regis==True:
             con = sqlite3.connect('DB.db')
             cur = con.cursor()
-            cur.execute("INSERT INTO Base(Nombre,Edad,NSS,Peso,Talla,IMC,Crónicos,Tabaquismo,Cajetillas,Diasventmec,Crónicosapache,Vasopresores,PRoccardio,Complicacionespostop,DiasUCIpreqx) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(nambre,edad,NSS,peso,talla,imc,comor,tab,cajetillas,ventprol,cronicosapache,usovasopr,Tipocxcardio,compli,uciestpreop))
+            cur.execute("INSERT INTO Prueba(Nombre,Edad,NSS,Peso,Talla,IMC,Crónicos,Tabaquismo,Cajetillas,Diasventmec,Crónicosapache,Vasopresores,Tipovasopresor,PRoccardio,Complicacionespostop,DiasUCIpreqx,FCing,FRing,Sising,Diasing,Temping,Uresising,Horasing,ADEing,PCRing,ASTing,ALTing,Biltoting,FAing,INRing,GGTing,King,PHing,Hematocritoing,Naing,Leuing,Creating,Plaquetasing) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(nambre,edad,NSS,peso,talla,imc,comor,tab,cajetillas,ventprol,cronicosapache,usovasopr,tipovasopr,Tipocxcardio,compli,uciestpreop,FC,FR,Sisting,Diasting,Temping,uresising,tiempocuant,ADE,PCR,AST,ALT,Bil,FA,INR,GGT,K,pH,Hto,NA,Leuc,creating,plaqing))
             con.commit()
             con.close()         
             st.success('Registro existoso')

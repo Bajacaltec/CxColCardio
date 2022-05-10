@@ -91,10 +91,10 @@ elif menú=='Capturar datos':
     Captura.registrarcapturaenbase()
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
-    cur.execute('''CREATE TABLE IF NOT EXISTS Base
+    cur.execute('''CREATE TABLE IF NOT EXISTS Prueba
               (Nombre TEXT, Edad INT, NSS INT PRIMARY KEY, Peso INT, Talla INT, IMC REAL, 
               Crónicos TEXT, Tabaquismo TEXT, Cajetillas INT, Diasventmec INT,Crónicosapache TEXT, 
-              Vasopresores TEXT, PRoccardio TEXT, Complicacionespostop TEXT, 
+              Vasopresores TEXT, Tipovasopresor TEXT, PRoccardio TEXT, Complicacionespostop TEXT, 
               FCing INT, FRing INT, Sising INT, Diasing INT, Temping REAL, Uresising INT, 
               Horasing INT, ADEing INT, PCRing REAL, ASTing INT, ALTing INT, Biltoting REAL,
               FAing INT, INRing INT, GGTing INT, King REAL, PHing REAL, Hematocritoing INT, Naing INT, 
