@@ -61,28 +61,40 @@ def antecedentes():
     with st.expander('Antecedentes'):
         col1,col2,col3=st.columns(3)
         with col1:
-            comor = st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia",
-                                    "Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Otros"])
+            global comor
+            comor = str(st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia",
+                                    "Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Otros"]))
             with col2:
+                global tab
                 tab=st.selectbox("Tabaquismo",['No','Si'])
                 if tab=='Si':
-                    st.number_input("Cajetillas/año",1,7000,1,1)
-            cronicosapache=st.multiselect('Enfermedades crónicas para APACHEII',['Ninguna','Cirrosis confirmada (biopsia) ', 'NYHA Clase IV','EPOC Grave (ej. Hipercapnia, O2 domiciliario, HT pulmonar)','Diálisis crónica','Inmunocomprometidos'])
+                    global cajetillas
+                    cajetillas=st.number_input("Cajetillas/año",1,7000,1,1)
+                else:
+                    cajetillas='NA'
+            global cronicosapache
+            cronicosapache=str(st.multiselect('Enfermedades crónicas para APACHEII',['Ninguna','Cirrosis confirmada (biopsia) ', 'NYHA Clase IV','EPOC Grave (ej. Hipercapnia, O2 domiciliario, HT pulmonar)','Diálisis crónica','Inmunocomprometidos']))
         with col1:
+            global Tipocxcardio
             Tipocxcardio = st.multiselect("Procedimientos cardiovasculares", [
                                             "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular"])
         with col2:
-            usovasopr = st.selectbox("Uso de vasopresores", ["No", "Si"])
+            global usovasopr
+            usovasopr = st.selectbox("Uso de vasopresores previos a cirugía por CCLA", ["No", "Si"])
             if usovasopr == "Si":
+                global tipovasopr
                 tipovasopr = st.multiselect("Que vasopresor se utilizó", [
                                                 "Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"])
         with col3:
+            global ventprol
             ventprol = st.number_input(
-                    "Días con ventilación mecánica", 0, 100, 0, 1)
+                    "Días con ventilación mecánica previo a cirugía", 0, 100, 0, 1)
+            global uciestpreop
             uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
         with col3:
+            global compli
             compli = st.selectbox(
-                    "Complicaciones postoperatorias (Clavien-Dindo)", ["I", "II", "III", "IV", "V"])
+                    "Complicaciones postoperatorias por procedimiento cardiovascular (Clavien-Dindo)", ["I", "II", "III", "IV", "V"])
 
 def vitales_ingreso():
      with st.expander('Signos vitales'):
@@ -263,7 +275,7 @@ def registrarcapturaenbase():
         if regis==True:
             con = sqlite3.connect('DB.db')
             cur = con.cursor()
-            cur.execute("INSERT INTO Base(Nombre,Edad,NSS,Peso,Talla,IMC,Crónicos) VALUES (?,?,?,?,?,?,?)",(nambre,edad,NSS,peso,talla,imc,prueba))
+            cur.execute("INSERT INTO Base(Nombre,Edad,NSS,Peso,Talla,IMC,Crónicos,Tabaquismo,Cajetillas,Diasventmec,Crónicosapache,Vasopresores,PRoccardio,Complicacionespostop,DiasUCIpreqx) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(nambre,edad,NSS,peso,talla,imc,comor,tab,cajetillas,ventprol,cronicosapache,usovasopr,Tipocxcardio,compli,uciestpreop))
             con.commit()
             con.close()         
             st.success('Registro existoso')
