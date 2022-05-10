@@ -1,13 +1,14 @@
+from distutils.log import error
+from sqlalchemy import true
 import streamlit as st
 import numpy as np
 import pandas as pd
 import sqlite3
 from Paginas.SOFAing import Neu, Resp, cardio, coag, metabol, urin
 from itertools import chain
-  
       
 def ficha_id():
-    with st.expander('Identificación y somatometría'):
+    with st.expander('Identificación y somatometría',True):
         con = sqlite3.connect('Basededatos.db')
         cur = con.cursor()
         col1,col2=st.columns(2)
@@ -19,7 +20,9 @@ def ficha_id():
             res.append(i)
           
         with col1:
+            global nambre
             nombre=(st.selectbox('Nombre',res), )
+            nambre=str(nombre)
         con.commit()
         con.close()
         con = sqlite3.connect('Basededatos.db')
@@ -28,18 +31,23 @@ def ficha_id():
         recabar=cur.execute("SELECT * FROM cxcolcardio WHERE Nombre=(?)",(nombre))
         bas,=cur.fetchall()
         with col2:
+            global NSS
             NSS=st.text_input("NSS",bas[2])
         with col1:
+            global edad
             edad=st.number_input('Edad',1,200,bas[1])
         col1,col2,col3=st.columns(3)
         with col1:
             global peso
             peso = st.number_input("Peso", 1, None, 1, 1)
         with col2:
+            global talla
             talla = st.number_input("Talla", 0.1, None, 1.0, 0.1)
         with col3:
+            global imc
             imc = peso/talla**2
             indiceMC = st.number_input("IMC", 1.0, None, imc, 0.1)
+            global Genero
         Genero = "F" in NSS
         if Genero == True:
             #Para modificar el markdown con HTML se usa ese codigo de abajo
@@ -251,6 +259,13 @@ def datos_postcirugia():
 
 def registrarcapturaenbase():
         regis=st.button("Registrar")
+        prueba=10
         if regis==True:
+            con = sqlite3.connect('DB.db')
+            cur = con.cursor()
+            cur.execute("INSERT INTO Base(Nombre,Edad,NSS,Peso,Talla,IMC,Crónicos) VALUES (?,?,?,?,?,?,?)",(nambre,edad,NSS,peso,talla,imc,prueba))
+            con.commit()
+            con.close()         
             st.success('Registro existoso')
             st.balloons()
+        

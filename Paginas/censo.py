@@ -22,7 +22,8 @@ def censo(base):
     sumedad=cur.execute('''Select* FROM nombre''')
     dx=pd.read_sql_query("SELECT * from nombre", con)
     print(dx)
-    st.dataframe(dx)
+    global tabla
+    tabla=st.dataframe(dx)
     con.close()
 
 def promedio_edad():

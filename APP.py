@@ -1,3 +1,4 @@
+from glob import glob
 from operator import truth
 from tkinter import Menu
 from pytest import hookspec
@@ -9,12 +10,13 @@ import sqlite3
 import matplotlib.pyplot as plt
 import numpy as np
 import Paginas.censo as censo
+from pruebapdf import imprimir_censo
 import resultados
 from functools import reduce
 import numpy
 import operator
 import Captura
-  
+
 
 
 
@@ -23,8 +25,8 @@ con = sqlite3.connect('/Users/alonso/CxColCardio/otraprueba.db')
 cur = con.cursor()
 
 menú=st.sidebar.selectbox("Menú",['Censo','Capturar datos','Resultados','Prueba'])
+
 st.sidebar.image("/Users/alonso/CxColCardio/Paginas/Imagenes/CMN SXXI.jpeg", None)
- 
 #Censo, incluye la tabla de los pacientes del estudio, seleccionar y borrar datos
 if menú=='Censo':
     st.image('Censo.png',None,200)
@@ -126,8 +128,14 @@ elif menú=='Prueba':
         submited=st.form_submit_button('Registra')
         if submited==True:
             st.write('Exitoso')
-            
-  
+    con = sqlite3.connect('Basededatos.db')
+    cur = con.cursor()
+    sumedad=cur.execute('''Select * FROM cxcolcardio''')
+    nem=cur.fetchall()
+    nom=pd.DataFrame(nem)
+    st.dataframe(nom)
+    a=nom.to_html
+    imprimir_censo(a)      
         
         
     
