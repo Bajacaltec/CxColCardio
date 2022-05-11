@@ -53,10 +53,9 @@ def metabol(Bilisingre):
 # ---------------------------------------------------------------------------- #
 #                                Cardiovascular                                #
 # ---------------------------------------------------------------------------- #
-def cardio(diasting,sisting):
+def cardio(diasting,sisting,vasopres):
     PAMing = ((diasting+diasting)+sisting)/3
     IntPAMing = int(PAMing)
-    vasopres= st.selectbox("Uso de vasopresores",["Sin vasopresor","Dopamina < o = a 5 mcg/kg/min o dobutamina cualquier dósis","Dopamina > 5mcg/kg/min o epinefrina <0.1 mcg/kg/min o norepinefrina <0.1mcg/kg/min","Dopamina >15 mcg/kg/min o epinefrina o norepinefrina >0.1 mcg/kg/min"])
     if IntPAMing >70 and vasopres == "Sin vasopresor":
         cardio.carding = 0
     elif IntPAMing <70 and vasopres == "Sin vasopresor":

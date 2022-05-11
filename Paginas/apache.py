@@ -1,5 +1,5 @@
 #score de apacheII
-
+import streamlit as st
 def temp(temp):
     if temp >= 40.9:
         pttemp=4

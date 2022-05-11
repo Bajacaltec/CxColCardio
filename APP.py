@@ -91,20 +91,20 @@ elif menú=='Capturar datos':
     Captura.registrarcapturaenbase()
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
-    cur.execute('''CREATE TABLE IF NOT EXISTS Prueba
+    cur.execute('''CREATE TABLE IF NOT EXISTS Prueba5
               (Nombre TEXT, Edad INT, NSS INT PRIMARY KEY, Peso INT, Talla INT, IMC REAL, 
               Crónicos TEXT, Tabaquismo TEXT, Cajetillas INT, Diasventmec INT,Crónicosapache TEXT, 
               Vasopresores TEXT, Tipovasopresor TEXT, PRoccardio TEXT, Complicacionespostop TEXT, 
               FCing INT, FRing INT, Sising INT, Diasing INT, Temping REAL, Uresising INT, 
-              Horasing INT, ADEing INT, PCRing REAL, ASTing INT, ALTing INT, Biltoting REAL,
+              Horasing INT, ADEing INT, PCRing INT, ASTing INT, ALTing INT, Biltoting REAL,
               FAing INT, INRing INT, GGTing INT, King REAL, PHing REAL, Hematocritoing INT, Naing INT, 
               Leuing INT, Creating REAL, Plaquetasing INT, PAO2ing INT, FIO2ing INT, Ventilacionmec TEXT, AaDO2ing INT, 
-              Glasgowing INT, Vasopresor TEXT, Sintomascompatccla TEXT, Hallazusg TEXT, asa TEXT, Hallazgtom TEXT, 
+              Glasgowing INT,SOFAing INT, Vasopresor TEXT,DiasUCIposqx Sintomascompatccla TEXT, Hallazusg TEXT, asa TEXT, Hallazgtom TEXT, 
               Tokyo TEXT, ADEpreqx INT, PCRpreqx INT, Leupreqx INT, ASTpreqx INT, ALTpreqx INT, 
               Biltotpreqx INT, FApreqx INT, INRpreqx INT, GGTpreqx INT, Kpreqx INT, PHpreqx INT, 
               HTOpreqx INT, NApreqx INT,Creatpreqx INT, Tiempoinsintqx INT, tipoqx TEXT, Duracionqx INT, Conversión BOOL, 
               Diasestancia INT, postqxvasopresor TEXT, Comppostqx TEXT, Ventmecpostqx INT, DIasUCIpreqx INT, 
-              Recurrsint TEXT, Muerte TEXT)''')
+              Recurrsint TEXT, Muerte TEXT,Sintomascompatccla TEXT)''')
     con.commit()
     con.close()
     

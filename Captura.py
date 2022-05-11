@@ -181,21 +181,29 @@ def SOFA():
     with st.expander('SOFA/Ingreso'):
         col1, col2, col3 = st.columns(3)
         with col1:
+            global PaO2
             PaO2 = st.number_input("PaO2 en mmHg", 1, None, 1)
+            global Aado2
             Aado2=st.number_input("AaDO2",1,None,1)
         with col2:
+            global FiO2
             FiO2 = st.number_input("FiO2 %", 1, None)
         with col3:
+            global ventmec
             ventmec = st.selectbox("¿Ventilación mecánica?", ["No", "Si"])
         Resp(PaO2,FiO2,ventmec)
 
         with col2:
+            global Glasgow
             Glasgow = st.number_input("Escala de coma de Glasgow", 1, 15, 1, 1)
         Neu(Glasgow)
         metabol(Bil)
-        cardio(Diasting,Sisting)
+        global vasopres
+        vasopres=str(st.selectbox("Uso de vasopresores",["Sin vasopresor","Dopamina < o = a 5 mcg/kg/min o dobutamina cualquier dósis","Dopamina > 5mcg/kg/min o epinefrina <0.1 mcg/kg/min o norepinefrina <0.1mcg/kg/min","Dopamina >15 mcg/kg/min o epinefrina o norepinefrina >0.1 mcg/kg/min"]))
+        cardio(Diasting,Sisting,vasopres)
         coag(plaqing)
         urin(creating,uresising)
+        global Sofapt
         Sofapt=(Resp.PtResp+Neu.Ptneu+metabol.biling+cardio.carding+coag.sofplaqing+urin.sofcreating)            
         st.write(Sofapt)
             
@@ -205,21 +213,24 @@ def sintomas_ccla():
      with st.expander('Síntomas de CCLA'):
         col1, col2 = st.columns(2)
         with col1:
-            sysint = st.multiselect("Sintomas compatibles con colecistitis aguda", [
-                                    "Dolor en hipocondrio derecho", "Signo de Murphy", "Nausea y vómito","Ictericia","Fiebre","Dolor abdominal difuso","Estreñimiento"])
+            global sysint
+            sysint = str((["Dolor en hipocondrio derecho", "Signo de Murphy", "Nausea y vómito","Ictericia","Fiebre","Dolor abdominal difuso","Estreñimiento"]))
         with col2:
-            usghall = st.multiselect("Hallazgos de ultrasonido", ["Engrosamiento de pared", "Líquido perivesicular", "Litiasis vesicular",
-                                        "Distensión vesicular", "Gas intravesicular", "Lodo biliar", "Absceso perivesicular", "Anormalidad anatomíca"])
-            talla= st.multiselect("Hallazgos tomográficos",["Engrosamiento de la pared","Líquido perivesicular","Pérdida de la captación del contraste","Gas dentro de la vesícula biliar"])
+            global usghall
+            usghall = str(st.multiselect("Hallazgos de ultrasonido", ["Engrosamiento de pared", "Líquido perivesicular", "Litiasis vesicular",
+                                        "Distensión vesicular", "Gas intravesicular", "Lodo biliar", "Absceso perivesicular", "Anormalidad anatomíca"]))
+            talla= str(st.multiselect("Hallazgos tomográficos",["Engrosamiento de la pared","Líquido perivesicular","Pérdida de la captación del contraste","Gas dentro de la vesícula biliar"]))
         with col1:
-            ASA=st.selectbox("ASA", ["I", "II", "III", "IV", "V", "VI"])
-            asacheck = st.checkbox("ASA clasificación")
+            global ASA
+            ASA=str(st.selectbox("ASA", ["I", "II", "III", "IV", "V", "VI"]))
+            asacheck = str(st.checkbox("ASA clasificación"))
             if asacheck == True:
                 st.image("/Users/alonso/CxColCardio/Paginas/Imagenes/ASA.png")
         col1, col2 = st.columns(2)
         with col1:
-            sevcole = st.selectbox("Severidad (Tokio 18)", [
-                                    "Leve", "Moderado", "Severo"])
+            global sevcole
+            sevcole = str(st.selectbox("Severidad (Tokio 18)", [
+                                    "Leve", "Moderado", "Severo"]))
             tokio = st.checkbox("Clasificación de Tokio 18")
             if tokio == True:
                 st.image("/Users/alonso/CxColCardio/Paginas/Imagenes/Tokio.png")
@@ -229,32 +240,46 @@ def labs_preqx():
 
         tol1,tol2,tol3,tol4=st.columns(4)
         with tol1:
+            global ADEcx
             ADEcx=st.number_input("ADE",0,100)
         with tol2:
+            global PCRcx
             PCRcx=st.number_input("PCR mg/dl"),0,700
         with tol3:
+            global Leucx
             Leucx=st.number_input("Leucocitos mm3",0,100000)
         with tol4:
+            global ASTcx
             ASTcx=st.number_input("AST",0,1000)
         with tol1:
+            global ALTcx
             ALTcx=st.number_input("ALT",0,1000)
         with tol2:
+            global Bilcx
             Bilcx=st.number_input("Bilirrubinas totales",0,100)
         with tol3:
+            global FAcx
             FAcx=st.number_input("FA",0)
         with tol4:
+            global INRcx
             INRcx=st.number_input("INR",0)
         with tol1:
+            global GGTcx
             GGTcx=st.number_input("GGT",0)
         with tol1:
+            global NAcx
             NAcx=st.number_input('Sodio')
         with tol2:
+            global Kcx
             Kcx=st.number_input('Potasio')
         with tol3:
+            global pHcx
             pHcx=st.number_input("PH")
         with tol4:
+            global Htocx
             Htocx=st.number_input("Hematocrito")
         with tol3:
+            global Creatcx
             Creatcx=st.number_input("Creatinina")
         with tol2:
             Leuccx=st.number_input("Leucocitos")
@@ -263,29 +288,40 @@ def datos_cirugia():
      with st.expander("Datos de la cirugía"):
         col1,col2=st.columns(2)
         with col1:
+            global tiempevolcx
             tiempevolcx=st.number_input("Tiempo desde el inicio de los síntomas al tratamiento quirúrgico",0,600,0,1)
+            global duracioncx
             duracioncx=st.number_input("Duración de la cirugía (minutos)",1,700000,1,1)
             recurrencia=st.checkbox("Recurrencia de lo síntomas")
         with col2:
+            global tipocx
             tipocx=st.selectbox("Tipo de cirugía (abierta o laparoscopica)",["Laparoscopica","Abierta"])
+            global convcx
             convcx=st.checkbox("Conversión de cirugía laparoscopica a abierta")
+            global timeppostqx
             timeppostqx=st.number_input("Días de estancia posterior a tratamiento quirúrgico de colecistitis",1,60000,1,1)
             
 def datos_postcirugia():
     with st.expander('Evolución postquirúrgica'):
         col1, col2 = st.columns(2)
         with col1:
+            global usovasopr
             usovasopr = st.selectbox("Uso de vasopresores", ["No", "Si"],key='>Postqxvasopres')
         with col1:
             if usovasopr == "Si":
                 tipovasopr = st.multiselect("Que vasopresor se utilizó", [
                                             "Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"])
         with col1:
+            global ventprol
             ventprol = st.number_input("Días con ventilación mecánica", 0, 100, 0, 1,key='<Postqxventilación>')
+            global uciestpreop
             uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1,key='<uci>')
         with col2:
+            global compli
             compli = st.selectbox("Complicaciones postoperatorias (Clavien-Dindo", ["I", "II", "III", "IV", "V"],key='<estamera>')
+        global recur    
         recur=st.selectbox('Recurrencia de los síntomas',['No','Si'])
+        global mort
         mort=st.selectbox("Muerte en los primeros 30 días posquirúrgicos",["No","Si"])
 
 def registrarcapturaenbase():
@@ -294,7 +330,9 @@ def registrarcapturaenbase():
         if regis==True:
             con = sqlite3.connect('DB.db')
             cur = con.cursor()
-            cur.execute("INSERT INTO Prueba(Nombre,Edad,NSS,Peso,Talla,IMC,Crónicos,Tabaquismo,Cajetillas,Diasventmec,Crónicosapache,Vasopresores,Tipovasopresor,PRoccardio,Complicacionespostop,DiasUCIpreqx,FCing,FRing,Sising,Diasing,Temping,Uresising,Horasing,ADEing,PCRing,ASTing,ALTing,Biltoting,FAing,INRing,GGTing,King,PHing,Hematocritoing,Naing,Leuing,Creating,Plaquetasing) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)",(nambre,edad,NSS,peso,talla,imc,comor,tab,cajetillas,ventprol,cronicosapache,usovasopr,tipovasopr,Tipocxcardio,compli,uciestpreop,FC,FR,Sisting,Diasting,Temping,uresising,tiempocuant,ADE,PCR,AST,ALT,Bil,FA,INR,GGT,K,pH,Hto,NA,Leuc,creating,plaqing))
+            cur.execute("""INSERT INTO Prueba5(Nombre,Edad,NSS,Peso,Talla,IMC,Crónicos,Tabaquismo,Cajetillas,Diasventmec,Crónicosapache,Vasopresores,Tipovasopresor,PRoccardio,Complicacionespostop,DiasUCIpreqx,FCing,FRing,Sising,Diasing,Temping,Uresising,Horasing,ADEing,PCRing,ASTing,ALTing,Biltoting,FAing,INRing,GGTing,King,PHing,Hematocritoing,Naing,Leuing,Creating,Plaquetasing,PAO2ing,FIO2ing,Ventilacionmec,AaDO2ing,Glasgowing,SOFAing,Vasopresor,Sintomascompatccla,Hallazusg,asa,Hallazgtom,Tokyo,ADEpreqx,PCRpreqx,Leupreqx,ASTpreqx,ALTpreqx,Biltotpreqx,FApreqx,INRpreqx,GGTpreqx,Kpreqx,PHpreqx,HTOpreqx,NApreqx,Creatpreqx,Tiempoinsintqx,tipoqx,Duracionqx,Conversión,Diasestancia,postqxvasopresor,Comppostqx,Ventmecpostqx,DiasUCIposqx,Recurrsint,Muerte)
+                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                        (nambre,edad,NSS,peso,talla,imc,comor,tab,cajetillas,ventprol,cronicosapache,usovasopr,tipovasopr,Tipocxcardio,compli,uciestpreop,FC,FR,Sisting,Diasting,Temping,uresising,tiempocuant,ADE,PCR,AST,ALT,Bil,FA,INR,GGT,K,pH,Hto,NA,Leuc,creating,plaqing,PaO2,FiO2, ventmec,Aado2,Glasgow, Sofapt,vasopres,sysint,usghall,ASA,talla,sevcole,ADEcx,PCRcx,Leucx,ASTcx,ALTcx,Bilcx,FAcx,INRcx,GGTcx,Kcx,pHcx,Htocx,NAcx,Creatcx,tiempevolcx,tipocx,duracioncx,convcx,timeppostqx,usovasopr,compli,ventprol,uciestpreop,recur,mort))
             con.commit()
             con.close()         
             st.success('Registro existoso')
