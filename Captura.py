@@ -67,7 +67,7 @@ def antecedentes():
                                     "Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Otros"]))
             with col2:
                 global tab
-                tab=st.selectbox("Tabaquismo",['No','Si'])
+                tab=str(st.selectbox("Tabaquismo",['No','Si']))
                 if tab=='Si':
                     global cajetillas
                     cajetillas=st.number_input("Cajetillas/año",1,7000,1,1)
@@ -95,8 +95,8 @@ def antecedentes():
             uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
         with col3:
             global compli
-            compli = st.selectbox(
-                    "Complicaciones postoperatorias por procedimiento cardiovascular (Clavien-Dindo)", ["I", "II", "III", "IV", "V"])
+            compli =str(st.selectbox(
+                    "Complicaciones postoperatorias por procedimiento cardiovascular (Clavien-Dindo)", ["I", "II", "III", "IV", "V"]))
 
 def vitales_ingreso():
      with st.expander('Signos vitales'):
@@ -190,7 +190,7 @@ def SOFA():
             FiO2 = st.number_input("FiO2 %", 1, None)
         with col3:
             global ventmec
-            ventmec = st.selectbox("¿Ventilación mecánica?", ["No", "Si"])
+            ventmec = str(st.selectbox("¿Ventilación mecánica?", ["No", "Si"]))
         Resp(PaO2,FiO2,ventmec)
 
         with col2:
@@ -214,15 +214,16 @@ def sintomas_ccla():
         col1, col2 = st.columns(2)
         with col1:
             global sysint
-            sysint = str(["Dolor en hipocondrio derecho", "Signo de Murphy", "Nausea y vómito","Ictericia","Fiebre","Dolor abdominal difuso","Estreñimiento"])
+            sysint = str(st.multiselect('Sintomas compatibles',["Dolor en hipocondrio derecho", "Signo de Murphy", "Nausea y vómito","Ictericia","Fiebre","Dolor abdominal difuso","Estreñimiento"]))
         with col2:
             global usghall
             usghall = str(st.multiselect("Hallazgos de ultrasonido", ["Engrosamiento de pared", "Líquido perivesicular", "Litiasis vesicular",
                                         "Distensión vesicular", "Gas intravesicular", "Lodo biliar", "Absceso perivesicular", "Anormalidad anatomíca"]))
-            talla= str(st.multiselect("Hallazgos tomográficos",["Engrosamiento de la pared","Líquido perivesicular","Pérdida de la captación del contraste","Gas dentro de la vesícula biliar"]))
+            global tachall
+            tachall= str(st.multiselect("Hallazgos tomográficos",["Engrosamiento de la pared","Líquido perivesicular","Pérdida de la captación del contraste","Gas dentro de la vesícula biliar"]))
         with col1:
-            global ASA
-            ASA=str(st.selectbox("ASA", ["I", "II", "III", "IV", "V", "VI"]))
+            global asa
+            asa=str(st.selectbox("ASA", ["I", "II", "III", "IV", "V", "VI"]))
             asacheck = st.checkbox("ASA clasificación")
             if asacheck == True:
                 st.image("/Users/alonso/CxColCardio/Paginas/Imagenes/ASA.png")
@@ -244,7 +245,7 @@ def labs_preqx():
             ADEcx=st.number_input("ADE",0,100)
         with tol2:
             global PCRcx
-            PCRcx=st.number_input("PCR mg/dl"),0,700
+            PCRcx=st.number_input(("PCR mg/dl"),0,700)
         with tol3:
             global Leucx
             Leucx=st.number_input("Leucocitos mm3",0,100000)
@@ -295,7 +296,7 @@ def datos_cirugia():
             recurrencia=st.checkbox("Recurrencia de lo síntomas")
         with col2:
             global tipocx
-            tipocx=st.selectbox("Tipo de cirugía (abierta o laparoscopica)",["Laparoscopica","Abierta"])
+            tipocx=str(st.selectbox("Tipo de cirugía (abierta o laparoscopica)",["Laparoscopica","Abierta"]))
             global convcx
             convcx=st.checkbox("Conversión de cirugía laparoscopica a abierta")
             global timeppostqx
@@ -330,9 +331,9 @@ def registrarcapturaenbase():
         if regis==True:
             con = sqlite3.connect('DB.db')
             cur = con.cursor()
-            cur.execute("""INSERT INTO Prueba6(Nombre,Edad,NSS,Peso,Talla,IMC,Crónicos,Tabaquismo,Cajetillas,Diasventmec,Crónicosapache,Vasopresores,Tipovasopresor,PRoccardio,Complicacionespostop,DiasUCIpreqx,FCing,FRing,Sising,Diasing,Temping,Uresising,Horasing,ADEing,PCRing,ASTing,ALTing,Biltoting,FAing,INRing,GGTing,King,PHing,Hematocritoing,Naing,Leuing,Creating,Plaquetasing,PAO2ing,FIO2ing,Ventilacionmec,AaDO2ing,Glasgowing,SOFAing,Vasopresor,Sintomascompatccla,Hallazusg,asa,Hallazgtom,Tokyo,ADEpreqx,PCRpreqx,Leupreqx,ASTpreqx,ALTpreqx,Biltotpreqx,FApreqx,INRpreqx,GGTpreqx,Kpreqx,PHpreqx,HTOpreqx,NApreqx,Creatpreqx,Tiempoinsintqx,tipoqx,Duracionqx,Conversión,Diasestancia,postqxvasopresor,Comppostqx,Ventmecpostqx,DiasUCIposqx,Recurrsint,Muerte)
-                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-                        (nambre,edad,NSS,peso,talla,imc,comor,tab,cajetillas,ventprol,cronicosapache,usovasopr,tipovasopr,Tipocxcardio,compli,uciestpreop,FC,FR,Sisting,Diasting,Temping,uresising,tiempocuant,ADE,PCR,AST,ALT,Bil,FA,INR,GGT,K,pH,Hto,NA,Leuc,creating,plaqing,PaO2,FiO2,ventmec,Aado2,Glasgow,Sofapt,vasopres,sysint,usghall,ASA,talla,sevcole,ADEcx,PCRcx,Leucx,ASTcx,ALTcx,Bilcx,FAcx,INRcx,GGTcx,Kcx,pHcx,Htocx,NAcx,Creatcx,tiempevolcx,tipocx,duracioncx,convcx,timeppostqx,usovasopr,compli,ventprol,uciestpreop,recur,mort))
+            cur.execute("""INSERT INTO Prueba8(PCRpreqx,Leupreqx,ADEpreqx,Tokyo,Hallazgtom,asa,Nombre,Edad,NSS,Peso,Talla,IMC,Crónicos,Tabaquismo,Cajetillas,Diasventmec,Crónicosapache,Vasopresores,Tipovasopresor,PRoccardio,Complicacionespostop,DiasUCIpreqx,FCing,FRing,Sising,Diasing,Temping,Uresising,Horasing,ADEing,PCRing,ASTing,ALTing,Biltoting,FAing,INRing,GGTing,King,PHing,Hematocritoing,Naing,Leuing,Creating,Plaquetasing,PAO2ing,FIO2ing,Ventilacionmec,AaDO2ing,Glasgowing,SOFAing,Vasopresor,Sintomascompatccla,Hallazusg,Leupreqx,ASTpreqx,ALTpreqx,Biltotpreqx,FApreqx,INRpreqx,GGTpreqx,Kpreqx,PHpreqx,HTOpreqx,NApreqx,Creatpreqx,Tiempoinsintqx,tipoqx,Duracionqx,Conversión,Diasestancia,postqxvasopresor,Comppostqx,Ventmecpostqx,DiasUCIposqx,Recurrsint,Muerte)
+                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                        (PCRcx,Leucx,ADEcx,sevcole,tachall,asa,nambre,edad,NSS,peso,talla,imc,comor,tab,cajetillas,ventprol,cronicosapache,usovasopr,tipovasopr,Tipocxcardio,compli,uciestpreop,FC,FR,Sisting,Diasting,Temping,uresising,tiempocuant,ADE,PCR,AST,ALT,Bil,FA,INR,GGT,K,pH,Hto,NA,Leuc,creating,plaqing,PaO2,FiO2,ventmec,Aado2,Glasgow,Sofapt,vasopres,sysint,usghall,Leucx,ASTcx,ALTcx,Bilcx,FAcx,INRcx,GGTcx,Kcx,pHcx,Htocx,NAcx,Creatcx,tiempevolcx,tipocx,duracioncx,convcx,timeppostqx,usovasopr,compli,ventprol,uciestpreop,recur,mort))
             con.commit()
             con.close()         
             st.success('Registro existoso')
