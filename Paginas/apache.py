@@ -1,202 +1,202 @@
 #score de apacheII
 import streamlit as st
-def temp(temp):
+def tempdef(temp):
     if temp >= 40.9:
-        pttemp=4
+        tempdef.pttemp=4
     elif temp >=39 and temp <=40.89:
-        pttemp=3
+        tempdef.pttemp=3
     elif temp>=38.5 and temp <=39.9:
-        pttemp=1
+        tempdef.pttemp=1
     elif temp>=36 and temp <=38.4:
-        pttemp=0
+        tempdef.pttemp=0
     elif temp>=34 and temp <=35.9:
-        pttemp=1
+        tempdef.pttemp=1
     elif temp >=32 and temp <=33.9:
-        pttemp=2
+        tempdef.pttemp=2
     elif temp >=30 and temp <=31.9:
-        pttemp=3
+        tempdef.pttemp=3
     elif temp <=30:
-        pttemp=4
+        tempdef.pttemp=4
 def PAM(diasting,sisting):
     PAMing = ((diasting+diasting)+sisting)/3
     if PAMing>=159:
-        ptpam=4
+        PAM.ptpam=4
     elif PAMing>=130 and PAMing<=159:
-        ptpam=3
+        PAM.ptpam=3
     elif PAMing>=110 and PAMing<=129:
-        ptpam=2
+        PAM.ptpam=2
     elif PAMing>=70 and PAMing<=109:
-        ptpam=0
+        PAM.ptpam=0
     elif PAMing>=50 and PAMing<=69:
-        ptpam=2
+        PAM.ptpam=2
     elif PAMing<=50:
-        ptpam=4
+       PAM.ptpam=4
         
-def fc(fc):
+def fcdef(fc):
     if fc>=179:
-        fcpt=4
+        fcdef.fcpt=4
     elif fc>=140 and fc <=179:
-        fcpt=3
+        fcdef.fcpt=3
     elif fc >=110 and fc<=129:
-        fcpt=2
+        fcdef.fcpt=2
     elif fc>=70 and fc<=109:
-        fcpt=0
+        fcdef.fcpt=0
     elif fc>=55 and fc <=69:
-        fcpt=2
+        fcdef.fcpt=2
     elif fc>=40 and fc<=54:
-        fcpt=3
+        fcdef.fcpt=3
     elif fc<=50:
-        fcpt=4
+        fcdef.fcpt=4
 
-def fr(fr):
+def frdef(fr):
     if fr>=49:
-        frpt=4
+        frdef.frpt=4
     elif fr>=35 and fr <=49:
-        frpt=3
+        frdef.frpt=3
     elif fr>=25 and fr <=34:
-        frpt=1
+        frdef.frpt=1
     elif fr>=12 and fr <=24:
-        frpt=0
+        frdef.frpt=0
     elif fr>=10 and fr <=11:
-        frpt=1
+        frdef.frpt=1
     elif fr >=6 and fr <=9:
-        frpt=2
+        frdef.frpt=2
     elif fr <=6:
-        fr=4
+        frdef.fr=4
 
 def o2(fio2,aaDO2,pao2):
     if fio2>=50:
         if aaDO2>=499:
-            o2pt=4
+            o2.o2pt=4
         elif aaDO2>=350 and aaDO2<=499:
-            o2pt=3
+            o2.o2pt=3
         elif aaDO2>=200 and aaDO2<=349:
-            o2pt=2
+            o2.o2pt=2
         elif aaDO2>=200:
-            o2pt=0
+            o2.o2pt=0
     elif fio2<=50:
         if pao2>=70:
-            o2pt=0
+            o2.o2pt=0
         elif pao2>=61 and pao2<=70:
-            o2pt=1
+            o2.o2pt=1
         elif pao2>=55 and pao2<=60:
-            o2pt=3
+            o2.o2pt=3
         elif pao2<55:
-            o2pt=4
+            o2.o2pt=4
         
         
             
         
         
-def ph(ph):
+def phdef(ph):
     if ph >=7.9:
-        phpt=4
+        phdef.phpt=4
     elif ph>=7.6 and ph>=7.69:
-        phpt=3
+        phdef.phpt=3
     elif ph>=7.5 and ph<=7.59:
-        phpt=1
+        phdef.phpt=1
     elif ph>=7.33 and ph<=7.49:
-        phpt=0
+        phdef.phpt=0
     elif ph>=7.25 and ph<=7.32:
-        phpt=2
+        phdef.phpt=2
     elif ph>=7.15 and ph<=7.24:
-        phpt=3
+        phdef.phpt=3
     elif ph<=7.15:
-        phpt=4
-def na(na):
+        phdef.phpt=4
+def nadef(na):
     if na>=179:
-        napt=4
+        nadef.napt=4
     elif na>=160 and na<=179:
-        napt=3
+        nadef.napt=3
     elif na>=155 and na <=159:
-        napt=2
+        nadef.napt=2
     elif na>=150 and na<=154:
-        napt=1
+        nadef.napt=1
     elif na>=130 and na <=149:
-        napt=0
+        nadef.napt=0
     elif na>=120 and na <=129:
-        napt=2
+        nadef.napt=2
     elif na>=111 and na <=119:
-        napt=3
+        nadef.napt=3
     elif na<=111:
-        napt=4
+        nadef.napt=4
         
-def k(k):
+def kdef(k):
     if k>=6.9:
-        kpt=4
+        kdef.kpt=4
     elif k>=6 and k<=6.9:
-        kpt=3
+        kdef.kpt=3
     elif k>=5.5 and k<=5.9:
-        kpt=1
+        kdef.kpt=1
     elif k>= 3.5 and k<=5.4:
-        kpt=0
+        kdef.kpt=0
     elif k>=3 and k<=3.4:
-        kpt=1
+        kdef.kpt=1
     elif k>=2.5 and k<=2.9:
-        kpt=2
+        kdef.kpt=2
     elif k<=2.5:
-        kpt=4
+        kdef.kpt=4
 
-def creat(creat):
+def creatdef(creat):
     if creat >=3.4:
-        creatpt=4
+        creatdef.creatpt=4
     elif creat>=2.0 and creat <=3.4:
-        creatpt=3
+        creatdef.creatpt=3
     elif creat >=1.5 and creat <=1.9:
-        creatpt=2
+        creatdef.creatpt=2
     elif creat >=0.6 and creat <=1.4:
-        creatpt=0
+        creatdef.creatpt=0
     elif creat <=0.6:
-        creatpt=2
-def hto(hto):
+        creatdef.creatpt=2
+def htodef(hto):
     if hto>=59.9:
-        htopt=4
+        htodef.htopt=4
     elif hto>=50 and hto<=59.9:
-        htopt=2
+        htodef.htopt=2
     elif hto>=46 and hto<=49.9:
-        htopt=1
+        htodef.htopt=1
     elif hto>=30 and hto<=45.9:
-        htopt=0
+        htodef.htopt=0
     elif hto>=20 and hto<=29.9:
-        htopt=2
+        htodef.htopt=2
     elif hto<=20:
-        htopt=4
-def leu(leu):
+        htodef.htopt=4
+def leut(leu):
     if leu>=39.9:
-        leupt=4
+        leut.leupt=4
     elif leu>=20 and leu<=39.9:
-        leupt=2
+        leut.leupt=2
     elif leu>=15 and leu<=19.9:
-        leupt=1
+        leut.leupt=1
     elif leu>=3 and leu<=14.9:
-        leupt=0
+        leut.leupt=0
     elif leu>=1 and leu<=2.9:
-        leupt=2
+        leut.leupt=2
     elif leu<=1:
-        leupt=4
+        leut.leupt=4
 def cronic(comorb):
     print("")
     #Ver lo de los crónicos como se califica
     
-def edad(edad):
+def edas(edad):
     if edad<=44:
-        edadpt=0
+        edas.edadpt=0
     elif edad>=45 and edad <=64:
-        edadpt=1
+        edas.edadpt=1
    # elif edad>=55 and edad <=64: #parece un erro en el puntaje de edad
     #    edadpt=2
     elif edad>=65 and edad<=74:
-        edadpt=5
+        edas.edadpt=5
     elif edad>=75:
-        edadpt=6
+        edas.edadpt=6
         
 def cronicos(cronicosapache):
     if cronicos!="":
         estadoqx=st.selectbox("Estado",['No quirúrgico','Programado','Urgencia'])
         if estadoqx=='No quirúrgico':
-            ptestado=5
+            cronicos.ptestado=5
         elif estadoqx=='Programado':
-            ptestado=2
+            cronicos.ptestado=2
         elif estadoqx=='Urgencia':
-            ptestado=5
+            cronicos.ptestado=5
   

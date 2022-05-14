@@ -5,8 +5,13 @@ import streamlit as st
 import numpy as np
 import pandas as pd
 import sqlite3
+
+from sympy import PythonIntegerRing
 from Paginas.SOFAing import Neu, Resp, cardio, coag, metabol, urin
 from itertools import chain
+from Paginas.apache import PAM, creatdef, cronicos, edas, fcdef, htodef, kdef, leut, nadef, o2,frdef, phdef
+
+from Paginas.apache import tempdef
       
 def ficha_id():
     with st.expander('Identificación y somatometría',True):
@@ -176,6 +181,9 @@ def labs_ingreso():
         with sol4:
             global plaqing
             plaqing=st.number_input("Plaquetas")
+        with sol1:
+            global pHing
+            pHing=st.number_input('pH en gasometría de ingreso')
 
 def SOFA():
     with st.expander('SOFA/Ingreso'):
@@ -338,4 +346,21 @@ def registrarcapturaenbase():
             con.close()         
             st.success('Registro existoso')
             st.balloons()
-        
+tempdef(Temping)
+PAM(Diasting,Sisting)
+fcdef(FC)
+frdef(FR)
+o2(FiO2,Aado2,PaO2)
+phdef(pHing)
+nadef(NA)
+kdef(K)
+creatdef(creating)
+htodef(Hto)
+leut(Leuc)
+edas(edad)
+cronicos(cronicosapache)
+
+
+
+    
+    
