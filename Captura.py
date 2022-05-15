@@ -215,8 +215,24 @@ def SOFA():
         Sofapt=(Resp.PtResp+Neu.Ptneu+metabol.biling+cardio.carding+coag.sofplaqing+urin.sofcreating)            
         st.write(Sofapt)
             
-        #Termina SOFA
-        
+       #Termina SOFA
+def apache(): 
+    tempdef(Temping)
+    PAM(Diasting,Sisting)
+    fcdef(FC)
+    frdef(FR)
+    o2(FiO2,Aado2,PaO2)
+    phdef(pHing)
+    nadef(NA)
+    kdef(K)
+    creatdef(creating)
+    htodef(Hto)
+    leut(Leuc)
+    edas(edad)
+    cronicos(cronicosapache)
+    apacheing=tempdef.pttemp+PAM.ptpam+fcdef.fcpt+frdef.frpt+o2.o2pt+phdef.phpt+nadef.napt+kdef.kpt+creatdef.creatpt+htodef.htopt+leut.leupt+edas.edadpt+cronicos.ptestado
+    st.title(apacheing)
+            
 def sintomas_ccla():
      with st.expander('Síntomas de CCLA'):
         col1, col2 = st.columns(2)
@@ -346,21 +362,33 @@ def registrarcapturaenbase():
             con.close()         
             st.success('Registro existoso')
             st.balloons()
-tempdef(Temping)
-PAM(Diasting,Sisting)
-fcdef(FC)
-frdef(FR)
-o2(FiO2,Aado2,PaO2)
-phdef(pHing)
-nadef(NA)
-kdef(K)
-creatdef(creating)
-htodef(Hto)
-leut(Leuc)
-edas(edad)
-cronicos(cronicosapache)
 
 
+def vitales_preqx():
+     with st.expander('Signos vitales prequirúrgicos'):
+        vol1,vol2,vol3,vol4=st.columns(4)
+        with vol1:
+            global FCqx
+            FCqx=st.number_input("FCpreqx/min",1,300,80,1)
+        with vol2:
+            global FRqx
+            FRqx=st.number_input("Frpreqx/min",1,300,20,1)
+        with vol3:
+            global Sistingqx
+            Sistingqx=st.number_input('Sistólicapreqx',1,300,110,1)
+        with vol4:
+            global Diastqx
+            Diastqx=st.number_input('Diastólicapreqx',1,300,80,1)
+        with vol1:
+            global Tempqx
+            Tempqx=st.number_input('T°Cpreqx',34.1,45.1,37.1,0.1)
+        with vol2:
+            global uresisqx
+            uresisqx=st.number_input("Uresis/diapreqx",1,100000,1,1)
+        with vol3:
+            global tiempocuantqx
+            tiempocuantqx=st.number_input('Horas de la cuantificación preqx',1,24,24)
+            global ukghr
+            ukghrqx=float((uresising/peso)/tiempocuant)
 
-    
-    
+
