@@ -31,9 +31,7 @@ def Neu(Glasgow):
         Neu.Ptneu = 3
     elif Glasgow < 6:
         Neu.Ptneu = 4
-    glas = st.checkbox("Glasgow")
-    if glas == True:
-        st.image("Glasgow.jpeg")
+   
 
 # ---------------------------------------------------------------------------- #
 #                                Metabólica SOFA                               #

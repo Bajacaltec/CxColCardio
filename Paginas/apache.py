@@ -64,25 +64,25 @@ def frdef(fr):
     elif fr <=6:
         frdef.fr=4
 
-def o2(fio2,aaDO2,pao2):
+def oxigen(fio2,aaDO2,pao2):
     if fio2>=50:
         if aaDO2>=499:
-            o2.o2pt=4
+            oxigen.opt=4
         elif aaDO2>=350 and aaDO2<=499:
-            o2.o2pt=3
+            oxigen.opt=3
         elif aaDO2>=200 and aaDO2<=349:
-            o2.o2pt=2
-        elif aaDO2>=200:
-            o2.o2pt=0
+            oxigen.opt=2
+        elif aaDO2<=200:
+            oxigen.opt=0
     elif fio2<=50:
         if pao2>=70:
-            o2.o2pt=0
+            oxigen.opt=0
         elif pao2>=61 and pao2<=70:
-            o2.o2pt=1
+            oxigen.opt=1
         elif pao2>=55 and pao2<=60:
-            o2.o2pt=3
+            oxigen.opt=3
         elif pao2<55:
-            o2.o2pt=4
+            oxigen.opt=4
         
         
             
@@ -191,12 +191,19 @@ def edas(edad):
         edas.edadpt=6
         
 def cronicos(cronicosapache):
-    if cronicos!="":
-        estadoqx=st.selectbox("Estado",['No quirúrgico','Programado','Urgencia'])
-        if estadoqx=='No quirúrgico':
-            cronicos.ptestado=5
-        elif estadoqx=='Programado':
-            cronicos.ptestado=2
-        elif estadoqx=='Urgencia':
-            cronicos.ptestado=5
-  
+    with st.expander('APACHE II'):
+        if cronicos!="":
+            estadoqx=st.selectbox("Estado",['No quirúrgico','Programado','Urgencia'])
+            if estadoqx=='No quirúrgico':
+                cronicos.ptestado=5
+            elif estadoqx=='Programado':
+                cronicos.ptestado=2
+            elif estadoqx=='Urgencia':
+                cronicos.ptestado=5
+def cronicospreqx(estadoqx):
+            if estadoqx=='No quirúrgico':
+                cronicos.ptestado=5
+            elif estadoqx=='Programado':
+                cronicos.ptestado=2
+            elif estadoqx=='Urgencia':
+                cronicos.ptestado=5

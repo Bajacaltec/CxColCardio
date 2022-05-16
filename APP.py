@@ -84,19 +84,21 @@ elif menú=='Capturar datos':
     Captura.vitales_ingreso()
     Captura.labs_ingreso()
     Captura.SOFA()
+    Captura.apache()
     Captura.sintomas_ccla()
     Captura.vitales_preqx()
     Captura.labs_preqx()
+    Captura.SOFApreqx()
+    Captura.apachepreqx1()
     Captura.datos_cirugia()
     Captura.datos_postcirugia()
     Captura.registrarcapturaenbase()
-    Captura.apache()
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
-    cur.execute('''CREATE TABLE IF NOT EXISTS Prueba9
+    cur.execute('''CREATE TABLE IF NOT EXISTS Basefinal
               (Nombre TEXT, Edad INT, NSS TEXT PRIMARY KEY, Peso INT, Talla REAL, IMC REAL, 
               Crónicos TEXT, Tabaquismo TEXT, Cajetillas INT, Diasventmec INT,Crónicosapache TEXT, 
-              Vasopresores TEXT, Tipovasopresor TEXT, PRoccardio TEXT, Complicacionespostop TEXT, 
+              Vasopresores TEXT, Tipovasopresor TEXT, PRoccardio TEXT,  
               FCing INT, FRing INT, Sising INT, Diasing INT, Temping REAL, Uresising INT, 
               Horasing INT, ADEing INT, PCRing REAL, ASTing INT, ALTing INT, Biltoting REAL,
               FAing INT, INRing REAL, GGTing INT, King REAL, PHing REAL, Hematocritoing INT, Naing INT, 
@@ -122,7 +124,7 @@ elif menú=='Resultados':
     st.image('resultados.png',None,400)
     resultados.edad()
     resultados.contar_genero()
-    Captura.apache()
+    resultados.antropometrico()
     
 elif menú=='Prueba':
     with st.form('Prueba',clear_on_submit=True):

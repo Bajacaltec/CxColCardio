@@ -1,4 +1,4 @@
-from turtle import width
+from turtle import pensize, width
 import streamlit as st
 import sqlite3
 import pandas as pd
@@ -64,9 +64,11 @@ def contar_genero():
     cur = con.cursor()
     MASC=cur.execute('''SELECT COUNT(*) FROM cxcolcardio WHERE Genero = 'Masculino' ''')
     Mgen=MASC.fetchone()
+    global masc
     masc,=Mgen
     FEM=cur.execute('''SELECT COUNT(*) FROM cxcolcardio WHERE Genero = 'Femenino' ''')
     Fgen=FEM.fetchone()
+    global fem
     fem,=Fgen
     df=([masc,fem])
     ind=['Masculino','Femenino']
@@ -79,6 +81,44 @@ def contar_genero():
     with col2:
         st.dataframe(dx)
 
+def antropometrico():
+    con = sqlite3.connect('DB.db')
+    cur = con.cursor()
+    edaf=cur.execute('''SELECT avg(Edad) FROM Prueba9''')
+    ed=edaf.fetchall()
+    edas,=ed
+    edafe,=edas
+    con = sqlite3.connect('DB.db')
+    cur = con.cursor()
+    pes=cur.execute('''SELECT avg(Peso) FROM Prueba9''')
+    peso,=pes.fetchall()
+    pas,=peso
+    st.subheader(peso)
+    tall=cur.execute('''SELECT avg(Talla) FROM Prueba9''')
+    talle,=tall.fetchall()
+    telle,=talle
+    imcbis=cur.execute('''SELECT avg(IMC) FROM Prueba9''')
+    imc,=imcbis.fetchall()
+    imcfin,=imc
+    columna=['Peso','Talla','IMC'] # nombre de las
+    df = pd.DataFrame({'Edad':[edafe,telle],'Peso':[pas,telle], #nombre y valores de los datos, al poner dos variables se ponen dos filas
+                   'Talla':[telle,imcfin],
+                   'IMC':[imcfin,pas]})
+    con = sqlite3.connect('DB.db')
+    cur = con.cursor()
+    tes=cur.execute('''SELECT COUNT(*) FROM Prueba9 WHERE Vasopresores = 'Si' ''')
+    tesc=tes.fetchone()
+    st.write(tesc)
+    # Create the index
+    index_ = ['Promedio','index'] # nombre de las filas
     
-      
+    # Set the index
+    df.index = index_ # adjudicar el index
+    
+    # Print the DataFrame
+    st.dataframe(df)
+    
+    
+        
+
 
