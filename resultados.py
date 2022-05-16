@@ -106,8 +106,8 @@ def antropometrico():
                    'IMC':[imcfin,pas]})
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
-    tes=cur.execute('''SELECT COUNT(*) FROM Prueba9 WHERE Vasopresores = 'Si' ''')
-    tesc=tes.fetchone()
+    tab=cur.execute('''SELECT COUNT(*) FROM Basefinal WHERE Tabaquismo = 'Si' ''')
+    tesc=tab.fetchone()
     st.write(tesc)
     # Create the index
     index_ = ['Promedio','index'] # nombre de las filas
