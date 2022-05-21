@@ -100,24 +100,63 @@ def antropometrico():
     imcbis=cur.execute('''SELECT avg(IMC) FROM Prueba9''')
     imc,=imcbis.fetchall()
     imcfin,=imc
+    
+    
+    #Resultados tabaquismo
+    con = sqlite3.connect('DB.db')
+    cur = con.cursor()
+    tab=cur.execute('''SELECT COUNT(*) FROM Prueba9 WHERE Tabaquismo = 'Si' ''')
+    tabsi,=tab.fetchone()
+    st.write(tabsi)
+    tabnosc=cur.execute('''SELECT COUNT(*) FROM Prueba9 WHERE Tabaquismo = 'No' ''')
+    tabno,=tab.fetchone()
+    tabtotal=tabsi+tabno
+    st.write(tabtotal)
+    #porcentaje de pacientes que consumen tabaco
+    tabporcentaje=tabsi/tabtotal*100
+    
+    cajetillas=cur.execute('''SELECT avg(Cajetillas) FROM Prueba9''')
+    caje,=cajetillas.fetchall()
+    caj,=caje
+    st.subheader(caj)
+    
+    
+    
+    # tabla principal
+    
+    # Create the index
+    
+    
     columna=['Peso','Talla','IMC'] # nombre de las
     df = pd.DataFrame({'Edad':[edafe,telle],'Peso':[pas,telle], #nombre y valores de los datos, al poner dos variables se ponen dos filas
                    'Talla':[telle,imcfin],
-                   'IMC':[imcfin,pas]})
-    con = sqlite3.connect('DB.db')
-    cur = con.cursor()
-    tab=cur.execute('''SELECT COUNT(*) FROM Basefinal WHERE Tabaquismo = 'Si' ''')
-    tesc=tab.fetchone()
-    st.write(tesc)
-    # Create the index
+                   'IMC':[imcfin,pas],'Tabaquismo':[tabporcentaje,pas],'Cajetillas':[caj,telle]})
+    # Print the DataFrame
     index_ = ['Promedio','index'] # nombre de las filas
     
     # Set the index
     df.index = index_ # adjudicar el index
-    
-    # Print the DataFrame
     st.dataframe(df)
     
+    
+    
+    # ---------------------------------------------------------------------------- #
+    #           Uso de vasopresores como desencadenantes de la enfermedad          #
+    # ---------------------------------------------------------------------------- #
+    
+    con = sqlite3.connect('DB.db')
+    cur = con.cursor()
+    vas=cur.execute('''SELECT COUNT(*) FROM Prueba9 WHERE Vasopresores = 'Si' ''')
+    vasopres=tab.fetchone()
+    st.write(vasopres)
+    
+    vasopres = pd.DataFrame({'Uso de vasopresores':[vasopres]})
+    # Print the DataFrame
+    indice = ['Promedio'] # nombre de las filas
+    
+    # Set the index
+    vasopres.index = indice # adjudicar el index
+    st.dataframe(vasopres)
     
         
 
