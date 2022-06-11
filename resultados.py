@@ -34,30 +34,6 @@ def manipular_base():
     con.commit()
     con.close()
         
-def edad():
-    con = sqlite3.connect('Basededatos.db')
-    cur = con.cursor()
-    promedad=cur.execute('''Select avg(Edad),sum(Edad) FROM cxcolcardio''')
-    avgedad=promedad.fetchall()
-    prom=avgedad[0]
-    suma,eda=prom    
-
-    
-    con.commit()
-    #Asignar un nombre a la columna con la variable como valor en un dictionario
-    d=[suma,eda]
-    #Para el index se requiere dar una lista para asignarlo al pandas df, y en la gráfica
-    f=['Promedio de edad','Suma edad']
-    st.subheader("Edad")
-    col1,col2=st.columns(2)
-    with col1:
-        dx=pd.DataFrame(d,f)
-        st.bar_chart(dx)
-    with col2:
-        st.dataframe(dx)
-    
-    con.commit()
-    con.close()
 
 def contar_genero():
     con = sqlite3.connect('Basededatos.db')
@@ -73,31 +49,27 @@ def contar_genero():
     df=([masc,fem])
     ind=['Masculino','Femenino']
     st.subheader('Genero')
+    gencol=['Género']
     #Para el index se requiere dar una lista para asignarlo al pandas df, y en la gráfica
-    dx=pd.DataFrame(df,ind)
-    col1,col2=st.columns(2)
-    with col1:
-        st.bar_chart(dx)
-    with col2:
-        st.dataframe(dx)
+    dx=pd.DataFrame(df,ind,columns=(gencol))
+    st.dataframe(dx)
 
 def antropometrico():
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
-    edaf=cur.execute('''SELECT avg(Edad) FROM Prueba9''')
+    edaf=cur.execute('''SELECT avg(Edad) FROM Basecxcol''')
     ed=edaf.fetchall()
     edas,=ed
     edafe,=edas
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
-    pes=cur.execute('''SELECT avg(Peso) FROM Prueba9''')
+    pes=cur.execute('''SELECT avg(Peso) FROM Basecxcol''')
     peso,=pes.fetchall()
     pas,=peso
-    st.subheader(peso)
-    tall=cur.execute('''SELECT avg(Talla) FROM Prueba9''')
+    tall=cur.execute('''SELECT avg(Talla) FROM Basecxcol''')
     talle,=tall.fetchall()
     telle,=talle
-    imcbis=cur.execute('''SELECT avg(IMC) FROM Prueba9''')
+    imcbis=cur.execute('''SELECT avg(IMC) FROM Basecxcol''')
     imc,=imcbis.fetchall()
     imcfin,=imc
     
@@ -107,18 +79,15 @@ def antropometrico():
     cur = con.cursor()
     tab=cur.execute('''SELECT COUNT(*) FROM Prueba9 WHERE Tabaquismo = 'Si' ''')
     tabsi,=tab.fetchone()
-    st.write(tabsi)
-    tabnosc=cur.execute('''SELECT COUNT(*) FROM Prueba9 WHERE Tabaquismo = 'No' ''')
+    tabnosc=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Tabaquismo = 'No' ''')
     tabno,=tab.fetchone()
     tabtotal=tabsi+tabno
-    st.write(tabtotal)
     #porcentaje de pacientes que consumen tabaco
     tabporcentaje=tabsi/tabtotal*100
     
-    cajetillas=cur.execute('''SELECT avg(Cajetillas) FROM Prueba9''')
+    cajetillas=cur.execute('''SELECT avg(Cajetillas) FROM Basecxcol''')
     caje,=cajetillas.fetchall()
     caj,=caje
-    st.subheader(caj)
     
     
     
@@ -146,8 +115,9 @@ def antropometrico():
     
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
-    vas=cur.execute('''SELECT COUNT(*) FROM Prueba9 WHERE Vasopresores = 'Si' ''')
+    vas=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Vasopresores = 'Si' ''')
     vasopres=tab.fetchone()
+    st.subheader('Vasopresores')
     st.write(vasopres)
     
     vasopres = pd.DataFrame({'Uso de vasopresores':[vasopres]})
@@ -158,6 +128,61 @@ def antropometrico():
     vasopres.index = indice # adjudicar el index
     st.dataframe(vasopres)
     
+    
+    # ---------------------------------------------------------------------------- #
+    #                                 Antecedentes                                 #
+    # ---------------------------------------------------------------------------- #
+    
+    #comorbilidades
+    
+    con = sqlite3.connect('DB.db')
+    cur = con.cursor()
+    crondm=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Crónicos = "['Diabetes mellitus']" ''')
+    cronicoscount=crondm.fetchone()
+    valvcron=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Crónicos = "['Valvulopatia']" ''')
+    vavl=valvcron.fetchone()
+    st.subheader('Antecedentes')
+    st.write('Diabeticos')
+    st.write(cronicoscount)
+    st.write('Valvulopatia')
+    st.write(vavl)
+    dat=[cronicoscount,vavl]
+    st.dataframe(dat)
+    
+    
+    #Procedimientos cardiovasculares, conteo de procedimientos
+    con = sqlite3.connect('DB.db')
+    cur = con.cursor()
+    vas=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Proccardio = '[Cirugia cardiovascular]' ''')
+    procedcardio=tab.fetchone()
+    st.subheader('Procedimientos cardiovasculares')
+    st.write(procedcardio)
+    
+    
+    
+    #tabaquismo
+    con = sqlite3.connect('DB.db')
+    cur = con.cursor()
+    tabno=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Tabaquismo = 'No' ''')
+    tabneg=tabno.fetchone()
+    tabsi=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Tabaquismo = 'Si' ''')
+    tabpos=tabsi.fetchone()
+    
+    dftab=[tabneg,tabpos]
+    st.subheader('Tabaquismo')
+    st.write(tabneg)
+    st.write(tabpos)
+    tabdataframe=st.dataframe(dftab)
+    titulotab=['tabaquismo']
+    
+    
+    #vasopres = pd.DataFrame({'Uso de vasopresores':[vasopres]})
+    # Print the DataFrame
+    #indice = ['Promedio'] # nombre de las filas
+    
+    # Set the index
+   # vasopres.index = indice # adjudicar el index
+    #st.dataframe(vasopres)
         
 
 

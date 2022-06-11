@@ -1,4 +1,5 @@
 from distutils.log import error
+from email.policy import default
 from locale import ALT_DIGITS
 from sqlalchemy import true
 import streamlit as st
@@ -12,7 +13,8 @@ from itertools import chain
 from Paginas.apache import PAM, creatdef, cronicos, cronicospreqx, edas, fcdef, htodef, kdef, leut, nadef, oxigen,frdef, phdef
 
 from Paginas.apache import tempdef
-      
+from Paginas.censo import insertar
+
 def ficha_id():
     with st.expander('Identificación y somatometría',True):
         con = sqlite3.connect('Basededatos.db')
@@ -27,6 +29,7 @@ def ficha_id():
           
         with col1:
             global nambre
+            global nombre
             nombre=(st.selectbox('Nombre',res), )
             nambre=str(nombre)
         con.commit()
@@ -35,25 +38,54 @@ def ficha_id():
         cur = con.cursor()
         
         recabar=cur.execute("SELECT * FROM cxcolcardio WHERE Nombre=(?)",(nombre))
+        global bas
         bas,=cur.fetchall()
-        with col2:
-            global NSS
-            NSS=st.text_input("NSS",bas[2])
-        with col1:
-            global edad
-            edad=st.number_input('Edad',1,200,bas[1])
-        col1,col2,col3=st.columns(3)
-        with col1:
-            global peso
-            peso = st.number_input("Peso", 1, None, 1, 1)
-        with col2:
-            global talla
-            talla = st.number_input("Talla", 0.1, None, 1.0, 0.1)
-        with col3:
-            global imc
-            imc = peso/talla**2
-            indiceMC = st.number_input("IMC",None,None,imc,0.1,disabled=True)
-            global Genero
+        
+        try:
+            cen = sqlite3.connect('DB.db')
+            cor = cen.cursor()
+            cor.execute("SELECT * FROM Basecxcol WHERE Nombre=(?)",(nambre,))
+            global bes
+            bes,=cor.fetchall()
+            bhu=str(bes)
+            bhe=bhu.replace("(","")
+            bhi=bhe.replace("('","")
+            bestrim=bhi.split(",")
+            st.sidebar.write(bestrim)
+
+            with col2:
+                global NSS
+                NSS=st.text_input("NSS",bas[2])
+            with col1:
+                global edad
+                edad=st.number_input('Edad',1,200,bas[1])
+            col1,col2,col3=st.columns(3)
+            with col1:
+                global peso
+                peso = st.number_input("Peso",1,800,bes[3])
+            with col2:
+                global talla
+                talla = st.number_input("Talla", 0.1, None, bes[4], 0.1)
+            with col3:
+                global imc
+                imc = peso/talla**2
+                indiceMC = st.number_input("IMC",None,None,imc,0.1,disabled=True)
+                global Genero
+        except:
+            with col2:
+                NSS=st.text_input("NSS",bas[2])
+            with col1:
+                edad=st.number_input('Edad',1,200,bas[1])
+            col1,col2,col3=st.columns(3)
+            with col1:
+                peso = st.number_input("Peso",1,800)
+            with col2:
+                talla = st.number_input("Talla", 0.1, None, 1.0, 0.1)
+            with col3:
+                imc = peso/talla**2
+                indiceMC = st.number_input("IMC",None,None,imc,0.1,disabled=True)
+            
+        
         Genero = "F" in NSS
         if Genero == True:
             #Para modificar el markdown con HTML se usa ese codigo de abajo
@@ -62,46 +94,96 @@ def ficha_id():
             Genero = "Femenino"
         else:
             Genero = "Masculino"
-            
+        con.commit()
+        con.close()
 def antecedentes():
-    with st.expander('Antecedentes'):
-        col1,col2,col3=st.columns(3)
-        with col1:
-            global comor
-            comor = str(st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia",
-                                    "Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Otros"]))
-        with col2:
-            global tab
-            tab=str(st.selectbox("Tabaquismo",['No','Si']))
-            if tab=='Si':
-                global cajetillas
-                cajetillas=st.number_input("Cajetillas/año",1,7000,1,1)
-            else:
-                cajetillas='NA'
-            global cronicosapache
-        with col3:
-            cronicosapache=str(st.multiselect('Enfermedades crónicas para APACHEII',['Ninguna','Cirrosis confirmada (biopsia) ', 'NYHA Clase IV','EPOC Grave (ej. Hipercapnia, O2 domiciliario, HT pulmonar)','Diálisis crónica','Inmunocomprometidos']))
-        with col1:
-            global Tipocxcardio
-            Tipocxcardio =str(st.multiselect("Procedimientos cardiovasculares", [
-                                            "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular"]))
-        with col2:
-            global usovasopr
-            usovasopr = str(st.selectbox("Uso de vasopresores previos a cirugía por CCLA", ["No", "Si"]))
-            if usovasopr == "Si":
-                global tipovasopr
-                tipovasopr = str(st.multiselect("Que vasopresor se utilizó", ["Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"]))
-            else:
-                tipovasopr='NA'
-        with col3:
-            global ventprol
-            ventprol = st.number_input(
-                    "Días con ventilación mecánica previo a cirugía", 0, 100, 0, 1)
-        with col1:
-            global uciestpreop
-            uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
+    
+    #intentar precargar datos ya capturados, except solo dejar defaults
+        try:
+            cin = sqlite3.connect('DB.db')
+            cour = cin.cursor()
+            recabar=cour.execute("SELECT * FROM Basecxcol WHERE Nombre=(?)",(nambre,))
+            bas,=cour.fetchall()
+            bis=str(bas[6])
+            x = bis.replace("[", "")
+            g=x.replace("]","")
+            j=g.replace(" '","")
+            k=j.replace("'","")
+            suy=k.split(",")
+            cin.commit()
+            cin.close()
+      
+        #este codigo limpia el string para que pueda ser utilizado por el multiselect, falta programar todos los demas, y dejarlo con un try y except por los errores en los que no tienen captura
+    
+   
         
-
+        #ver como cargar los datos que ya estan en la base de datos en el formulario para poderlos modificar según 
+        #la captura, arriba tengo como seleccionar datos de la base de datos final 
+        #el problema es en las opciones de multiselect como pasarlos para que tengan  las capturas múltiples
+            with st.expander('Antecedentes'):
+                col1,col2,col3=st.columns(3)
+            with col1:
+                global comor
+                comor = str(st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia",
+                                        "Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Otros"],suy))
+            with col2:
+                
+                tab=st.selectbox("Tabaquismo",['No','Si'])
+                if tab=='Si':
+                    global cajetillas
+                    cajetillas=st.number_input("Cajetillas/año",1,7000,1,1)
+                else:
+                    cajetillas='NA'
+                global cronicosapache
+            with col3:
+                cronicosapache=str(st.multiselect('Enfermedades crónicas para APACHEII',['Ninguna','Cirrosis confirmada (biopsia) ', 'NYHA Clase IV','EPOC Grave (ej. Hipercapnia, O2 domiciliario, HT pulmonar)','Diálisis crónica','Inmunocomprometidos']))
+            with col1:
+                global Tipocxcardio
+                Tipocxcardio =str(st.multiselect("Procedimientos cardiovasculares", [
+                                                "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular"]))
+            with col2:
+                global usovasopr
+                usovasopr = str(st.selectbox("Uso de vasopresores previos a cirugía por CCLA", ["No", "Si"]))
+                if usovasopr == "Si":
+                    global tipovasopr
+                    tipovasopr = str(st.multiselect("Que vasopresor se utilizó", ["Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"]))
+                else:
+                    tipovasopr='NA'
+            with col3:
+                global ventprol
+                ventprol = st.number_input(
+                        "Días con ventilación mecánica previo a cirugía", 0, 100, 0, 1)
+            with col1:
+                global uciestpreop
+                uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
+        except:
+             with st.expander('Antecedentes'):
+                col1,col2,col3=st.columns(3)
+             with col1:
+                comor = str(st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia",
+                                        "Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Otros"]))
+             with col2:
+                tab=str(st.selectbox("Tabaquismo",['No','Si']))
+                if tab=='Si':
+                    cajetillas=st.number_input("Cajetillas/año",1,7000,1,1)
+                else:
+                    cajetillas='NA'
+             with col3:
+                cronicosapache=str(st.multiselect('Enfermedades crónicas para APACHEII',['Ninguna','Cirrosis confirmada (biopsia) ', 'NYHA Clase IV','EPOC Grave (ej. Hipercapnia, O2 domiciliario, HT pulmonar)','Diálisis crónica','Inmunocomprometidos']))
+             with col1:
+                Tipocxcardio =str(st.multiselect("Procedimientos cardiovasculares", [
+                                                "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular"]))
+             with col2:
+                usovasopr = str(st.selectbox("Uso de vasopresores previos a cirugía por CCLA", ["No", "Si"]))
+                if usovasopr == "Si":
+                    tipovasopr = str(st.multiselect("Que vasopresor se utilizó", ["Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"]))
+                else:
+                    tipovasopr='NA'
+             with col3:
+                ventprol = st.number_input(
+                        "Días con ventilación mecánica previo a cirugía", 0, 100, 0, 1)
+             with col1:
+                uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
 def vitales_ingreso():
      with st.expander('Signos vitales'):
         vol1,vol2,vol3,vol4=st.columns(4)
@@ -361,7 +443,7 @@ def registrarcapturaenbase():
         if regis==True:
             con = sqlite3.connect('DB.db')
             cur = con.cursor()
-            cur.execute("""INSERT INTO Basefinal(SOFApreqx,Apachepreqx,Apacheing,PCRpreqx,Leupreqx,ADEpreqx,Tokyo,Hallazgtom,asa,Nombre,Edad,NSS,Peso,Talla,IMC,Crónicos,Tabaquismo,Cajetillas,Diasventmec,Crónicosapache,Vasopresores,Tipovasopresor,PRoccardio,DiasUCIpreqx,FCing,FRing,Sising,Diasing,Temping,Uresising,Horasing,ADEing,PCRing,ASTing,ALTing,Biltoting,FAing,INRing,GGTing,King,PHing,Hematocritoing,Naing,Leuing,Creating,Plaquetasing,PAO2ing,FIO2ing,Ventilacionmec,AaDO2ing,Glasgowing,SOFAing,Vasopresor,Sintomascompatccla,Hallazusg,Leupreqx,ASTpreqx,ALTpreqx,Biltotpreqx,FApreqx,INRpreqx,GGTpreqx,Kpreqx,PHpreqx,HTOpreqx,NApreqx,Creatpreqx,Tiempoinsintqx,tipoqx,Duracionqx,Conversión,Diasestancia,postqxvasopresor,Comppostqx,Ventmecpostqx,DiasUCIposqx,Recurrsint,Muerte)
+            cur.execute("""INSERT INTO Basecxcol(SOFApreqx,Apachepreqx,Apacheing,PCRpreqx,Leupreqx,ADEpreqx,Tokyo,Hallazgtom,asa,Nombre,Edad,NSS,Peso,Talla,IMC,Crónicos,Tabaquismo,Cajetillas,Diasventmec,Crónicosapache,Vasopresores,Tipovasopresor,PRoccardio,DiasUCIpreqx,FCing,FRing,Sising,Diasing,Temping,Uresising,Horasing,ADEing,PCRing,ASTing,ALTing,Biltoting,FAing,INRing,GGTing,King,PHing,Hematocritoing,Naing,Leuing,Creating,Plaquetasing,PAO2ing,FIO2ing,Ventilacionmec,AaDO2ing,Glasgowing,SOFAing,Vasopresor,Sintomascompatccla,Hallazusg,Leupreqx,ASTpreqx,ALTpreqx,Biltotpreqx,FApreqx,INRpreqx,GGTpreqx,Kpreqx,PHpreqx,HTOpreqx,NApreqx,Creatpreqx,Tiempoinsintqx,tipoqx,Duracionqx,Conversión,Diasestancia,postqxvasopresor,Comppostqx,Ventmecpostqx,DiasUCIposqx,Recurrsint,Muerte)
                         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                         (Sofaptpreqx,apachepreqx,apacheing,PCRcx,Leucx,ADEcx,sevcole,tachall,asa,nambre,edad,NSS,peso,talla,imc,comor,tab,cajetillas,ventprol,cronicosapache,usovasopr,tipovasopr,Tipocxcardio,uciestpreop,FC,FR,Sisting,Diasting,Temping,uresising,tiempocuant,ADE,PCR,AST,ALT,Bil,FA,INR,GGT,K,pHing,Hto,NA,Leuc,creating,plaqing,PaO2,FiO2,ventmec,Aado2,Glasgow,Sofapt,vasopres,sysint,usghall,Leucx,ASTcx,ALTcx,Bilcx,FAcx,INRcx,GGTcx,Kcx,pHcx,Htocx,NAcx,Creatcx,tiempevolcx,tipocx,duracioncx,convcx,timeppostqx,usovasopr,compli,ventprol,uciestpreop,recur,mort))
             con.commit()
@@ -445,3 +527,19 @@ def apachepreqx1():
     global apachepreqx
     apachepreqx=tempdef.pttemp+PAM.ptpam+fcdef.fcpt+frdef.frpt+oxigen.opt+phdef.phpt+nadef.napt+kdef.kpt+creatdef.creatpt+htodef.htopt+leut.leupt+edas.edadpt+cronicos.ptestado
     st.write(apachepreqx)
+
+def borrar_registro():   #aun no funciona, necesito o borrar registros o modificar los previos
+    col1,col2=st.columns(2)
+    with col2:
+        borrar=st.button('Modificar registro')
+        if insertar== True:
+            con = sqlite3.connect('DB.db')
+            cur = con.cursor()
+            if insertar==True:
+                cur.execute("""UPDATE Basecxcol SET SOFApreqx,Apachepreqx,Apacheing,PCRpreqx,Leupreqx,ADEpreqx,Tokyo,Hallazgtom,asa,Nombre,Edad,NSS,Peso,Talla,IMC,Crónicos,Tabaquismo,Cajetillas,Diasventmec,Crónicosapache,Vasopresores,Tipovasopresor,PRoccardio,DiasUCIpreqx,FCing,FRing,Sising,Diasing,Temping,Uresising,Horasing,ADEing,PCRing,ASTing,ALTing,Biltoting,FAing,INRing,GGTing,King,PHing,Hematocritoing,Naing,Leuing,Creating,Plaquetasing,PAO2ing,FIO2ing,Ventilacionmec,AaDO2ing,Glasgowing,SOFAing,Vasopresor,Sintomascompatccla,Hallazusg,Leupreqx,ASTpreqx,ALTpreqx,Biltotpreqx,FApreqx,INRpreqx,GGTpreqx,Kpreqx,PHpreqx,HTOpreqx,NApreqx,Creatpreqx,Tiempoinsintqx,tipoqx,Duracionqx,Conversión,Diasestancia,postqxvasopresor,Comppostqx,Ventmecpostqx,DiasUCIposqx,Recurrsint,Muerte",
+                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                        (Sofaptpreqx,apachepreqx,apacheing,PCRcx,Leucx,ADEcx,sevcole,tachall,asa,nambre,edad,NSS,peso,talla,imc,comor,tab,cajetillas,ventprol,cronicosapache,usovasopr,tipovasopr,Tipocxcardio,uciestpreop,FC,FR,Sisting,Diasting,Temping,uresising,tiempocuant,ADE,PCR,AST,ALT,Bil,FA,INR,GGT,K,pHing,Hto,NA,Leuc,creating,plaqing,PaO2,FiO2,ventmec,Aado2,Glasgow,Sofapt,vasopres,sysint,usghall,Leucx,ASTcx,ALTcx,Bilcx,FAcx,INRcx,GGTcx,Kcx,pHcx,Htocx,NAcx,Creatcx,tiempevolcx,tipocx,duracioncx,convcx,timeppostqx,usovasopr,compli,ventprol,uciestpreop,recur,mort))
+                st.success('Modificación exitosa')
+                st.balloons()
+                con.commit()
+                con.close()

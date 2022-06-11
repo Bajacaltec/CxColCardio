@@ -93,9 +93,10 @@ elif menú=='Capturar datos':
     Captura.datos_cirugia()
     Captura.datos_postcirugia()
     Captura.registrarcapturaenbase()
+    Captura.borrar_registro()
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
-    cur.execute('''CREATE TABLE IF NOT EXISTS Basefinal
+    cur.execute('''CREATE TABLE IF NOT EXISTS Basecxcol
               (Nombre TEXT, Edad INT, NSS TEXT PRIMARY KEY, Peso INT, Talla REAL, IMC REAL, 
               Crónicos TEXT, Tabaquismo TEXT, Cajetillas INT, Diasventmec INT,Crónicosapache TEXT, 
               Vasopresores TEXT, Tipovasopresor TEXT, PRoccardio TEXT,  
@@ -122,7 +123,6 @@ elif menú=="Censo":
 
 elif menú=='Resultados':
     st.image('resultados.png',None,400)
-    resultados.edad()
     resultados.contar_genero()
     resultados.antropometrico()
     
