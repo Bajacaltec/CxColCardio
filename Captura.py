@@ -32,6 +32,10 @@ def ficha_id():
             global nombre
             nombre=(st.selectbox('Nombre',res), )
             nambre=str(nombre)
+            numbre=nambre.replace("('","")
+            global nimbre
+            nimbre=numbre.replace("',)","")
+            st.write(nimbre)
         con.commit()
         con.close()
         con = sqlite3.connect('Basededatos.db')
@@ -127,7 +131,7 @@ def antecedentes():
                 comor = str(st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia",
                                         "Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Otros"],suy))
             with col2:
-                
+                global tab
                 tab=st.selectbox("Tabaquismo",['No','Si'])
                 if tab=='Si':
                     global cajetillas
@@ -438,14 +442,14 @@ def datos_postcirugia():
             mort=st.selectbox("Muerte en los primeros 30 días posquirúrgicos",["No","Si"])
 
 def registrarcapturaenbase():
-        regis=st.button("Registrar")
+        regis=st.sidebar.button("Registrar")
         prueba=10
         if regis==True:
             con = sqlite3.connect('DB.db')
             cur = con.cursor()
             cur.execute("""INSERT INTO Basecxcol(SOFApreqx,Apachepreqx,Apacheing,PCRpreqx,Leupreqx,ADEpreqx,Tokyo,Hallazgtom,asa,Nombre,Edad,NSS,Peso,Talla,IMC,Crónicos,Tabaquismo,Cajetillas,Diasventmec,Crónicosapache,Vasopresores,Tipovasopresor,PRoccardio,DiasUCIpreqx,FCing,FRing,Sising,Diasing,Temping,Uresising,Horasing,ADEing,PCRing,ASTing,ALTing,Biltoting,FAing,INRing,GGTing,King,PHing,Hematocritoing,Naing,Leuing,Creating,Plaquetasing,PAO2ing,FIO2ing,Ventilacionmec,AaDO2ing,Glasgowing,SOFAing,Vasopresor,Sintomascompatccla,Hallazusg,Leupreqx,ASTpreqx,ALTpreqx,Biltotpreqx,FApreqx,INRpreqx,GGTpreqx,Kpreqx,PHpreqx,HTOpreqx,NApreqx,Creatpreqx,Tiempoinsintqx,tipoqx,Duracionqx,Conversión,Diasestancia,postqxvasopresor,Comppostqx,Ventmecpostqx,DiasUCIposqx,Recurrsint,Muerte)
                         VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-                        (Sofaptpreqx,apachepreqx,apacheing,PCRcx,Leucx,ADEcx,sevcole,tachall,asa,nambre,edad,NSS,peso,talla,imc,comor,tab,cajetillas,ventprol,cronicosapache,usovasopr,tipovasopr,Tipocxcardio,uciestpreop,FC,FR,Sisting,Diasting,Temping,uresising,tiempocuant,ADE,PCR,AST,ALT,Bil,FA,INR,GGT,K,pHing,Hto,NA,Leuc,creating,plaqing,PaO2,FiO2,ventmec,Aado2,Glasgow,Sofapt,vasopres,sysint,usghall,Leucx,ASTcx,ALTcx,Bilcx,FAcx,INRcx,GGTcx,Kcx,pHcx,Htocx,NAcx,Creatcx,tiempevolcx,tipocx,duracioncx,convcx,timeppostqx,usovasopr,compli,ventprol,uciestpreop,recur,mort))
+                        (Sofaptpreqx,apachepreqx,apacheing,PCRcx,Leucx,ADEcx,sevcole,tachall,asa,nimbre,edad,NSS,peso,talla,imc,comor,tab,cajetillas,ventprol,cronicosapache,usovasopr,tipovasopr,Tipocxcardio,uciestpreop,FC,FR,Sisting,Diasting,Temping,uresising,tiempocuant,ADE,PCR,AST,ALT,Bil,FA,INR,GGT,K,pHing,Hto,NA,Leuc,creating,plaqing,PaO2,FiO2,ventmec,Aado2,Glasgow,Sofapt,vasopres,sysint,usghall,Leucx,ASTcx,ALTcx,Bilcx,FAcx,INRcx,GGTcx,Kcx,pHcx,Htocx,NAcx,Creatcx,tiempevolcx,tipocx,duracioncx,convcx,timeppostqx,usovasopr,compli,ventprol,uciestpreop,recur,mort))
             con.commit()
             con.close()         
             st.success('Registro existoso')
@@ -531,15 +535,14 @@ def apachepreqx1():
 def borrar_registro():   #aun no funciona, necesito o borrar registros o modificar los previos
     col1,col2=st.columns(2)
     with col2:
-        borrar=st.button('Modificar registro')
-        if insertar== True:
-            con = sqlite3.connect('DB.db')
-            cur = con.cursor()
-            if insertar==True:
-                cur.execute("""UPDATE Basecxcol SET SOFApreqx,Apachepreqx,Apacheing,PCRpreqx,Leupreqx,ADEpreqx,Tokyo,Hallazgtom,asa,Nombre,Edad,NSS,Peso,Talla,IMC,Crónicos,Tabaquismo,Cajetillas,Diasventmec,Crónicosapache,Vasopresores,Tipovasopresor,PRoccardio,DiasUCIpreqx,FCing,FRing,Sising,Diasing,Temping,Uresising,Horasing,ADEing,PCRing,ASTing,ALTing,Biltoting,FAing,INRing,GGTing,King,PHing,Hematocritoing,Naing,Leuing,Creating,Plaquetasing,PAO2ing,FIO2ing,Ventilacionmec,AaDO2ing,Glasgowing,SOFAing,Vasopresor,Sintomascompatccla,Hallazusg,Leupreqx,ASTpreqx,ALTpreqx,Biltotpreqx,FApreqx,INRpreqx,GGTpreqx,Kpreqx,PHpreqx,HTOpreqx,NApreqx,Creatpreqx,Tiempoinsintqx,tipoqx,Duracionqx,Conversión,Diasestancia,postqxvasopresor,Comppostqx,Ventmecpostqx,DiasUCIposqx,Recurrsint,Muerte",
-                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
-                        (Sofaptpreqx,apachepreqx,apacheing,PCRcx,Leucx,ADEcx,sevcole,tachall,asa,nambre,edad,NSS,peso,talla,imc,comor,tab,cajetillas,ventprol,cronicosapache,usovasopr,tipovasopr,Tipocxcardio,uciestpreop,FC,FR,Sisting,Diasting,Temping,uresising,tiempocuant,ADE,PCR,AST,ALT,Bil,FA,INR,GGT,K,pHing,Hto,NA,Leuc,creating,plaqing,PaO2,FiO2,ventmec,Aado2,Glasgow,Sofapt,vasopres,sysint,usghall,Leucx,ASTcx,ALTcx,Bilcx,FAcx,INRcx,GGTcx,Kcx,pHcx,Htocx,NAcx,Creatcx,tiempevolcx,tipocx,duracioncx,convcx,timeppostqx,usovasopr,compli,ventprol,uciestpreop,recur,mort))
-                st.success('Modificación exitosa')
-                st.balloons()
-                con.commit()
-                con.close()
+        borrar=st.sidebar.button('Borrar registro')
+        if borrar==True:
+            ton = sqlite3.connect('DB.db')
+            cur = ton.cursor()
+            cur.execute("DELETE FROM Basecxcol WHERE Nombre=(?)",(nimbre,))
+            # codigo para modificar nombre cur.execute("UPDATE Basecxcol SET Nombre=? WHERE Nombre=?",(nimbre,nambre))
+            ton.commit()
+            ton.close()
+            st.error("Registro borrado")
+
+

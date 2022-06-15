@@ -24,7 +24,7 @@ import Captura
 con = sqlite3.connect('/Users/alonso/CxColCardio/otraprueba.db')
 cur = con.cursor()
 
-menú=st.sidebar.selectbox("Menú",['Censo','Capturar datos','Resultados','Prueba'])
+menú=st.sidebar.selectbox("Menú",['Censo','Capturar datos','Resultados','Prueba','Presentación'])
 
 st.sidebar.image("/Users/alonso/CxColCardio/Paginas/Imagenes/CMN SXXI.jpeg", None)
 #Censo, incluye la tabla de los pacientes del estudio, seleccionar y borrar datos
@@ -140,7 +140,10 @@ elif menú=='Prueba':
     nom=pd.DataFrame(nem)
     st.dataframe(nom)
     a=nom.to_html
-    imprimir_censo(a)      
+    imprimir_censo(a)     
+    
+elif menú=='Presentación':
+    st.markdown('Presentación') 
         
         
     
