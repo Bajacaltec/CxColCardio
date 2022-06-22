@@ -1,0 +1,19 @@
+Pendientes de programación Tesiscxcol
+
+1.-terminar calculo de resultados
+2.-UPDATe y modificar datos de pacientes ya ingresados, con autorellenado del formulario con los datos de la base
+3.-Modificación de gráficas
+-Ver como graficar signos vitales
+-Ver grafico de laboratorios
+4.-Análisis estadístico univariado y multivariado
+5.-Forma de marcar los expedientes que no se encuentran
+6.-Notas de expediente de pacientes
+7.-Candidatos a eliminación o exclusión
+8.-Agregar facilmente nuevos diagnósticos
+9.-Notas extras a los parámetros para notas de diagnósticos, tx etcetera
+10.-Variable no contempladas
+11.-Estado de revisión (Completo, incompleto, en proceso, etc)
+12.-Agregar paciente en el área de captura en lugar de tener dos lugares
+13.-Agregar una zona aparte del censo final en la zona de capturas
+14.-Usar los St.Forms para que se borre al registrar los datos
+

@@ -16,17 +16,21 @@ from functools import reduce
 import numpy
 import operator
 import Captura
+import resultados
 
-
+vol1,vol2,vol3=st.columns(3)
+with vol1:
+    st.image('/Users/alonso/CxColCardio/Paginas/Imagenes/CMN SXXI.jpeg',width=350)
+with vol3:
+    st.title('Tesis cxcolcardio')
 
 
 
 con = sqlite3.connect('/Users/alonso/CxColCardio/otraprueba.db')
 cur = con.cursor()
 
-menú=st.sidebar.selectbox("Menú",['Censo','Capturar datos','Resultados','Prueba','Presentación'])
+menú=st.selectbox("Menú",['Censo','Capturar datos','Resultados','Prueba','Presentación'])
 
-st.sidebar.image("/Users/alonso/CxColCardio/Paginas/Imagenes/CMN SXXI.jpeg", None)
 #Censo, incluye la tabla de los pacientes del estudio, seleccionar y borrar datos
 if menú=='Censo':
     st.image('Censo.png',None,200)
@@ -94,6 +98,9 @@ elif menú=='Capturar datos':
     Captura.datos_postcirugia()
     Captura.registrarcapturaenbase()
     Captura.borrar_registro()
+    Captura.semaforo()
+
+
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
     cur.execute('''CREATE TABLE IF NOT EXISTS Basecxcol

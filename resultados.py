@@ -305,7 +305,9 @@ def antropometrico():
     reemplazo_valvular=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE PRoccardio = "['Reemplazo valvular']" ''')
     remplazo_count,=reemplazo_valvular.fetchone()
     
-
+# ---------------------------------------------------------------------------- #
+#                        Procedimientos cardiovasculares                       #
+# ---------------------------------------------------------------------------- #
  #Procedimientos cardiovasculares
     st.success('Procedimientos cardiovasculares')
     proccardiovasculares=(conteo_catcardio,conteo_catcardio,remplazo_count)
@@ -330,6 +332,9 @@ def antropometrico():
 
 #Síntomas compatibles con CCLA
 
+    # ---------------------------------------------------------------------------- #
+    #                               Hallazgos por USG                              #
+    # ---------------------------------------------------------------------------- #
     #Hallazgos por USG
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
@@ -364,16 +369,82 @@ def antropometrico():
 
     #Hallazgos tomografícos
 
-    #TOKYO
+    # ---------------------------------------------------------------------------- #
+    #                                     Tokyo                                    #
+    # ---------------------------------------------------------------------------- #
+    tokyo_count_leve=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Tokyo LIKE "%Leve%" ''')
+    tokyo_leve=tokyo_count_leve.fetchone()
+    
+    tokyo_count_moderado=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Tokyo LIKE "%Moderado%" ''')
+    tokyo_moderado=tokyo_count_moderado.fetchone()
+    
+    tokyo_count_severo=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Tokyo LIKE "%Severo%" ''')
+    tokyo_severo=tokyo_count_severo.fetchone()
+    
+    clas_tokyo=(tokyo_leve,tokyo_moderado,tokyo_severo)
+    index_tokyo=['Leve','Moderado','Severo']
+    tokyo_col=['Clasificación de Tokyo de severidad de CCLA']
+    df_tokyo=pd.DataFrame(clas_tokyo,index_tokyo,tokyo_col)
+    zol1,zol2=st.columns(2)
+    with zol1:
+        st.table(df_tokyo)
+    with zol2:
+        st.bar_chart(df_tokyo)
+    
 
     #Laboratorios prequirúrgicos
-
+    # ---------------------------------------------------------------------------- #
+    #                              Inicio de síntomas                              #
+    # ---------------------------------------------------------------------------- #
     #Tiempo de inicio de síntomas hasta cirugía
+    tiempo_qxcount=cur.execute('''SELECT Tiempoinsintqx FROM Basecxcol ORDER BY DiasUCIposqx ASC  ''')
+    tiempo_sintqx=tiempo_qxcount.fetchall()
+    
+    ADE_count=cur.execute('''SELECT ADEing FROM Basecxcol ''')
+    ADEgr=ADE_count.fetchall()
+    
+    df_tiempo=(tiempo_sintqx)
+    coluna=['Tiempo de inicio de síntomas']
+    serie_tiempoqx=pd.DataFrame(tiempo_sintqx)
+    st.info('Tiempo de inicio de síntomas a procedimiento quirúrgico/Dias UCI postqx')
+    st.line_chart(serie_tiempoqx,)
+    st.subheader(tiempo_sintqx)
 
+    # ---------------------------------------------------------------------------- #
+    #                                tipo de cirugía                               #
+    # ---------------------------------------------------------------------------- #
     #Tipo de cirugía
+    tipocxcount=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE tipoqx LIKE '%Laparoscopica%' """ )
+    tipocx_laparos=tipocxcount.fetchone()
+    
+    tipocxcount_abierta=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE tipoqx LIKE '%Abierta%' """ )
+    tipocx_abierta=tipocxcount.fetchone()
+    
+    conversion_cxcount=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Conversión = '1' """)
+    conversion=conversion_cxcount.fetchone()
+    
+    tipocx=(tipocx_laparos,tipocx_abierta,conversion)
+    index_tipocx=['Cirugía laparoscópica','Cirugía abierta','Cirugía convertida']
+    col_tipocx=['Tipo de cirugía']
+    df_tipocx=pd.DataFrame(tipocx,index_tipocx,col_tipocx)
+    st.table(df_tipocx)
+    st.bar_chart(df_tipocx)
+    
+    
+    # ---------------------------------------------------------------------------- #
+    #                              Duración de cirugía                             #
+    # ---------------------------------------------------------------------------- #
+    duracion_cx=cur.execute("""SELECT Duracionqx FROM Basecxcol  """ )
+    duracioncx=duracion_cx.fetchall()
+    st.info('Duración de cirugía')
+    col_duracioncx=['Tiempo en minutos']
+    #promedio_tiempo=cur.execute("""SELECT avg(Duracionqx) FROM Basecxcol""")
+    #promediocx,=promedio_tiempo.fetchone()
+    #df_duracioncx=[duracioncx]
 
-    #Duración de cirugía
-
+    df_duracion=pd.DataFrame(duracioncx,columns=col_duracioncx)
+    st.table(df_duracion)
+    st.line_chart(df_duracion)
     #Conversión de cirugúa
 
     #Días de estancia 

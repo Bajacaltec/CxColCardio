@@ -14,20 +14,24 @@ from Paginas.apache import PAM, creatdef, cronicos, cronicospreqx, edas, fcdef, 
 
 from Paginas.apache import tempdef
 from Paginas.censo import insertar
-
-def ficha_id():
-    with st.expander('Identificación y somatometría',True):
-        con = sqlite3.connect('Basededatos.db')
-        cur = con.cursor()
-        col1,col2=st.columns(2)
+st.set_page_config(layout="wide")      
         
-        sumedad=cur.execute('''Select Nombre FROM cxcolcardio''')
-        nom=cur.fetchall()
-        res = []
-        for i in chain(*nom):
-            res.append(i)
-          
-        with col1:
+        
+def ficha_id():
+            
+ 
+    col1,col2=st.columns(2)
+    with col1:
+        with st.expander('Identificación y somatometría',True):
+            con = sqlite3.connect('Basededatos.db')
+            cur = con.cursor()
+            
+            sumedad=cur.execute('''Select Nombre FROM cxcolcardio''')
+            nom=cur.fetchall()
+            res = []
+            for i in chain(*nom):
+                res.append(i)
+            
             global nambre
             global nombre
             nombre=(st.selectbox('Nombre',res), )
@@ -35,71 +39,125 @@ def ficha_id():
             numbre=nambre.replace("('","")
             global nimbre
             nimbre=numbre.replace("',)","")
-            st.write(nimbre)
-        con.commit()
-        con.close()
-        con = sqlite3.connect('Basededatos.db')
-        cur = con.cursor()
-        
-        recabar=cur.execute("SELECT * FROM cxcolcardio WHERE Nombre=(?)",(nombre))
-        global bas
-        bas,=cur.fetchall()
-        
-        try:
-            cen = sqlite3.connect('DB.db')
-            cor = cen.cursor()
-            cor.execute("SELECT * FROM Basecxcol WHERE Nombre=(?)",(nambre,))
-            global bes
-            bes,=cor.fetchall()
-            bhu=str(bes)
-            bhe=bhu.replace("(","")
-            bhi=bhe.replace("('","")
-            bestrim=bhi.split(",")
-            st.sidebar.write(bestrim)
+            con.commit()
+            con.close()
+            
+            #Comentarios sidebar
+            
+           
+                
+            
+            con = sqlite3.connect('Basededatos.db')
+            cur = con.cursor()
+            
+            recabar=cur.execute("SELECT * FROM cxcolcardio WHERE Nombre=(?)",(nombre))
+            global bas
+            bas,=cur.fetchall()
+            
+            
+            con = sqlite3.connect('Basededatos.db')
+            cur = con.cursor()
+            try:
+                cen = sqlite3.connect('DB.db')
+                cor = cen.cursor()
+                cor.execute("SELECT * FROM Basecxcol WHERE Nombre=(?)",(nambre,))
+                global bes
+                bes,=cor.fetchall()
+                bhu=str(bes)
+                bhe=bhu.replace("(","")
+                bhi=bhe.replace("('","")
+                bestrim=bhi.split(",")
+                st.sidebar.write(bestrim)
 
-            with col2:
                 global NSS
                 NSS=st.text_input("NSS",bas[2])
-            with col1:
                 global edad
                 edad=st.number_input('Edad',1,200,bas[1])
-            col1,col2,col3=st.columns(3)
-            with col1:
+            
                 global peso
                 peso = st.number_input("Peso",1,800,bes[3])
-            with col2:
                 global talla
                 talla = st.number_input("Talla", 0.1, None, bes[4], 0.1)
-            with col3:
                 global imc
                 imc = peso/talla**2
                 indiceMC = st.number_input("IMC",None,None,imc,0.1,disabled=True)
                 global Genero
-        except:
-            with col2:
+            except:
                 NSS=st.text_input("NSS",bas[2])
-            with col1:
                 edad=st.number_input('Edad',1,200,bas[1])
-            col1,col2,col3=st.columns(3)
-            with col1:
+            
                 peso = st.number_input("Peso",1,800)
-            with col2:
                 talla = st.number_input("Talla", 0.1, None, 1.0, 0.1)
-            with col3:
                 imc = peso/talla**2
                 indiceMC = st.number_input("IMC",None,None,imc,0.1,disabled=True)
             
         
-        Genero = "F" in NSS
-        if Genero == True:
-            #Para modificar el markdown con HTML se usa ese codigo de abajo
-            #willkomen = '<p style="font-family:Times; color:Brown; font-size: 60px;">Bienvenida</p>'
-            #st.markdown(willkomen, unsafe_allow_html=True)
-            Genero = "Femenino"
-        else:
-            Genero = "Masculino"
-        con.commit()
-        con.close()
+            Genero = "F" in NSS
+            if Genero == True:
+                #Para modificar el markdown con HTML se usa ese codigo de abajo
+                #willkomen = '<p style="font-family:Times; color:Brown; font-size: 60px;">Bienvenida</p>'
+                #st.markdown(willkomen, unsafe_allow_html=True)
+                Genero = "Femenino"
+            else:
+                Genero = "Masculino"
+            con.commit()
+            con.close()
+          
+        with col2:
+            cin = sqlite3.connect('DB.db')
+            car = cin.cursor()
+            cin.execute('SELECT Estado FROM Basecxcol Where Nombre=?',(nombre))
+            estado=car.fetchone()
+            st.write(estado)
+            if estado=='Sin registro':
+                st.info("")
+            elif estado=='En proceso':
+                st.warning("")
+            
+
+            st.metric('Avance',1,10)
+            #captura_modificar=st.select_slider('Estado',['Sin registro','En proceso','Registro completo'],value='En proceso')
+            #if captura_modificar=='Sin registro':
+             #       st.info('')
+            #elif captura_modificar=='En proceso':
+          #          st.warning('')
+          #  elif captura_modificar=='Registro completo':
+             #       st.success('')
+           # con = sqlite3.connect('Basededatos.db')
+           # cur = con.cursor()
+            try:
+                with st.expander('Comentarios'):
+                    com=sqlite3.connect('DB.db')
+                    cur=com.cursor()
+                    cur.execute("SELECT Comentarios FROM Basecxcol WHERE Nombre=?",(nimbre,))
+                    coment_base,=cur.fetchone()
+                    global coment
+                    coment=st.text_area('Comentarios',value=coment_base)
+                    com=sqlite3.connect('DB.db')
+                    cur=com.cursor()
+                    cur.execute("""UPDATE Basecxcol SET Comentarios=? WHERE Nombre=?""",(coment,nimbre))
+                    com.commit()
+                    com.close()
+            except:
+                with st.expander('Comentarios'):
+                    coment=st.text_area('Comentarios')
+                    com=sqlite3.connect('DB.db')
+                    cur=com.cursor()
+                    cur.execute("""UPDATE Basecxcol SET Comentarios=? WHERE Nombre=?""",(coment,nimbre))
+                    com.commit()
+                    com.close()
+                
+            with st.expander('Censo',expanded=False):
+                #Columna de ayuda a la derecha de la ficha de identificacion
+                con = sqlite3.connect('Basededatos.db')
+                cur = con.cursor()
+                dxy=cur.execute("SELECT * from cxcolcardio order by Nombre")
+                wyu=cur.fetchall()
+                g=['Nombre','Edad','NSS','Diagnóstico','Genero','Fecha','Capturado','Hospital','Estado']
+                ju=pd.DataFrame(wyu,None,columns=g)
+                st.dataframe(ju)
+                con.commit()
+                con.close
 def antecedentes():
     
     #intentar precargar datos ya capturados, except solo dejar defaults
@@ -128,8 +186,7 @@ def antecedentes():
                 col1,col2,col3=st.columns(3)
             with col1:
                 global comor
-                comor = str(st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia",
-                                        "Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Otros"],suy))
+                comor = str(st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia","Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Miocarditis","Miocardiopatia dilatada","Otros"],suy))
             with col2:
                 global tab
                 tab=st.selectbox("Tabaquismo",['No','Si'])
@@ -164,8 +221,8 @@ def antecedentes():
              with st.expander('Antecedentes'):
                 col1,col2,col3=st.columns(3)
              with col1:
-                comor = str(st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia",
-                                        "Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Otros"]))
+                comor = str(st.multiselect("Enfermedades crónicas", ["Diabetes mellitus"," Evento vascular cerebral","EPOC", "Hipertensión arterial", "Valvulopatia",
+                                        "Cirugía de corazón","Taquicardia supraventricular","Cardiopatía hipertensiva","Estenosis mitral", "Infarto agudo al miocardio", "Insuficiencia cardiaca","Miocarditis","Fibrilación auricular","Miocardiopatia dilatada","Isquemia crónica","Obesidad", "Dislipidemias","Otros"]))
              with col2:
                 tab=str(st.selectbox("Tabaquismo",['No','Si']))
                 if tab=='Si':
@@ -175,8 +232,8 @@ def antecedentes():
              with col3:
                 cronicosapache=str(st.multiselect('Enfermedades crónicas para APACHEII',['Ninguna','Cirrosis confirmada (biopsia) ', 'NYHA Clase IV','EPOC Grave (ej. Hipercapnia, O2 domiciliario, HT pulmonar)','Diálisis crónica','Inmunocomprometidos']))
              with col1:
-                Tipocxcardio =str(st.multiselect("Procedimientos cardiovasculares", [
-                                                "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular"]))
+                Tipocxcardio =str(st.multiselect("Detonante de padecimiento actual(procedimientos cardiovasculares, padecimiento actual)", [
+                                                "Cirugia cardiovascular","Taquiarritmia","Trombolisis","Colocación de marcapaso", "Cateterismo cardiaco", "Reemplazo valvular","Infarto agudo al miocardio","SICA"," Insuficiencia mitral","Deterioro de la clase funcional"]))
              with col2:
                 usovasopr = str(st.selectbox("Uso de vasopresores previos a cirugía por CCLA", ["No", "Si"]))
                 if usovasopr == "Si":
@@ -321,13 +378,13 @@ def sintomas_ccla():
         col1, col2 = st.columns(2)
         with col1:
             global sysint
-            sysint = str(st.multiselect('Sintomas compatibles',["Dolor en hipocondrio derecho", "Signo de Murphy", "Nausea y vómito","Ictericia","Fiebre","Dolor abdominal difuso","Estreñimiento"]))
+            sysint = str(st.multiselect('Sintomas compatibles',["Dolor en hipocondrio derecho", "Vesícula palpable","Signo de Murphy", "Nausea y vómito","Ictericia","Fiebre","Dolor abdominal difuso","Estreñimiento"]))
         with col2:
             global usghall
             usghall = str(st.multiselect("Hallazgos de ultrasonido", ["Engrosamiento de pared", "Líquido perivesicular", "Litiasis vesicular",
-                                        "Distensión vesicular", "Gas intravesicular", "Lodo biliar", "Absceso perivesicular", "Anormalidad anatomíca"]))
+                                        "Distensión vesicular", "Gas intravesicular", "Lodo biliar", "Absceso perivesicular", "Anormalidad anatomíca","Dilatación de vía biliar"]))
             global tachall
-            tachall= str(st.multiselect("Hallazgos tomográficos",["Engrosamiento de la pared","Líquido perivesicular","Pérdida de la captación del contraste","Gas dentro de la vesícula biliar"]))
+            tachall= str(st.multiselect("Hallazgos tomográficos",["Litiasis vesicular","Hidrocolecisto","Litiasis vesicular","Lito en vía biliar","Dilatación de la vía biliar","Estriación de la grasa perivesicular","Engrosamiento de la pared","Líquido perivesicular","Pérdida de la captación del contraste","Gas dentro de la vesícula biliar","Estriación de la grasa perivesícular","Reforzamiento de la pared vesícular"]))
         with col1:
             global asa
             asa=str(st.selectbox("ASA", ["I", "II", "III", "IV", "V", "VI"]))
@@ -434,15 +491,21 @@ def datos_postcirugia():
         with col1:
             global compli
             compli = st.selectbox("Complicaciones postoperatorias (Clavien-Dindo", ["I", "II", "III", "IV", "V"],key='<estamera>')
+            dindo=st.checkbox('Clasificación Clavien-dindo')
+            if dindo==True:
+                st.image('clavien.png')
         with col2:
             global recur    
             recur=st.selectbox('Recurrencia de los síntomas',['No','Si'])
         with col3:
             global mort
             mort=st.selectbox("Muerte en los primeros 30 días posquirúrgicos",["No","Si"])
+            if mort=='si':
+                st.error('Defunción')
+                
 
 def registrarcapturaenbase():
-        regis=st.sidebar.button("Registrar")
+        regis=st.button("Registrar")
         prueba=10
         if regis==True:
             con = sqlite3.connect('DB.db')
@@ -535,7 +598,8 @@ def apachepreqx1():
 def borrar_registro():   #aun no funciona, necesito o borrar registros o modificar los previos
     col1,col2=st.columns(2)
     with col2:
-        borrar=st.sidebar.button('Borrar registro')
+        st.error('Borrar')
+        borrar=st.button('Borrar registro')
         if borrar==True:
             ton = sqlite3.connect('DB.db')
             cur = ton.cursor()
@@ -545,4 +609,19 @@ def borrar_registro():   #aun no funciona, necesito o borrar registros o modific
             ton.close()
             st.error("Registro borrado")
 
+def semaforo():
+    cin = sqlite3.connect('DB.db')
+    car = cin.cursor()
+    captura_modificar=st.select_slider('Avance',['Sin registro','En proceso','Finalizado'])
+    car.execute("""UPDATE Basecxcol SET Estado=? WHERE Nombre=?""",(captura_modificar,nimbre))
+    st.success('Modificación exitosa')
+    cin.commit()
+    cin.close()
+    
+    
+    
 
+    
+    
+    
+            
