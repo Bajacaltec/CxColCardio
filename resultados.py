@@ -158,14 +158,23 @@ def antropometrico():
     crondm=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Crónicos LIKE '%Hipertensión%' """)
     HAScount=crondm.fetchone()
     
-    valvcomor=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Crónicos LIKE '%Valvulopatia%' """)
+    valvcomor=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Crónicos LIKE '%Valvulopatia%'  """)
     valvcount=crondm.fetchone()
     
     IAMcomor=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Crónicos LIKE '%Infarto%' """)
     IAMcount=crondm.fetchone()
     
-    crónicos_todo=[DMcount,HAScount,valvcount,IAMcount]
-    indexcronicos=['Diabetes mellitus','Hipertensión arterial','Valvulopatia','IAM']
+    ICCcomor=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Crónicos LIKE '%Insuficiencia cardiaca%' """)
+    ICCcount=cur.fetchone()
+    
+    EVCcomor=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Crónicos LIKE '%Evento vascular cerebral%' """)
+    EVCcount=cur.fetchone()
+    
+    EPOCcomor=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Crónicos LIKE '%EPOC%' """)
+    EPOCcount=cur.fetchone()
+    
+    crónicos_todo=[DMcount,HAScount,valvcount,IAMcount,ICCcount,EVCcount,EPOCcount]
+    indexcronicos=['Diabetes mellitus','Hipertensión arterial','Valvulopatia','IAM','Insuficiencia cardiáca','EVC','EPOC']
     columnas_comor=['N']
     dfcrónicos=pd.DataFrame(crónicos_todo,indexcronicos,columnas_comor)
     
@@ -173,7 +182,7 @@ def antropometrico():
     
     st.subheader('Comorbilidades')
     st.table(dfcrónicos)
-    st.line_chart(dfcrónicos,50,200)
+    st.bar_chart(dfcrónicos,50,200)
 
     
 
@@ -299,23 +308,31 @@ def antropometrico():
     catcardio=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE PRoccardio = "['Cateterismo cardiaco']" ''')
     conteo_catcardio,=catcardio.fetchone()
     
-    #####
-   
-    
     reemplazo_valvular=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE PRoccardio = "['Reemplazo valvular']" ''')
     remplazo_count,=reemplazo_valvular.fetchone()
     
+    det_IAM=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE PRoccardio LIKE '%Infarto agudo al miocardio%' ''')
+    det_IAM_count,=cur.fetchone()
+    
+    det_cxcardio=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE PRoccardio LIKE '%Cirugia cardiovascular%' ''')
+    det_cxcardio_count,=cur.fetchone()
+    
+    det_rempvalv=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE PRoccardio LIKE '%Reemplazo valvular%' ''')
+    det_rempvalv_count,=cur.fetchone()
+    
+    cxcardio_reempvavular=remplazo_count+det_cxcardio_count
 # ---------------------------------------------------------------------------- #
 #                        Procedimientos cardiovasculares                       #
 # ---------------------------------------------------------------------------- #
  #Procedimientos cardiovasculares
     st.success('Procedimientos cardiovasculares')
-    proccardiovasculares=(conteo_catcardio,conteo_catcardio,remplazo_count)
-    indiceprocardio=['Cirugía cardiovascular','Cateterismo','Reemplazo valvular']
-    procardio_columnas=['Procedimientos']
+    proccardiovasculares=(conteo_catcardio,conteo_catcardio,remplazo_count,det_IAM_count,cxcardio_reempvavular)
+    indiceprocardio=['Cirugía cardiovascular','Cateterismo','Reemplazo valvular','IAM','Cirugía cardiovascular']
+    procardio_columnas=['Detonante del cuadro clínico']
     dfprocardio=pd.DataFrame(proccardiovasculares,indiceprocardio,columns=procardio_columnas,)
+    st.subheader('Detonante del padecimiento actual')
     st.table(dfprocardio)
-    st.line_chart(dfprocardio)
+    st.bar_chart(dfprocardio)
     
 #Vitales de ingreso, valorar si hacer una tabla con puntos para ver como se distribuyen los vitales
 
@@ -331,6 +348,34 @@ def antropometrico():
 #DIas en UCI postqx
 
 #Síntomas compatibles con CCLA
+    dolor_hipodere=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Sintomascompatccla LIKE "%hipocondrio%" ''')
+    dolorhipodere_count=cur.fetchone()
+    
+    Nausea_sint=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Sintomascompatccla LIKE "%Nausea%" ''')
+    nausea_count=cur.fetchone()
+    
+    Murphy_sint=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Sintomascompatccla LIKE "%Murphy%" ''')
+    Murphy_count=cur.fetchone()
+    
+    icter_sint=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Sintomascompatccla LIKE "%Ictericia%" ''')
+    icter_count=cur.fetchone()
+    
+    vespalpable_sint=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Sintomascompatccla LIKE "%Palpable%" ''')
+    vespalpable_count=cur.fetchone()
+    
+    difuso_sint=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Sintomascompatccla LIKE "%Difuso%" ''')
+    difuso_count=cur.fetchone()
+    
+    fiebre_sint=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Sintomascompatccla LIKE "%Fiebre%" ''')
+    fiebre_count=cur.fetchone()
+    
+    dolordf=[dolorhipodere_count,nausea_count,Murphy_count,icter_count,vespalpable_count,difuso_count,fiebre_count]
+    dolordf_columnas=['N']
+    dolordf_index=['Dolor en hipocondrio derecho','Nausea','Signo de Murphy','Ictericia','Vesícula palpable','Dolor abdominal generalizado','Fiebre']
+    df_sintomas=pd.DataFrame(dolordf,index=dolordf_index,columns=dolordf_columnas)
+    st.subheader('Síntomas iniciales')
+    st.dataframe(df_sintomas)
+    st.bar_chart(df_sintomas)
 
     # ---------------------------------------------------------------------------- #
     #                               Hallazgos por USG                              #
@@ -354,9 +399,15 @@ def antropometrico():
     usg_anatocount=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Hallazusg LIKE "%Anormalidad anatomíca%" ''')
     usg_anato=usg_anatocount.fetchone()
     
+    usg_dist=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Hallazusg LIKE "%Distensión vesicular%" ''')
+    usg_dist_count=cur.fetchone()
     
-    hallazgos_usg=(usg_liquido, usg_litos,usg_lodo,usg_pared,usg_anato)
-    usg_index=['Líquido perivesicular','Litiasis vesícular','Lodo biliar','Engrosamiento de pared','Anormalidad anatómica']
+    usg_dilvb=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Hallazusg LIKE "%Dilatación de vía biliar%" ''')
+    usg_dilvb_count=cur.fetchone()
+    
+    
+    hallazgos_usg=(usg_liquido, usg_litos,usg_lodo,usg_pared,usg_anato,usg_dist_count,usg_dilvb_count)
+    usg_index=['Líquido perivesicular','Litiasis vesícular','Lodo biliar','Engrosamiento de pared','Anormalidad anatómica','Hidrocolecisto','Dilatación de vía biliar']
     col_usg=['Hallazgos ultrasonográficos']
     df_usg=pd.DataFrame(hallazgos_usg,usg_index,col_usg)
     df_usg.style.set_caption("Hello World")
@@ -406,9 +457,9 @@ def antropometrico():
     df_tiempo=(tiempo_sintqx)
     coluna=['Tiempo de inicio de síntomas']
     serie_tiempoqx=pd.DataFrame(tiempo_sintqx)
+    st.dataframe(serie_tiempoqx)
     st.info('Tiempo de inicio de síntomas a procedimiento quirúrgico/Dias UCI postqx')
     st.line_chart(serie_tiempoqx,)
-    st.subheader(tiempo_sintqx)
 
     # ---------------------------------------------------------------------------- #
     #                                tipo de cirugía                               #

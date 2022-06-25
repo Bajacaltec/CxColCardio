@@ -57,7 +57,7 @@ def visualizacion():
     dxy=cur.execute("SELECT * from cxcolcardio order by Nombre")
     dxu=pd.read_sql_query("SELECT * from cxcolcardio order by Nombre", con)
     wyu=cur.fetchall()
-    g=['Nombre','Edad','NSS','Diagnóstico','Genero','Fecha','Capturado','Hospital']
+    g=['Nombre','Edad','NSS','Diagnóstico','Genero','Fecha','Capturado','Hospital','x']
     ju=pd.DataFrame(wyu,None,columns=g)
     st.dataframe(ju)
     con.commit()
