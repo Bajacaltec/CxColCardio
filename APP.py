@@ -1,9 +1,10 @@
 from glob import glob
 from operator import truth
 from tkinter import Menu
+from matplotlib import container
 from pytest import hookspec
 import streamlit as st
-from sympy import true
+from sympy import Inverse, true
 import numpy as np
 import pandas as pd
 import sqlite3
@@ -17,22 +18,31 @@ import numpy
 import operator
 import Captura
 import resultados
+import Presentación
+from annotated_text import annotated_text
 
-vol1,vol2,vol3=st.columns(3)
-with vol1:
-    st.image('/Users/alonso/CxColCardio/Paginas/Imagenes/CMN SXXI.jpeg',width=350)
-with vol3:
-    st.title('Tesis cxcolcardio')
+
+     
+
+
+hol1,hol2,hol3=st.columns(3)
+menú=st.sidebar.selectbox("Menú",['Capturar datos','Censo','Resultados','Presentación'])
 
 
 
 con = sqlite3.connect('/Users/alonso/CxColCardio/otraprueba.db')
 cur = con.cursor()
 
-menú=st.selectbox("Menú",['Censo','Capturar datos','Resultados','Prueba','Presentación'])
 
 #Censo, incluye la tabla de los pacientes del estudio, seleccionar y borrar datos
 if menú=='Censo':
+    vol1,vol2,vol3=st.columns(3)
+    with vol1:
+        st.subheader('Tesis CxColcardio')
+        st.write('Morbilidad y mortalidad en pacientes con enfermedades cardiovasculares sometidos a colecistectomía por colecistitis aguda en el Centro Médico Nacional Siglo XXI')
+    with vol3:
+        st.image('/Users/alonso/CxColCardio/Paginas/Imagenes/CMN SXXI.jpeg')
+    st.success('')
     st.image('Censo.png',None,200)
 
     col1,col2=st.columns(2)
@@ -83,6 +93,41 @@ if menú=='Censo':
 
 
 elif menú=='Capturar datos':
+    vol1,vol2,vol3=st.columns(3)
+    with vol1:
+        st.subheader('Tesis CxColcardio')
+        st.write('Morbilidad y mortalidad en pacientes con enfermedades cardiovasculares sometidos a colecistectomía por colecistitis aguda en el Centro Médico Nacional Siglo XXI')
+    with vol3:
+        st.image('/Users/alonso/CxColCardio/Paginas/Imagenes/CMN SXXI.jpeg')
+    st.success('')
+    
+# ---------------------------------------------------------------------------- #
+#                                    Metrica                                   #
+# ---------------------------------------------------------------------------- #
+    #contar cuales tieenen registro, captura, o completos y así sabre el avance
+    con=sqlite3.connect('DB.db')
+    cur=con.cursor()
+
+    avance_Enproceso=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Estado='En proceso' """)
+    enproceso_count,=cur.fetchone()
+
+    sinregistro=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Estado='Sin registro' OR Estado= '' """)
+    sinregistro_count,=cur.fetchone()
+
+    Registrado=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Estado='Registro completo' OR Estado= 'Finalizado' """)
+    Registrado_count,=cur.fetchone()
+
+    avance=cur.execute("""SELECT COUNT(*) FROM Basecxcol Estado""")
+    avance_count,=cur.fetchone()
+    sol1,sol2,sol3=st.columns(3)
+
+    with sol1:
+        st.metric('Sin registro',avance_count,sinregistro_count,delta_color='inverse')
+    with sol2:
+        st.metric('En proceso',avance_count,enproceso_count)
+    with sol3:
+        st.metric('Registro completo',avance_count,Registrado_count)
+
     Captura.ficha_id()
     Captura.antecedentes()
     Captura.vitales_ingreso()
@@ -129,28 +174,29 @@ elif menú=="Censo":
 
 
 elif menú=='Resultados':
-    st.image('resultados.png',None,400)
+    st.title('Resultados')
     resultados.contar_genero()
-    resultados.antropometrico()
+    resultados.edad()
+    resultados.vasopresores_enfermedad()
+    resultados.peso()
     
-elif menú=='Prueba':
-    with st.form('Prueba',clear_on_submit=True):
-        with st.expander('Prueba'):
-            st.selectbox('Prueba',['Si','No'])
-        submited=st.form_submit_button('Registra')
-        if submited==True:
-            st.write('Exitoso')
-    con = sqlite3.connect('Basededatos.db')
-    cur = con.cursor()
-    sumedad=cur.execute('''Select * FROM cxcolcardio''')
-    nem=cur.fetchall()
-    nom=pd.DataFrame(nem)
-    st.dataframe(nom)
-    a=nom.to_html
-    imprimir_censo(a)     
+
     
 elif menú=='Presentación':
-    st.markdown('Presentación') 
+        Presentación.slider()
+        Presentación.introducción()
+        Presentación.resultados_biométricos()
+        Presentación.comorbilidades_res()
+        Presentación.desencadenantes_enfermedad()
+        Presentación.sintomas_ccla()
+        Presentación.mortalidad()
+        
+        
+    
+
+
+    
+    
         
         
     

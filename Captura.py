@@ -1,6 +1,7 @@
 from distutils.log import error
 from email.policy import default
 from locale import ALT_DIGITS
+from matplotlib.pyplot import connect
 from sqlalchemy import true
 import streamlit as st
 import numpy as np
@@ -104,48 +105,21 @@ def ficha_id():
             con.close()
           
         with col2:
-            cin = sqlite3.connect('DB.db')
-            car = cin.cursor()
-            cin.execute('SELECT Estado FROM Basecxcol Where Nombre=?',(nombre))
-            estado=car.fetchone()
-            st.write(estado)
-            if estado=='Sin registro':
-                st.info("")
-            elif estado=='En proceso':
-                st.warning("")
+            with st.expander('Comentarios'):
+                com=sqlite3.connect('DB.db')
+                cur=com.cursor()
+                cur.execute("SELECT Comentarios FROM Basecxcol WHERE Nombre=?",(nimbre,))
+                coment_base,=cur.fetchone()
+                global coment
+                coment=st.text_area('Comentarios',value=coment_base)
+                actulizar_comentario=st.button('Actualizar comentario')
+                if actulizar_comentario==True:
+                    com=sqlite3.connect('DB.db')
+                    cur=com.cursor()
+                    cur.execute("""UPDATE Basecxcol SET Comentarios=? WHERE Nombre=?""",(coment,nimbre))
+                    com.commit()
+                    com.close()
             
-
-            st.metric('Avance',1,10)
-            #captura_modificar=st.select_slider('Estado',['Sin registro','En proceso','Registro completo'],value='En proceso')
-            #if captura_modificar=='Sin registro':
-             #       st.info('')
-            #elif captura_modificar=='En proceso':
-          #          st.warning('')
-          #  elif captura_modificar=='Registro completo':
-             #       st.success('')
-           # con = sqlite3.connect('Basededatos.db')
-           # cur = con.cursor()
-            try:
-                with st.expander('Comentarios'):
-                    com=sqlite3.connect('DB.db')
-                    cur=com.cursor()
-                    cur.execute("SELECT Comentarios FROM Basecxcol WHERE Nombre=?",(nimbre,))
-                    coment_base,=cur.fetchone()
-                    global coment
-                    coment=st.text_area('Comentarios',value=coment_base)
-                    com=sqlite3.connect('DB.db')
-                    cur=com.cursor()
-                    cur.execute("""UPDATE Basecxcol SET Comentarios=? WHERE Nombre=?""",(coment,nimbre))
-                    com.commit()
-                    com.close()
-            except:
-                with st.expander('Comentarios'):
-                    coment=st.text_area('Comentarios')
-                    com=sqlite3.connect('DB.db')
-                    cur=com.cursor()
-                    cur.execute("""UPDATE Basecxcol SET Comentarios=? WHERE Nombre=?""",(coment,nimbre))
-                    com.commit()
-                    com.close()
                 
             with st.expander('Censo',expanded=False):
                 #Columna de ayuda a la derecha de la ficha de identificacion
@@ -612,14 +586,24 @@ def borrar_registro():   #aun no funciona, necesito o borrar registros o modific
 def semaforo():
     cin = sqlite3.connect('DB.db')
     car = cin.cursor()
-    captura_modificar=st.select_slider('Avance',['Sin registro','En proceso','Finalizado'])
+    captura_modificar=st.selectbox('Avance',['Sin registro','En proceso','Finalizado'])
     car.execute("""UPDATE Basecxcol SET Estado=? WHERE Nombre=?""",(captura_modificar,nimbre))
-    st.success('Modificación exitosa')
     cin.commit()
     cin.close()
     
-    
-    
+def actualizar_registro():   #aun no funciona, necesito o borrar registros o modificar los previos
+    col1,col2=st.columns(2)
+    with col2:
+        st.error('Borrar')
+        borrar=st.button('Borrar registro')
+        if borrar==True:
+            ton = sqlite3.connect('DB.db')
+            cur = ton.cursor()
+            cur.execute("DELETE FROM Basecxcol WHERE Nombre=(?)",(nimbre,))
+            # codigo para modificar nombre cur.execute("UPDATE Basecxcol SET Nombre=? WHERE Nombre=?",(nimbre,nambre))
+            ton.commit()
+            ton.close()
+            st.error("Registro borrado")
 
     
     
