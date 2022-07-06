@@ -10,7 +10,7 @@ def insertar(nombre,edad,NSS,diagnostico,genero,fecha,captura,hosp):
     con = sqlite3.connect('Basededatos.db')
     cur = con.cursor()
 
-    cur.execute("INSERT INTO cxcolcardio VALUES (?,?,?,?,?,?,?,?)",(nombre,edad,NSS,diagnostico,genero,fecha,captura,hosp))
+    cur.execute("INSERT INTO cxcolcardio VALUES (?,?,?,?,?,?,?,?,?)",(nombre,edad,NSS,diagnostico,genero,fecha,captura,hosp,''))
     con.commit()
     con.close()
     st.subheader("Paciente ya registrado")

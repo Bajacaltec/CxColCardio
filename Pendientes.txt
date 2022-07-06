@@ -7,7 +7,7 @@ Pendientes de programación Tesiscxcol
 -Ver grafico de laboratorios
 4.-Análisis estadístico univariado y multivariado
 5.-Forma de marcar los expedientes que no se encuentran
-6.-Notas de expediente de pacientes
+6.-Notas de expediente de pacientes  xxxxx
 7.-Candidatos a eliminación o exclusión
 8.-Agregar facilmente nuevos diagnósticos
 9.-Notas extras a los parámetros para notas de diagnósticos, tx etcetera

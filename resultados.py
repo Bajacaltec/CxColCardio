@@ -14,7 +14,7 @@ plt.rcdefaults()
 
         
 
-def contar_genero():
+def caracteristicas_base():
     con = sqlite3.connect('Basededatos.db')
     cur = con.cursor()
     masc=cur.execute('''SELECT COUNT(*) FROM Cxcolcardio WHERE Genero='Masculino' ''')
@@ -22,38 +22,24 @@ def contar_genero():
     
     fem=cur.execute('''SELECT COUNT(*) FROM Cxcolcardio WHERE Genero='Femenino' ''')
     fem_count,=cur.fetchone()
-    genero_tabla=fem_count,masc_count
-    str_fem_count=str(fem_count)
-    str_masc_count=str(masc_count)
-    genero_tabla_str=str_fem_count,':',str_masc_count
-    st.write(genero_tabla_str)
-    index_genero=['Femenino','Masculino'] 
-    columna_genero=['Género']
-
-    df_genero=pd.DataFrame(genero_tabla,index=index_genero,columns=columna_genero)   
-    st.bar_chart(df_genero)
-    st.warning('El número de mujeres es de 15, representa el 38%')
-    st.warning('El número de hombres es de 24, representa el 62%')
-    
-    ap=pd.DataFrame(genero_tabla_str,index=['Genero','genero','gerne'],columns=['Columna'])
-    st.dataframe(ap)
     
 
-def edad():
+    
+    
+
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
-    serie_edad=cur.execute('SELECT Edad FROM Basecxcol ORDER BY Edad')
+    serie_edad=cur.execute('SELECT Edad FROM Basecxcol')
     edad_seriada=cur.fetchall()
-    avg_edad=cur.execute('SELECT AVG(Edad) FROM Basecxcol ORDER BY Edad')
-    avg_edad_count=cur.fetchone()
+    avg_edad=cur.execute('SELECT AVG(Edad) FROM Basecxcol')
+    avg_edad_count,=cur.fetchone()
 
-    indexserieedad=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37]
-    df_edad2=pd.DataFrame(edad_seriada,index=indexserieedad,columns=['Edad'])
-    st.bar_chart(df_edad2)
-    df_edad=pd.DataFrame({'Edad':edad_seriada,'Pacientes':[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37]})
+    #indexserieedad=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37]
+    #df_edad2=pd.DataFrame(edad_seriada,index=indexserieedad,columns=['Edad'])
+    #st.bar_chart(df_edad2)
+    #df_edad=pd.DataFrame({'Edad':edad_seriada,'Pacientes':[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37]})
     
     
-def peso():
     con=sqlite3.connect('DB.db')
     cur=con.cursor()
     #Serie de peso
@@ -61,22 +47,19 @@ def peso():
     peso=cur.fetchall()
     #Peso promedio
     cur.execute('SELECT AVG(Peso) FROM Basecxcol WHERE Peso != 1')
-    peso_avg=cur.fetchone()
-    st.write(peso_avg)
-    st.write(peso)
+    peso_avg,=cur.fetchone()
     
-def talla():
+    
     con=sqlite3.connect('DB.db')
     cur=con.cursor()
     cur.execute('SELECT Talla FROM Basecxcol WHERE Talla !=1')
     talla=cur.fetchall()
     
-    cur.execute('SELECT AVG Talla FROM Basecxcol WHERE Talla !=1')
-    talla_promedio=cur.fetchone()
+    cur.execute('SELECT AVG(Talla) FROM Basecxcol WHERE Talla !=1')
+    talla_promedio,=cur.fetchone()
     
-    st.write(talla_promedio)
-    st.write(talla)
-    
+    IMC=cur.execute('SELECT AVG(IMC) FROM Basecxcol WHERE Peso!=1')
+    IMC_avg,=cur.fetchone()
     
     
     
@@ -87,7 +70,6 @@ def talla():
     #                                  Tabaquismo                                  #
     # ---------------------------------------------------------------------------- #
     #Resultados tabaquismo
-def tabaquismo():
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
     tab=cur.execute('''SELECT COUNT(*) FROM Prueba9 WHERE Tabaquismo = 'Si' ''')
@@ -100,14 +82,12 @@ def tabaquismo():
     caje,=cajetillas.fetchall()
     caj,=caje
     
-    
    
     
     
     # ---------------------------------------------------------------------------- #
     #           Uso de vasopresores como desencadenantes de la enfermedad          #
     # ---------------------------------------------------------------------------- #
-def vasopresores_enfermedad():
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
     vas=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Vasopresores LIKE '%Si%' ''')
@@ -136,12 +116,12 @@ def vasopresores_enfermedad():
     # ---------------------------------------------------------------------------- #
     
     #comorbilidades
-def comorb():
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
     
     #El LIKE sirve para buscar algo que se parece en el STRING de la base de datos
     crondm=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Crónicos LIKE '%Diabetes%' """)
+    global DMcount
     DMcount,=crondm.fetchone()
     
     crondm=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Crónicos LIKE '%Hipertensión%' """)
@@ -161,8 +141,9 @@ def comorb():
     
     EPOCcomor=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Crónicos LIKE '%EPOC%' """)
     EPOCcount,=cur.fetchone()
-    
+    global crónicos_todo
     crónicos_todo=[DMcount,HAScount,valvcount,IAMcount,ICCcount,EVCcount,EPOCcount]
+    global indexcronicos
     indexcronicos=['Diabetes mellitus','Hipertensión arterial','Valvulopatia','IAM','Insuficiencia cardiáca','EVC','EPOC']
 
     df_crónicos=pd.DataFrame({'Crónicos':['Diabetes mellitus','Hipertensión arterial','Valvulopatia','IAM','Insuficiencia cardiáca','EVC','EPOC'],'Enfermedades':[DMcount,HAScount,valvcount,IAMcount,ICCcount,EVCcount,EPOCcount]})
@@ -179,7 +160,6 @@ def comorb():
    # ---------------------------------------------------------------------------- #
    #                        Procedimiendos cardiovasculares                       #
    # ---------------------------------------------------------------------------- #
-def proc_cardiovasc():
     #Procedimientos cardiovasculares, conteo de procedimientos
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
@@ -204,7 +184,6 @@ def proc_cardiovasc():
     #                             Ventilación mecánica                             #
     # ---------------------------------------------------------------------------- #
     #pacientes con ventilación preqx y número de días
-def vent_mec_preqx():
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
     ventmecpeqxsi=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Diasventmec != 0 ''')
@@ -229,7 +208,6 @@ def vent_mec_preqx():
     # ---------------------------------------------------------------------------- #
     #                      Uso de vasopresores prequirúrgicos                      #
     # ---------------------------------------------------------------------------- #
-def vasopres_preqx():
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
     vasopreqx=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Vasopresores = 'Si' ''')
@@ -257,7 +235,6 @@ def vasopres_preqx():
 #               Procedimiento quirúrgico más asociado con la CCLA              #
 # ---------------------------------------------------------------------------- #
 #Contar los procedimientos más comúnes en pacientes con CCLA
-def comor_PA():
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
     proccardio=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE PRoccardio = "['Cirugia cardiovascular']" ''')
@@ -292,11 +269,11 @@ def comor_PA():
     #                                Vitales ingreso                               #
     # ---------------------------------------------------------------------------- #
 #Vitales de ingreso, valorar si hacer una tabla con puntos para ver como se distribuyen los vitales
-def vitales_ingreso():
-    cur=sqlite3.connect('DB.db')
+    con=sqlite3.connect('DB.db')
+    cur=con.cursor()
     vitales_ingreso=cur.execute('''SELECT FCing,FRing,Sising,Diasing,Temping FROM Basecxcol  ''')
     vitales_ingreso_count=cur.fetchall()
-    index_vitales=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37]
+    index_vitales=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38]
     columnas_vitales=['Frecuencia cardiáca','Frecuencia respiratoria','Presión sistólica','Presión diastólica','Temperatura']
     df_vitales=pd.DataFrame(vitales_ingreso_count,index_vitales,columns=columnas_vitales)
     global vitales_graficas
@@ -315,7 +292,6 @@ def vitales_ingreso():
 #DIas en UCI postqx
 
 #Síntomas compatibles con CCLA
-def sintomas_ccla():
     con=sqlite3.connect('DB.db')
     cur=con.cursor()
     dolor_hipodere=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Sintomascompatccla LIKE "%hipocondrio%" ''')
@@ -359,7 +335,6 @@ def sintomas_ccla():
     #                               Hallazgos por USG                              #
     # ---------------------------------------------------------------------------- #
     #Hallazgos por USG
-def hallazgos_usg():
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
 
@@ -399,8 +374,8 @@ def hallazgos_usg():
     #                                      ASA                                     #
     # ---------------------------------------------------------------------------- #
     #ASA
-def ASA():
-    cur=sqlite3.connect('DB.db')
+    con=sqlite3.connect('DB.db')
+    cur=con.cursor()
     asaI=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE asa= 'I'  ''')
     asaI_count=cur.fetchone()
     
@@ -430,7 +405,6 @@ def ASA():
     #                                     Tokyo                                    #
     # ---------------------------------------------------------------------------- #
     
-def tokyo():
     tokyo_count_leve=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Tokyo LIKE "%Leve%" ''')
     tokyo_leve=tokyo_count_leve.fetchone()
     
@@ -450,14 +424,13 @@ def tokyo():
     with zol2:
         st.bar_chart(df_tokyo)
     
-def leu_ing():
     #Laboratorios prequirúrgicos
     Leu_count=cur.execute('''SELECT Leuing FROM Basecxcol ''')
     leu_ing=cur.fetchall()
     
     
     columnas_leuing=['Leucocitos']
-    index_Leuing=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37]
+    index_Leuing=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38]
     leu_df=pd.DataFrame(leu_ing,index_Leuing,columns=columnas_leuing)
     st.info('Leucocitos al ingreso')
     st.table(leu_ing)
@@ -468,7 +441,6 @@ def leu_ing():
     #                              Inicio de síntomas                              #
     # ---------------------------------------------------------------------------- #
     #Tiempo de inicio de síntomas hasta cirugía
-def inicio_sintomas():
     tiempo_qxcount=cur.execute('''SELECT Tiempoinsintqx FROM Basecxcol ORDER BY DiasUCIposqx ASC  ''')
     tiempo_sintqx=tiempo_qxcount.fetchall()
     
@@ -484,7 +456,6 @@ def inicio_sintomas():
     #                                tipo de cirugía                               #
     # ---------------------------------------------------------------------------- #
     #Tipo de cirugía
-def tipo_cirurgia():
     tipocxcount=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE tipoqx LIKE '%Laparoscopica%' """ )
     tipocx_laparos=tipocxcount.fetchone()
     
@@ -506,8 +477,7 @@ def tipo_cirurgia():
     # ---------------------------------------------------------------------------- #
     #                              Duración de cirugía                             #
     # ---------------------------------------------------------------------------- #
-def duracion_cirugia():
-    duracion_cx=cur.execute("""SELECT Duracionqx FROM Basecxcol  """ )
+    duracion_cx=cur.execute("""SELECT Duracionqx FROM Basecxcol WHERE Duracionqx !=1  """ )
     duracioncx=duracion_cx.fetchall()
     st.info('Duración de cirugía')
     col_duracioncx=['Tiempo en minutos']
@@ -528,22 +498,21 @@ def duracion_cirugia():
     #                             Complicaciones postqx                            #
     # ---------------------------------------------------------------------------- #
     #Complicaciones postquirúrgicas
-def complicaciones():
     con=sqlite3.connect('DB.db')
     cur=con.cursor()
-    clavienI_count=cur.execute('''SELECT COUNT(*) FROM Basecxcol  WHERE Comppostqx='I' ''')
+    clavienI_count=cur.execute('''SELECT COUNT(*) FROM Basecxcol  WHERE Comppostqx='I'AND Peso!=1 ''')
     clavienI=cur.fetchone()
     
-    clavienII_count=cur.execute('''SELECT COUNT(*) FROM Basecxcol  WHERE Comppostqx='II' ''')
+    clavienII_count=cur.execute('''SELECT COUNT(*) FROM Basecxcol  WHERE Comppostqx='II' AND Peso!=1 ''')
     clavienII=cur.fetchone()
     
-    clavienIII_count=cur.execute('''SELECT COUNT(*) FROM Basecxcol  WHERE Comppostqx='III' ''')
+    clavienIII_count=cur.execute('''SELECT COUNT(*) FROM Basecxcol  WHERE Comppostqx='III' AND Peso!=1 ''')
     clavienIII=cur.fetchone()
     
-    clavienIV_count=cur.execute('''SELECT COUNT(*) FROM Basecxcol  WHERE Comppostqx='IV' ''')
+    clavienIV_count=cur.execute('''SELECT COUNT(*) FROM Basecxcol  WHERE Comppostqx='IV' AND Peso!=1 ''')
     clavienIV=cur.fetchone()
     
-    clavienV_count=cur.execute('''SELECT COUNT(*) FROM Basecxcol  WHERE Comppostqx='V' ''')
+    clavienV_count=cur.execute('''SELECT COUNT(*) FROM Basecxcol  WHERE Comppostqx='V' AND PEso!=1 ''')
     clavienV=cur.fetchone()
     
     complicaciones_df=[clavienI,clavienII,clavienIII,clavienIV,clavienV]
@@ -561,48 +530,58 @@ def complicaciones():
 #                                  Mortalidad                                  #
 # ---------------------------------------------------------------------------- #
 #Mortalidad
-def mortalidad():
     con = sqlite3.connect('DB.db')
     cur = con.cursor()
    
-    mort_si=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Muerte = "Si" ''')
+    mort_si=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Muerte = "Si" AND Peso !=1''')
     Mort_count,=mort_si.fetchone()
     
-    mort_no=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Muerte= "No" ''')
+    mort_no=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Muerte= "No" AND Peso !=1 ''')
     Mort_countno,=mort_no.fetchone()
+    n_mort=Mort_countno+Mort_count
     global df_mortalidad
     global df_supervivencia
     
     porcentaje_mortalidad=(Mort_count/(Mort_count+Mort_countno))*100
     Supervivencia_porcentaje=(Mort_countno/(Mort_count+Mort_countno))*100
     supervvsmort=(Supervivencia_porcentaje,porcentaje_mortalidad)
-    mortalidad=(Mort_count,Mort_countno,Supervivencia_porcentaje,porcentaje_mortalidad,)
-    index_mortalidad=('Defunciones','Pacientes vivos','% Supervivencia','% Mortalidad')
+    mortalidad=(Mort_count,Mort_countno,Supervivencia_porcentaje,porcentaje_mortalidad,n_mort)
+    index_mortalidad=('Defunciones','Pacientes vivos','% Supervivencia','% Mortalidad','N')
     index_supervivencia=('Supervivientes','Mortalidad')
     columnas_mortalidad=['Número de pacientes']
     df_mortalidad=pd.DataFrame(mortalidad)
-    df_supervivencia=pd.DataFrame(supervvsmort,index_supervivencia,columnas_mortalidad)
+    df_supervivencia=pd.DataFrame(mortalidad,index_mortalidad,columnas_mortalidad)
+    st.error('Mortalidad')
+    st.dataframe(df_supervivencia)
     #Con el styler puedes modificar el dataframe
-    df_stile=df_mortalidad.style.set_properties(**{'background-White': 'black',
-                           'color': 'Blue'})
-    dff_mort=pd.DataFrame({'Mortalidad':mortalidad,'Supervivencia':Supervivencia_porcentaje},index=['Numero','Bola','Sin','Cos'])
+    
+    #dff_mort=pd.DataFrame({'Mortalidad':mortalidad,'Supervivencia':Supervivencia_porcentaje},index=['Numero','Bola','Sin','Cos'])
+    #df_stile=dff_mort.style.set_properties(**{'background-White': 'black',
+      #                     'color': 'Blue'})
     # se declara mark_bar para las barras y luego se codifican los ejes con la X y Y que correponden al label
     #del diccionario
-    g=alt.Chart(dff_mort).mark_bar().encode(
-    x='Mortalidad',
-    y='Supervivencia').interactive()
     
-    col1,col2=st.columns(2)
-    with col1:
-        st.dataframe(dff_mort)
-    with col2:
-        st.bar_chart(df_stile)
-        st.caption('La mortalidad aumenta con el paso de la edad')
+    
+    
         
 
     # se tiene que hacer el formato de dataframe en forma de diccionario
     
-    st.altair_chart(g)
 
 
 
+ # ---------------------------------------------------------------------------- #
+    #                                    Tabla 1                                   #
+    # ---------------------------------------------------------------------------- #
+    Tabla_1_data=[avg_edad_count,23],[1,1],[masc_count,2],[fem_count,2],[peso_avg,2],[talla_promedio,1],[IMC_avg,1],[1,1],[DMcount,1],[HAScount,1],[valvcount,1],[IAMcount,1],[ICCcount,1],[EVCcount],[EPOCcount]
+    index_tabla1=['Edad','Género','Masculino','Femenino','Peso','Talla','IMC','Comorbilidades','Diabetes mellitus','Hipertensión arterial','Valvulopatía','Infarto agudo al miocardio','Insuficiencia cardiáca','EVC','EPOC']
+    column_tabla_1=['Promedio','Números prueba']
+    tabla_1=pd.DataFrame(Tabla_1_data,index_tabla1,column_tabla_1)
+    st.info('Características base')
+    st.dataframe(tabla_1)
+
+    #Poner comobrilidades desglosadas
+    #modificar dataframe para que se vean los títulos y modificar los subtítulos
+    #Enviar datos a excel
+    excel='prueba.xlsx'
+    tabla_1.to_excel(excel)

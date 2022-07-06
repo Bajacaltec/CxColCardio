@@ -11,7 +11,6 @@ import sqlite3
 import matplotlib.pyplot as plt
 import numpy as np
 import Paginas.censo as censo
-from pruebapdf import imprimir_censo
 import resultados
 from functools import reduce
 import numpy
@@ -101,32 +100,6 @@ elif menú=='Capturar datos':
         st.image('/Users/alonso/CxColCardio/Paginas/Imagenes/CMN SXXI.jpeg')
     st.success('')
     
-# ---------------------------------------------------------------------------- #
-#                                    Metrica                                   #
-# ---------------------------------------------------------------------------- #
-    #contar cuales tieenen registro, captura, o completos y así sabre el avance
-    con=sqlite3.connect('DB.db')
-    cur=con.cursor()
-
-    avance_Enproceso=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Estado='En proceso' """)
-    enproceso_count,=cur.fetchone()
-
-    sinregistro=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Estado='Sin registro' OR Estado= '' """)
-    sinregistro_count,=cur.fetchone()
-
-    Registrado=cur.execute("""SELECT COUNT(*) FROM Basecxcol WHERE Estado='Registro completo' OR Estado= 'Finalizado' """)
-    Registrado_count,=cur.fetchone()
-
-    avance=cur.execute("""SELECT COUNT(*) FROM Basecxcol Estado""")
-    avance_count,=cur.fetchone()
-    sol1,sol2,sol3=st.columns(3)
-
-    with sol1:
-        st.metric('Sin registro',avance_count,sinregistro_count,delta_color='inverse')
-    with sol2:
-        st.metric('En proceso',avance_count,enproceso_count)
-    with sol3:
-        st.metric('Registro completo',avance_count,Registrado_count)
 
     Captura.ficha_id()
     Captura.antecedentes()
@@ -143,7 +116,6 @@ elif menú=='Capturar datos':
     Captura.datos_postcirugia()
     Captura.registrarcapturaenbase()
     Captura.borrar_registro()
-    Captura.semaforo()
 
 
     con = sqlite3.connect('DB.db')
@@ -174,11 +146,9 @@ elif menú=="Censo":
 
 
 elif menú=='Resultados':
-    st.title('Resultados')
-    resultados.contar_genero()
-    resultados.edad()
-    resultados.vasopresores_enfermedad()
-    resultados.peso()
+    
+    st.info('Resultados')
+    resultados.caracteristicas_base()
     
 
     
@@ -191,7 +161,7 @@ elif menú=='Presentación':
         Presentación.sintomas_ccla()
         Presentación.mortalidad()
         
-        
+
     
 
 
