@@ -22,6 +22,7 @@ st.set_page_config(layout="wide",initial_sidebar_state='collapsed')
         
 def ficha_id():
     col1,col2=st.columns(2)
+        
     with col1:
         with st.expander('Identificación y somatometría',True):
             con = sqlite3.connect('DB.db')
@@ -43,165 +44,126 @@ def ficha_id():
             cor = cen.cursor()
             cor.execute("SELECT * FROM Basecxcol WHERE Nombre=(?)",(nimbre))
             global bes
-            bes=cor.fetchall()
-            st.sidebar.write(bes)
-            bhu=str(bes)
-            bhe=bhu.replace("(","")
-            bhi=bhe.replace("('","")
-            global bestrim
-            bestrim=bhi.split(",")
-            st.write(bestrim)
-            try:
-                global NSS
-                NSS=st.text_input("NSS",bestrim[2])
-                global edad
-                bestrim_edad=int(bestrim[1])
-                edad=st.number_input('Edad',1,200,bestrim_edad,key='987')
-                bestrim_peso=int(bestrim[3])
-                global peso
-                peso = st.number_input("Peso",1,800,bestrim_peso,key='829')
-                global talla
-                bestrim_talla=float(bestrim[4])
-                talla = st.number_input("Talla", 0.1, None, bestrim_talla, 0.1)
-                bestrim_imc=float(bestrim[5])
-                global imc
-                indiceMC = st.number_input("IMC",None,None,bestrim_imc,0.1,disabled=True)
-                st.success('')
-            except:
-                NSS=st.text_input("NSS",key=23987)
-                edad=st.number_input('Edad',1,200)
-                peso = st.number_input("Peso",1,800)
-                talla = st.number_input("Talla", 0.1, None, 1.0, 0.1)
-                imc = peso/talla**2
-                indiceMC = st.number_input("IMC",None,None,imc,0.1,disabled=True)
-                st.error('')
-                Genero = "F" in NSS
-                if Genero == True:
-                    #Para modificar el markdown con HTML se usa ese codigo de abajo
-                    #willkomen = '<p style="font-family:Times; color:Brown; font-size: 60px;">Bienvenida</p>'
-                    #st.markdown(willkomen, unsafe_allow_html=True)
-                    Genero = "Femenino"
-                else:
-                    Genero = "Masculino"
+            bes,=cor.fetchall()
             
-          
-        with col2:
-            with st.expander('Comentarios'):
-                con=sqlite3.connect('DB.db')
-                cur=con.cursor()
-                cur.execute("SELECT Comentarios FROM Basecxcol WHERE Nombre=?",(nimbre))
-                coment_base,=cur.fetchone()
-                coment=st.text_area('',coment_base,300)
-                actualizar_comentario=st.button('Actualizar comentario')
-                if actualizar_comentario==True:
-                    cur=con.cursor()
-                    cur.execute("""UPDATE Basecxcol SET Comentarios=? WHERE Nombre=?""",(str(coment),nimbre))
-                    st.success('Actualizado')
-                    con.commit()
-                    con.close()
-            
-                
-            with st.expander('Censo',expanded=False):
-                #Columna de ayuda a la derecha de la ficha de identificacion
-                con = sqlite3.connect('Basededatos.db')
-                cur = con.cursor()
-                dxy=cur.execute("SELECT * from cxcolcardio order by Nombre")
-                wyu=cur.fetchall()
-                g=['Nombre','Edad','NSS','Diagnóstico','Genero','Fecha','Capturado','Hospital','Estado']
-                ju=pd.DataFrame(wyu,None,columns=g)
-                st.dataframe(ju)
-                con.commit()
-                con.close
+        
+            st.sidebar.write(list(bes))
+            global NSS
+            NSS=st.text_input("NSS",bes[2])
+            global edad
+            bestrim_edad=int(bes[1])
+            edad=st.number_input('Edad',1,200,bestrim_edad,key='987')
+            bestrim_peso=int(bes[3])
+            global peso
+            peso = st.number_input("Peso",1,800,bestrim_peso,key='829')
+            global talla
+            bestrim_talla=float(bes[4])
+            talla = st.number_input("Talla", 0.1, None, bestrim_talla, 0.1)
+            bestrim_imc=float(bes[5])
+            global imc
+            indiceMC = st.number_input("IMC",None,None,bestrim_imc,0.1,disabled=True)
+            st.success('')
+        
+  
                 
                 
                 
                 
 def antecedentes():
-    
-    #intentar precargar datos ya capturados, except solo dejar defaults
-        #st.write(bes)
-       
-        #x = bast.replace("[", "")
-        #g=x.replace("]","")
-        #j=g.replace(" '","")
-        #k=j.replace("'","")
-        #p=k.replace(' "',"")
-        #suy=k.split(",")
-        #st.write(suy)
-            
-      
-        #este codigo limpia el string para que pueda ser utilizado por el multiselect, falta programar todos los demas, y dejarlo con un try y except por los errores en los que no tienen captura
-    
-   
-        
-        #ver como cargar los datos que ya estan en la base de datos en el formulario para poderlos modificar según 
-        #la captura, arriba tengo como seleccionar datos de la base de datos final 
-        #el problema es en las opciones de multiselect como pasarlos para que tengan  las capturas múltiples
-        try:
-            with st.expander('Antecedentes'):
-                col1,col2,col3=st.columns(3)
-            with col1:
+    with st.expander('Antecedentes'):
+        col1,col2,col3=st.columns(3)
+        with col1:
+            try:
                 global comor
-                comor = str(st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia","Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Miocarditis","Miocardiopatia dilatada","Otros"]))
-            with col2:
-                global tab
-                st.write
-                tab=st.selectbox("Tabaquismo",['No','Si'])
-                if tab=='Si':
-                    global cajetillas
-                    cajetillas=st.number_input("Cajetillas/año",1,7000,1,1)
-                else:
-                    cajetillas='NA'
-                global cronicosapache
-            with col3:
-                cronicosapache=str(st.multiselect('Enfermedades crónicas para APACHEII',['Ninguna','Cirrosis confirmada (biopsia) ', 'NYHA Clase IV','EPOC Grave (ej. Hipercapnia, O2 domiciliario, HT pulmonar)','Diálisis crónica','Inmunocomprometidos']))
-            with col1:
-                global Tipocxcardio
-                Tipocxcardio =str(st.multiselect("Procedimientos cardiovasculares", [
-                                                "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular"]))
-            with col2:
-                global usovasopr
-                usovasopr = str(st.selectbox("Uso de vasopresores previos a cirugía por CCLA", ["No", "Si"]))
-                if usovasopr == "Si":
+                comor_1=str(bes[6])
+                comor_a=comor_1.replace("['","")
+                comor_b=comor_a.replace(" '","")
+                comor_c=comor_b.replace("]","")
+                comor_d=comor_c.replace("'","")
+                comor_final=comor_d.split(",")
+                
+                comor=st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia","Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Miocarditis","Miocardiopatia dilatada","Otros"],comor_final) 
+            except:
+                comor=st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia","Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Miocarditis","Miocardiopatia dilatada","Otros"]) 
+
+        with col2:
+            global tab
+            tab_1=bes[7]
+            if tab_1=='Si':
+                tab_index=1
+            elif tab_1=='No':
+                tab_index=0
+            tab=st.selectbox("Tabaquismo",['No','Si'],index=tab_index)
+            if tab=='Si':
+                global cajetillas
+                cajetillas=st.number_input("Cajetillas/año",1,7000,1,1)
+            else:
+                cajetillas='NA'
+            global cronicosapache
+        with col3:
+            #Conversion de los adtos de la base de datos a texto para que se precarguen cmo una lista en el multiselect
+            try:
+                cron_1=str(bes[10])
+                cron_a=cron_1.replace("['","")
+                st.write(cron_a)
+                cron_b=cron_a.replace("']","")
+                cron_final=cron_b.split(",")
+                cronicosapache=st.multiselect('Enfermedades crónicas para APACHEII',['Ninguna','Cirrosis confirmada (biopsia) ', 'NYHA Clase IV','EPOC Grave (ej. Hipercapnia, O2 domiciliario, HT pulmonar)','Diálisis crónica','Inmunocomprometidos'],cron_final)
+            except:
+                cronicosapache=st.multiselect('Enfermedades crónicas para APACHEII',['Ninguna','Cirrosis confirmada (biopsia) ', 'NYHA Clase IV','EPOC Grave (ej. Hipercapnia, O2 domiciliario, HT pulmonar)','Diálisis crónica','Inmunocomprometidos'])
+
+        with col1:
+            global Tipocxcardio
+            try:
+                cxcardio_1=str(bes[13])
+                cxcardio_a=cxcardio_1.replace("['","")
+                cxcadio_b=cxcardio_a.replace("']","")
+                cx_cardiofinal=cxcadio_b.split(",")
+                
+                Tipocxcardio =st.multiselect("Procedimientos cardiovasculares", [
+                                            "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular"],cx_cardiofinal)
+            except:
+                Tipocxcardio =st.multiselect("Procedimientos cardiovasculares", [
+                                            "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular"])
+        with col2:
+            global usovasopr
+            vasopres_1=bes[11]
+            if vasopres_1=='Si':
+                index_vasopres=1
+            elif vasopres_1=='No':
+                index_vasopres=0
+            else:
+                index_vasopres=0
+            usovasopr=st.selectbox("Uso de vasopresores previos a cirugía por CCLA", ["No", "Si"],index=index_vasopres)
+            
+            if usovasopr == "Si":
+                try:
                     global tipovasopr
-                    tipovasopr = str(st.multiselect("Que vasopresor se utilizó", ["Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"]))
-                else:
-                    tipovasopr='NA'
-            with col3:
-                global ventprol
+                    tipovaso_1=str(bes[12])
+                    tipo_vaso_a=tipovaso_1.replace("['","")
+                    tipo_vaso_b=tipo_vaso_a.replace("']","")
+                    tipo_vaso_final=tipo_vaso_b.split(",")
+                    tipovasopr = st.multiselect("Que vasopresor se utilizó", ["Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"],tipo_vaso_final)
+                except:
+                    tipovasopr = st.multiselect("Que vasopresor se utilizó", ["Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"])
+
+            else:
+                tipovasopr='NA'
+        with col3:
+            global ventprol
+            try:
                 ventprol = st.number_input(
-                        "Días con ventilación mecánica previo a cirugía", 0, 100, 0, 1)
-            with col1:
-                global uciestpreop
-                uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
-        except:
-             with st.expander('Antecedentes'):
-                col1,col2,col3=st.columns(3)
-             with col1:
-                comor = str(st.multiselect("Enfermedades crónicas", ["Diabetes mellitus"," Evento vascular cerebral","EPOC", "Hipertensión arterial", "Valvulopatia",
-                                        "Cirugía de corazón","Taquicardia supraventricular","Cardiopatía hipertensiva","Estenosis mitral", "Infarto agudo al miocardio", "Insuficiencia cardiaca","Miocarditis","Fibrilación auricular","Miocardiopatia dilatada","Isquemia crónica","Obesidad", "Dislipidemias","Otros"]))
-             with col2:
-                tab=str(st.selectbox("Tabaquismo",['No','Si']))
-                if tab=='Si':
-                    cajetillas=st.number_input("Cajetillas/año",1,7000,1,1)
-                else:
-                    cajetillas='NA'
-             with col3:
-                cronicosapache=str(st.multiselect('Enfermedades crónicas para APACHEII',['Ninguna','Cirrosis confirmada (biopsia) ', 'NYHA Clase IV','EPOC Grave (ej. Hipercapnia, O2 domiciliario, HT pulmonar)','Diálisis crónica','Inmunocomprometidos']))
-             with col1:
-                Tipocxcardio =str(st.multiselect("Detonante de padecimiento actual(procedimientos cardiovasculares, padecimiento actual)", [
-                                                "Cirugia cardiovascular","Taquiarritmia","Trombolisis","Colocación de marcapaso", "Cateterismo cardiaco", "Reemplazo valvular","Infarto agudo al miocardio","SICA"," Insuficiencia mitral","Deterioro de la clase funcional"]))
-             with col2:
-                usovasopr = str(st.selectbox("Uso de vasopresores previos a cirugía por CCLA", ["No", "Si"]))
-                if usovasopr == "Si":
-                    tipovasopr = str(st.multiselect("Que vasopresor se utilizó", ["Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"]))
-                else:
-                    tipovasopr='NA'
-             with col3:
+                    "Días con ventilación mecánica previo a cirugía", 0, 100, bes[9], 1)
+            except:
                 ventprol = st.number_input(
-                        "Días con ventilación mecánica previo a cirugía", 0, 100, 0, 1)
-             with col1:
-                uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
+                    "Días con ventilación mecánica previo a cirugía", 0, 100, 0, 1)
+        with col1:
+            global uciestpreopx
+            try:
+                uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,bes[38],1)
+            except:
+                            uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
+                        
 def vitales_ingreso():
      with st.expander('Signos vitales'):
         vol1,vol2,vol3,vol4=st.columns(4)
@@ -564,7 +526,7 @@ def borrar_registro():   #aun no funciona, necesito o borrar registros o modific
         if borrar==True:
             ton = sqlite3.connect('DB.db')
             cur = ton.cursor()
-            cur.execute("DELETE FROM Basecxcol WHERE Nombre=(?)",(nimbre,))
+            cur.execute("DELETE FROM Basecxcol WHERE Nombre=(?)",(nimbre))
             # codigo para modificar nombre cur.execute("UPDATE Basecxcol SET Nombre=? WHERE Nombre=?",(nimbre,nambre))
             ton.commit()
             ton.close()
@@ -572,21 +534,3 @@ def borrar_registro():   #aun no funciona, necesito o borrar registros o modific
 
 
     
-def actualizar_registro():   #aun no funciona, necesito o borrar registros o modificar los previos
-    col1,col2=st.columns(2)
-    with col2:
-        st.error('Borrar')
-        borrar=st.button('Borrar registro')
-        if borrar==True:
-            ton = sqlite3.connect('DB.db')
-            cur = ton.cursor()
-            cur.execute("DELETE FROM Basecxcol WHERE Nombre=(?)",(nimbre,))
-            # codigo para modificar nombre cur.execute("UPDATE Basecxcol SET Nombre=? WHERE Nombre=?",(nimbre,nambre))
-            ton.commit()
-            ton.close()
-            st.error("Registro borrado")
-
-    
-    
-    
-            
