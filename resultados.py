@@ -8,7 +8,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from itertools import chain
 import altair as alt
-
+from scipy import stats
 plt.rcdefaults()
 
 
@@ -96,18 +96,12 @@ def caracteristicas_base():
     vasno=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Vasopresores LIKE '%No%' ''')
     vasopresno=vasno.fetchone()
     
-    st.subheader('Vasopresores')
     
     vasopresi_count = [vasopresi,vasopresno]
     vasopres_index=['Uso de vasopresor','Sin vasopresor']
     columna_vasopresor=['N']
     
-    df_vasopres=pd.DataFrame(vasopresi_count,vasopres_index,columna_vasopresor)
-    col1,col2=st.columns(2)
-    with col1:
-        st.table(df_vasopres)
-    with col2:
-        st.bar_chart(df_vasopres,15,250,)
+   
    
     
     
@@ -147,16 +141,15 @@ def caracteristicas_base():
     indexcronicos=['Diabetes mellitus','Hipertensión arterial','Valvulopatia','IAM','Insuficiencia cardiáca','EVC','EPOC']
 
     df_crónicos=pd.DataFrame({'Crónicos':['Diabetes mellitus','Hipertensión arterial','Valvulopatia','IAM','Insuficiencia cardiáca','EVC','EPOC'],'Enfermedades':[DMcount,HAScount,valvcount,IAMcount,ICCcount,EVCcount,EPOCcount]})
-    lu=alt.Chart(df_crónicos).mark_bar(size=30).encode(
-    x=alt.X('Enfermedades', axis=alt.Axis(labels=True),title=None),
-    y=alt.Y('Crónicos', axis=alt.Axis(labels=True),title=None),
-    color=alt.Color('Enfermedades',legend=None)).properties(width=1200,height=400).configure_axis(labelFontSize=18,titleFontSize=20).interactive()
+    #lu=alt.Chart(df_crónicos).mark_bar(size=30).encode(
+    #x=alt.X('Enfermedades', axis=alt.Axis(labels=True),title=None),
+    #y=alt.Y('Crónicos', axis=alt.Axis(labels=True),title=None),
+    #color=alt.Color('Enfermedades',legend=None)).properties(width=1200,height=400).configure_axis(labelFontSize=18,titleFontSize=20).interactive()
     
-    st.altair_chart(lu)
-    st.info('Las comorbilidades más frecuentementemente encontradas se asocian a factores de riesgo clásicos para enfermedades cardiovasculares, el antecedente más relevante después de estos es el infarto agudo al miocardio')
+    #st.altair_chart(lu)
+    #st.info('Las comorbilidades más frecuentementemente encontradas se asocian a factores de riesgo clásicos para enfermedades cardiovasculares, el antecedente más relevante después de estos es el infarto agudo al miocardio')
 
-
-
+  
    # ---------------------------------------------------------------------------- #
    #                        Procedimiendos cardiovasculares                       #
    # ---------------------------------------------------------------------------- #
@@ -173,10 +166,7 @@ def caracteristicas_base():
     proccardio_index=['Cirugía cardiovascular','Cateterismo']
     col_procardio=['N']
     df_proccardio=pd.DataFrame(proc_cardiovasculares,proccardio_index,col_procardio)
-    st.subheader('Procedimientos cardiovasculares')
-    st.table(df_proccardio)
-    st.line_chart(df_proccardio,50,200)
-
+    
 
 
 
@@ -190,19 +180,9 @@ def caracteristicas_base():
     ventcountpreqxsi,=ventmecpeqxsi.fetchone()
     ventmecpeqxno=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Diasventmec = 0 ''')
     ventcountpreqxno,=ventmecpeqxno.fetchone()
-    st.subheader('Pacientes con ventilación mecánica prequirúrgica')
     ventmec_promedio=(ventcountpreqxsi/(ventcountpreqxsi+ventcountpreqxno))*100
 
-    ventdf=[ventcountpreqxsi,ventcountpreqxno]
-    ind=['Ventilación mecánica prequirúrgica','Sin ventilación mecánica']
-    gencol=['Ventilación']
-    #Para el index se requiere dar una lista para asignarlo al pandas df, y en la gráfica
-    vent_df=pd.DataFrame(ventdf,ind,columns=gencol)
-    dol1,dol2=st.columns(2)
-    with dol1:
-        st.table(vent_df)
-    with dol2:
-        st.bar_chart(vent_df)
+    
 
     
     # ---------------------------------------------------------------------------- #
@@ -214,14 +194,12 @@ def caracteristicas_base():
     vasoprescount,=vasopreqx.fetchone()
     vasopreqxno=cur.execute('''SELECT COUNT(*) FROM Basecxcol WHERE Vasopresores = 'No' ''')
     vasoprescountno,=vasopreqxno.fetchone()
-    st.subheader('Pacientes con vasopresores prequirúrgicos')
     promedio_vasopresores=(vasoprescount/(vasoprescount+vasoprescountno))*100
     vasopresdf=[vasoprescount,vasoprescountno,promedio_vasopresores]
     ind=['Vasopresores prequirúrgica','Sin vasopresores','Porcentaje de uso de vasopresores']
     gencol=['Vasopresores']
     #Para el index se requiere dar una lista para asignarlo al pandas df, y en la gráfica
     dx=pd.DataFrame(vasopresdf,ind,columns=gencol)
-    st.table(dx)
 
 
 # ---------------------------------------------------------------------------- #
@@ -257,14 +235,14 @@ def caracteristicas_base():
     det_rempvalv_count,=cur.fetchone()
     
     
-    desencad=[conteo_catcardio,det_IAM_count,det_cxcardio_count,det_rempvalv_count]
-    index_desencad=['Cateterismo','Infarto agudo al miocardio','Cirugía cardiovascular','Reemplazo valvular']
-    df_desencad=pd.DataFrame({'# Casos':desencad,'Procedimientos':index_desencad} )
-    f=alt.Chart(df_desencad).mark_bar().encode(
-    x=alt.X('# Casos'),
-    y=alt.Y('Procedimientos'),
-    color='# Casos').properties(width=900,height=350).configure_axis(labelFontSize=15,titleFontSize=25).interactive().interactive()
-    st.altair_chart(f,use_container_width=True)
+    #desencad=[conteo_catcardio,det_IAM_count,det_cxcardio_count,det_rempvalv_count]
+    #index_desencad=['Cateterismo','Infarto agudo al miocardio','Cirugía cardiovascular','Reemplazo valvular']
+    #df_desencad=pd.DataFrame({'# Casos':desencad,'Procedimientos':index_desencad} )
+    #f=alt.Chart(df_desencad).mark_bar().encode(
+    #x=alt.X('# Casos'),
+    #y=alt.Y('Procedimientos'),
+    #color='# Casos').properties(width=900,height=350).configure_axis(labelFontSize=15,titleFontSize=25).interactive().interactive()
+    #st.altair_chart(f,use_container_width=True)
     # ---------------------------------------------------------------------------- #
     #                                Vitales ingreso                               #
     # ---------------------------------------------------------------------------- #
@@ -273,15 +251,96 @@ def caracteristicas_base():
     cur=con.cursor()
     vitales_ingreso=cur.execute('''SELECT FCing,FRing,Sising,Diasing,Temping FROM Basecxcol  ''')
     vitales_ingreso_count=cur.fetchall()
-    index_vitales=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38]
-    columnas_vitales=['Frecuencia cardiáca','Frecuencia respiratoria','Presión sistólica','Presión diastólica','Temperatura']
-    df_vitales=pd.DataFrame(vitales_ingreso_count,index_vitales,columns=columnas_vitales)
-    global vitales_graficas
-    global vitales_tabla
-    vitales_tabla=st.table(df_vitales)
-    vitales_graficas=st.area_chart(df_vitales)
-
+   
 #laboratorios de ingreso
+# ---------------------------------------------------------------------------- #
+#                            Marcadores bioquímicos de ingreso                       #
+# ---------------------------------------------------------------------------- #
+    ADE_count_ing=cur.execute('SELECT ADEing FROM Basecxcol WHERE ADEing!=1 AND ADEing!=0')
+    ade_count_fecht_ing=cur.fetchall()
+    
+    leu_count_ing=cur.execute('SELECT avg(Leuing) FROM Basecxcol WHERE Leuing!=0')
+    leufechting,=cur.fetchone()
+    
+    AST_coun=cur.execute('SELECT avg(ASTing) FROM Basecxcol WHERE ASTing!=0')
+    asting_fetch,=cur.fetchone()
+    
+    ALT_count=cur.execute('SELECT avg(ALTing) FROM Basecxcol WHERE ALTing!=0')
+    alting_fecht,=cur.fetchone()
+    
+    Biltot_ing_count=cur.execute('SELECT avg(Biltoting) FROM Basecxcol WHERE Biltoting!=1')
+    biltoting_fetch,=cur.fetchone()
+    
+    FA_ing_count=cur.execute('SELECT avg(FAing) FROM Basecxcol WHERE FAing!=0')
+    fa_fetch,=cur.fetchone()
+    
+    INR_ing_count=cur.execute('SELECT avg(INRing) FROM Basecxcol WHERE INRing !=1')
+    inring_fetch,=cur.fetchone()
+    
+    Naing_coount=cur.execute('SELECT avg(Naing) FROM Basecxcol WHERE Naing!=1')
+    naing_fetch,=cur.fetchone()
+    
+    K_ing=cur.execute('SELECT avg(King) FROM Basecxcol WHERE King!=0')
+    king_fetch,=cur.fetchone()
+    
+    phing_count=cur.execute('SELECT avg(PHing) FROM Basecxcol WHERE PHing!=0')
+    phing_fetch,=cur.fetchone()
+    
+    htoing_count=cur.execute('SELECT avg(Hematocritoing) FROM Basecxcol WHERe Hematocritoing!=1')
+    htoing_fetch,=cur.fetchone()
+    
+   
+    
+#Marcadores bioquimicos prequirúrgico
+    ADE_count_preqx=cur.execute('SELECT ADEpreqx FROM Basecxcol WHERE ADEpreqx!=1 AND ADEpreqx!=0')
+    ade_count_fecht_preqx=cur.fetchall()
+    
+    st.dataframe(ade_count_fecht_preqx)
+    
+    leu_count_preqx=cur.execute('SELECT avg(Leupreqx) FROM Basecxcol WHERE Leupreqx!=0')
+    leufechpreqx,=cur.fetchone()
+    
+    AST_coun_preqx=cur.execute('SELECT avg(ASTpreqx) FROM Basecxcol WHERE ASTpreqx!=0')
+    astpreqx_fetch,=cur.fetchone()
+    
+    ALT_count_preqx=cur.execute('SELECT avg(ALTpreqx) FROM Basecxcol WHERE ALTpreqx!=0')
+    altpreqx_fecht,=cur.fetchone()
+    
+    Biltot_preqx_count=cur.execute('SELECT avg(Biltotpreqx) FROM Basecxcol WHERE Biltotpreqx!=1')
+    biltotpreqx_fetch,=cur.fetchone()
+    
+    FA_preqx_count=cur.execute('SELECT avg(FApreqx) FROM Basecxcol WHERE FApreqx!=0')
+    fa_fetch_preqx,=cur.fetchone()
+    
+    INR_preqx_count=cur.execute('SELECT avg(INRpreqx) FROM Basecxcol WHERE INRpreqx !=1')
+    inr_fetch_preqx,=cur.fetchone()
+    
+    Napreqx_coount=cur.execute('SELECT avg(NApreqx) FROM Basecxcol WHERE NApreqx!=1')
+    napreqx_fetch,=cur.fetchone()
+    
+    K_preqx=cur.execute('SELECT avg(Kpreqx) FROM Basecxcol WHERE Kpreqx!=0')
+    kpreqx_fetch,=cur.fetchone()
+    
+    phpreqx_count=cur.execute('SELECT avg(PHpreqx) FROM Basecxcol WHERE PHpreqx!=0')
+    phpreqx_fetch,=cur.fetchone()
+    
+    htopreqx_count=cur.execute('SELECT avg(HTOpreqx) FROM Basecxcol WHERe HTOpreqx!=1')
+    htopreqx_fetch,=cur.fetchone()
+    
+    ttADE = stats.ttest_ind(ade_count_fecht_ing, ade_count_fecht_preqx, 
+                      equal_var=True)
+    st.write(ttADE)
+    
+     
+    marc_bioquimicos=[ade_count_fecht_ing,ade_count_fecht_preqx],[leufechting,leufechpreqx],[asting_fetch,astpreqx_fetch],[alting_fecht,altpreqx_fecht],[biltoting_fetch,biltotpreqx_fetch],[fa_fetch,fa_fetch_preqx],[inring_fetch,inr_fetch_preqx],[naing_fetch,napreqx_fetch],[king_fetch,kpreqx_fetch],[phing_fetch,phpreqx_fetch],[htoing_fetch,htopreqx_fetch]
+    index_bioquimico_ing=['ADE','Leucocitos','AST','ALT','Bilirrubina total','Fosfatasa alcalina','INR','Sodio sérico','Potasio sérico','pH',
+                          'Hematocrito']
+    column_bioquimio_ing=['Ingreso','Prequirúrgicos']
+    
+    
+    
+    Df_bioquimico=pd.DataFrame(marc_bioquimicos,index=index_bioquimico_ing,columns=column_bioquimio_ing)
+    #st.dataframe(Df_bioquimico)
 #ADE
 
 
@@ -290,7 +349,9 @@ def caracteristicas_base():
 #Vasopresor postqx
 
 #DIas en UCI postqx
-
+# ---------------------------------------------------------------------------- #
+#                               sintomas de ccla                               #
+# ---------------------------------------------------------------------------- #
 #Síntomas compatibles con CCLA
     con=sqlite3.connect('DB.db')
     cur=con.cursor()
@@ -325,11 +386,8 @@ def caracteristicas_base():
 ),
     y=alt.Y('Síntomas', axis=alt.Axis(labels=True)),
     color=alt.Color('Síntomas',legend=None)).properties(width=500,height=400).configure_axis(labelFontSize=18,titleFontSize=20).interactive()
-    st.title('Los síntomas más comunes referidos en el padecimiento actual')
-    st.title('')
-    st.altair_chart(l,use_container_width=True)
-    st.info('Los síntomas más comúnes presentes en el padecimiento actual de pacientes con enfermedades cardiovasculares que presentan sintomatología asociada a cuadros de colecistitis aguda')
-    
+    #st.altair_chart(l,use_container_width=True)
+    #st.info('Los síntomas más comúnes presentes en el padecimiento actual de pacientes con enfermedades cardiovasculares que presentan sintomatología asociada a cuadros de colecistitis aguda')
 
     # ---------------------------------------------------------------------------- #
     #                               Hallazgos por USG                              #
@@ -366,10 +424,9 @@ def caracteristicas_base():
     df_usg=pd.DataFrame(hallazgos_usg,usg_index,col_usg)
     df_usg.style.set_caption("Hello World")
 
-    st.info('Hallazgos USG')
-    st.table(df_usg)
-    st.area_chart(df_usg)
+    
 
+    
     # ---------------------------------------------------------------------------- #
     #                                      ASA                                     #
     # ---------------------------------------------------------------------------- #
@@ -395,9 +452,7 @@ def caracteristicas_base():
     asa_index=['ASA I', 'ASA II','ASA III','ASA IV','ASA V']
     column_asa=['Riesgo ASA']
     df_asa=pd.DataFrame(asadf,asa_index,column_asa)
-    st.subheader('Riesgo ASA')
-    st.table(df_asa)
-    st.bar_chart(df_asa)
+   
     
     
 
@@ -418,23 +473,15 @@ def caracteristicas_base():
     index_tokyo=['Leve','Moderado','Severo']
     tokyo_col=['Clasificación de Tokyo de severidad de CCLA']
     df_tokyo=pd.DataFrame(clas_tokyo,index_tokyo,tokyo_col)
-    zol1,zol2=st.columns(2)
-    with zol1:
-        st.table(df_tokyo)
-    with zol2:
-        st.bar_chart(df_tokyo)
+
     
     #Laboratorios prequirúrgicos
     Leu_count=cur.execute('''SELECT Leuing FROM Basecxcol ''')
     leu_ing=cur.fetchall()
     
     
-    columnas_leuing=['Leucocitos']
-    index_Leuing=[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38]
-    leu_df=pd.DataFrame(leu_ing,index_Leuing,columns=columnas_leuing)
-    st.info('Leucocitos al ingreso')
-    st.table(leu_ing)
-    st.bar_chart(leu_df)
+  
+   
     
     
     # ---------------------------------------------------------------------------- #
@@ -448,9 +495,8 @@ def caracteristicas_base():
     df_tiempo=(tiempo_sintqx)
     coluna=['Tiempo de inicio de síntomas']
     serie_tiempoqx=pd.DataFrame(tiempo_sintqx)
-    st.info('Tiempo de inicio de los síntomas')
-    st.table(serie_tiempoqx)
-    st.line_chart(serie_tiempoqx,)
+    st.dataframe(serie_tiempoqx)
+
 
     # ---------------------------------------------------------------------------- #
     #                                tipo de cirugía                               #
@@ -468,10 +514,8 @@ def caracteristicas_base():
     tipocx=(tipocx_laparos,tipocx_abierta,conversion)
     index_tipocx=['Cirugía laparoscópica','Cirugía abierta','Cirugía convertida']
     col_tipocx=['Tipo de cirugía']
-    st.info('Modalidad de la cirugía')
     df_tipocx=pd.DataFrame(tipocx,index_tipocx,col_tipocx)
-    st.table(df_tipocx)
-    st.bar_chart(df_tipocx)
+    
     
     
     # ---------------------------------------------------------------------------- #
@@ -479,17 +523,23 @@ def caracteristicas_base():
     # ---------------------------------------------------------------------------- #
     duracion_cx=cur.execute("""SELECT Duracionqx FROM Basecxcol WHERE Duracionqx !=1  """ )
     duracioncx=duracion_cx.fetchall()
-    st.info('Duración de cirugía')
     col_duracioncx=['Tiempo en minutos']
     #promedio_tiempo=cur.execute("""SELECT avg(Duracionqx) FROM Basecxcol""")
     #promediocx,=promedio_tiempo.fetchone()
     #df_duracioncx=[duracioncx]
 
     df_duracion=pd.DataFrame(duracioncx,columns=col_duracioncx)
-    st.table(df_duracion)
-    st.line_chart(df_duracion)
+   # ---------------------------------------------------------------------------- #
+   #                             Conversión de cirugía                            #
+   # ---------------------------------------------------------------------------- #
     #Conversión de cirugúa
-
+    #conversion_si=cur.execute('SELECT FROM Basecxcol WHERE Conversión=1')
+    #conversion_si_count=cur.fetchone()
+    
+    #Conversión_no=cur.execute('SELECT FROM Basecxcol WHERE Conversión=0')
+    #consersionno_count=cur.fetchone()
+    
+    
     #Días de estancia 
 
     #Uso de vasopresor postquirúrgico
@@ -518,8 +568,7 @@ def caracteristicas_base():
     complicaciones_df=[clavienI,clavienII,clavienIII,clavienIV,clavienV]
     index_clavien=['I','II','III','IV','V']
     df_clavien=pd.DataFrame(complicaciones_df,index_clavien)
-    st.dataframe(df_clavien)
-    st.bar_chart(df_clavien)
+  
 #Ventilación mecánica postquirúrgica
 
 #Dias uci postqx
@@ -542,17 +591,23 @@ def caracteristicas_base():
     global df_mortalidad
     global df_supervivencia
     
+    mort_litiásica=cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Muerte= "Si" AND Tipoccla ="Litiasica"')
+    mortlit_count,=cur.fetchone()
+    
+    mort_alit=cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Muerte= "Si" AND Tipoccla ="Alitiasica"')
+    mortalit_count,=cur.fetchone()
+    
+    
     porcentaje_mortalidad=(Mort_count/(Mort_count+Mort_countno))*100
     Supervivencia_porcentaje=(Mort_countno/(Mort_count+Mort_countno))*100
     supervvsmort=(Supervivencia_porcentaje,porcentaje_mortalidad)
-    mortalidad=(Mort_count,Mort_countno,Supervivencia_porcentaje,porcentaje_mortalidad,n_mort)
-    index_mortalidad=('Defunciones','Pacientes vivos','% Supervivencia','% Mortalidad','N')
+    mortalidad=(Mort_count,Mort_countno,Supervivencia_porcentaje,porcentaje_mortalidad,n_mort,mortlit_count,mortalit_count)
+    index_mortalidad=('Defunciones','Pacientes vivos','% Supervivencia','% Mortalidad','N','Mortalidad de pacientes con litiasis vesicular','Mortalidad de pacientes alitisicos')
     index_supervivencia=('Supervivientes','Mortalidad')
     columnas_mortalidad=['Número de pacientes']
     df_mortalidad=pd.DataFrame(mortalidad)
     df_supervivencia=pd.DataFrame(mortalidad,index_mortalidad,columnas_mortalidad)
-    st.error('Mortalidad')
-    st.dataframe(df_supervivencia)
+  
     #Con el styler puedes modificar el dataframe
     
     #dff_mort=pd.DataFrame({'Mortalidad':mortalidad,'Supervivencia':Supervivencia_porcentaje},index=['Numero','Bola','Sin','Cos'])
@@ -568,16 +623,18 @@ def caracteristicas_base():
     # se tiene que hacer el formato de dataframe en forma de diccionario
     
 
+# ---------------------------------------------------------------------------- #
+#                                    Tablas                                    #
+# ---------------------------------------------------------------------------- #
 
-
- # ---------------------------------------------------------------------------- #
+  # ---------------------------------------------------------------------------- #
     #                                    Tabla 1                                   #
     # ---------------------------------------------------------------------------- #
     Tabla_1_data=[avg_edad_count,23],[1,1],[masc_count,2],[fem_count,2],[peso_avg,2],[talla_promedio,1],[IMC_avg,1],[1,1],[DMcount,1],[HAScount,1],[valvcount,1],[IAMcount,1],[ICCcount,1],[EVCcount],[EPOCcount]
     index_tabla1=['Edad','Género','Masculino','Femenino','Peso','Talla','IMC','Comorbilidades','Diabetes mellitus','Hipertensión arterial','Valvulopatía','Infarto agudo al miocardio','Insuficiencia cardiáca','EVC','EPOC']
     column_tabla_1=['Promedio','Números prueba']
     tabla_1=pd.DataFrame(Tabla_1_data,index_tabla1,column_tabla_1)
-    st.info('Características base')
+    st.info('Tabla 1. Características base')
     st.dataframe(tabla_1)
 
     #Poner comobrilidades desglosadas
@@ -585,3 +642,10 @@ def caracteristicas_base():
     #Enviar datos a excel
     excel='prueba.xlsx'
     tabla_1.to_excel(excel)
+
+
+ 
+    # ---------------------------------------------------------------------------- #
+    #                         Tabla mortalidad y morbilidad                        #
+    # ---------------------------------------------------------------------------- #
+    

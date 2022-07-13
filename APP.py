@@ -15,6 +15,7 @@ import resultados
 from functools import reduce
 import numpy
 import operator
+import Modificar
 import Captura
 import resultados
 import Presentación
@@ -25,7 +26,7 @@ from annotated_text import annotated_text
 
 
 hol1,hol2,hol3=st.columns(3)
-menú=st.sidebar.selectbox("Menú",['Capturar datos','Censo','Resultados','Presentación'])
+menú=st.sidebar.selectbox("Menú",['Capturar datos','Modificar','Censo','Resultados','Presentación'])
 
 
 
@@ -134,6 +135,7 @@ elif menú=='Capturar datos':
               HTOpreqx INT, NApreqx INT,Creatpreqx REAL, Tiempoinsintqx INT, tipoqx TEXT, Duracionqx INT, Conversión BOOL, 
               Diasestancia INT, postqxvasopresor TEXT, Comppostqx TEXT, Ventmecpostqx INT, DIasUCIpreqx INT, 
               Recurrsint TEXT, Muerte TEXT,Apacheing INT,Apachepreqx INT,SOFApreqx INT)''')
+    cur.execute('ALTER TABLE Basecxcol ADD Genero)')
     con.commit()
     con.close()
     
@@ -147,7 +149,6 @@ elif menú=="Censo":
 
 elif menú=='Resultados':
     
-    st.info('Resultados')
     resultados.caracteristicas_base()
     
 
@@ -160,6 +161,9 @@ elif menú=='Presentación':
         Presentación.desencadenantes_enfermedad()
         Presentación.sintomas_ccla()
         Presentación.mortalidad()
+        
+elif menú=='Modificar':
+    Modificar.base()
         
 
     
