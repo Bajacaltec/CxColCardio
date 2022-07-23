@@ -186,7 +186,7 @@ def antecedentes():
                 col1,col2,col3=st.columns(3)
             with col1:
                 global comor
-                comor = str(st.multiselect("Enfermedades crónicas", ["Enfermedad renal crónica","Diabetes mellitus","Artritis reumatoide", "Hipertensión arterial", "Valvulopatia","Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Miocarditis","Miocardiopatia dilatada","Otros"],suy))
+                comor = str(st.multiselect("Enfermedades crónicas", ['Bloqueo auriculoventricular',"Enfermedad renal crónica","Diabetes mellitus","Artritis reumatoide", "Hipertensión arterial", "Valvulopatia","Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Miocarditis","Miocardiopatia dilatada","Otros"],suy))
             with col2:
                 global tab
                 tab=st.selectbox("Tabaquismo",['No','Si'])
@@ -221,7 +221,7 @@ def antecedentes():
              with st.expander('Antecedentes'):
                 col1,col2,col3=st.columns(3)
              with col1:
-                comor = str(st.multiselect("Enfermedades crónicas", ["Diabetes mellitus"," Evento vascular cerebral","EPOC", "Hipertensión arterial", "Valvulopatia",
+                comor = str(st.multiselect("Enfermedades crónicas", ['Bloqueo auriculoventricular',"Diabetes mellitus"," Evento vascular cerebral","EPOC", "Hipertensión arterial", "Valvulopatia",
                                         "Cirugía de corazón","Taquicardia supraventricular","Cardiopatía hipertensiva","Estenosis mitral", "Infarto agudo al miocardio", "Insuficiencia cardiaca","Miocarditis","Fibrilación auricular","Miocardiopatia dilatada","Isquemia crónica","Obesidad", "Dislipidemias","Otros"]))
              with col2:
                 tab=str(st.selectbox("Tabaquismo",['No','Si']))

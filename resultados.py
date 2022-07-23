@@ -329,8 +329,7 @@ def caracteristicas_base():
     
     ttADE = stats.ttest_ind(ade_count_fecht_ing, ade_count_fecht_preqx, 
                       equal_var=True)
-    st.write(ttADE)
-    
+
      
     marc_bioquimicos=[ade_count_fecht_ing,ade_count_fecht_preqx],[leufechting,leufechpreqx],[asting_fetch,astpreqx_fetch],[alting_fecht,altpreqx_fecht],[biltoting_fetch,biltotpreqx_fetch],[fa_fetch,fa_fetch_preqx],[inring_fetch,inr_fetch_preqx],[naing_fetch,napreqx_fetch],[king_fetch,kpreqx_fetch],[phing_fetch,phpreqx_fetch],[htoing_fetch,htopreqx_fetch]
     index_bioquimico_ing=['ADE','Leucocitos','AST','ALT','Bilirrubina total','Fosfatasa alcalina','INR','Sodio sérico','Potasio sérico','pH',
@@ -607,6 +606,7 @@ def caracteristicas_base():
     columnas_mortalidad=['Número de pacientes']
     df_mortalidad=pd.DataFrame(mortalidad)
     df_supervivencia=pd.DataFrame(mortalidad,index_mortalidad,columnas_mortalidad)
+    
   
     #Con el styler puedes modificar el dataframe
     
@@ -644,6 +644,43 @@ def caracteristicas_base():
     tabla_1.to_excel(excel)
 
 
+    # ---------------------------------------------------------------------------- #
+    #                                Clínica de ccla                               #
+    # ---------------------------------------------------------------------------- #
+    
+    #Síntomas de ccla
+    #Hallazgos USG
+    #Hallazgos TAC
+    # ---------------------------------------------------------------------------- #
+    #                          Condiciones prequirúrgicas                          #
+    # ---------------------------------------------------------------------------- #
+    #Ventilación mecánica prequirúrgica
+    #vasopresores prequirúrgicos
+    #Tipo de vasopresor
+    #Procedimiento desencadente
+    #Dias UCI
+    #ASA
+    #Tokyo
+    
+    #Mortalidad y morbilidad con labs
+    #Indicacodres bioquimicos
+    
+    #Mortalidad y morbilidad
+    #Litiasis vs alitiasis
+    
+    #Mmorbilidad y mortalidad
+    #Condiciones quirúrgicas
+    #Tiempo de sintomas a cx
+    #Tipo de cirugía
+    #Duración de cirugía
+    #Conversión de cirugía
+    #hallazgos cirugía
+    #Litiasis vs alitiasis
+    #Complicaciones postquirúrgicas
+    
+ 
+ 
+ 
  
     # ---------------------------------------------------------------------------- #
     #                         Tabla mortalidad y morbilidad                        #

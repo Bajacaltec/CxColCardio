@@ -78,9 +78,10 @@ def base():
             comor_b=comor_a.replace(" '","")
             comor_c=comor_b.replace("]","")
             comor_d=comor_c.replace("'","")
-            comor_final=comor_d.split(",")
+            comor_f=comor_d.replace("[","")
+            comor_final=comor_f.split(",")
             
-            comor=st.multiselect("Enfermedades crónicas", ["Diabetes mellitus", "Hipertensión arterial", "Valvulopatia","Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Miocarditis","Miocardiopatia dilatada","Otros"],comor_final) 
+            comor=st.multiselect("Enfermedades crónicas", ["","Diabetes mellitus", "Hipertensión arterial", "Valvulopatia","Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Miocarditis","Miocardiopatia dilatada","Otros"],comor_final) 
         with col2:
             global tab
             tab_1=bes[7]
@@ -194,13 +195,13 @@ def base():
             ALT=st.number_input("ALT ",0,100000,value=bes[24])
         with sol1:
             global Bil
-            Bil=st.number_input("Bil tot ",0.1,100.1,bes[25],0.1)
+            Bil=st.number_input("Bil tot ",0.0,100.1,bes[25],0.1)
         with sol2:
             global FA
             FA=st.number_input("FA ",0,value=bes[26])
         with sol3:
             global INR
-            INR=st.number_input("INR ",0.1,100.1,bes[27],0.1)
+            INR=st.number_input("INR ",0.0,100.1,bes[27],0.1)
         with sol4:
             global GGT
             GGT=st.number_input("GGT ",0,value=bes[28])
@@ -248,14 +249,17 @@ def base():
             usgd=usgc.replace("]","")
             usgde=usgd.replace("'","")
             usg_e=usgde.split(",")
-            usghall = str(st.multiselect("Hallazgos de ultrasonido",["Engrosamiento de pared", "Líquido perivesicular", "Litiasis vesicular",
+            usghall = str(st.multiselect("Hallazgos de ultrasonido",['',"Engrosamiento de pared", "Líquido perivesicular", "Litiasis vesicular",
                                         "Distensión vesicular", "Gas intravesicular", "Lodo biliar", "Absceso perivesicular", "Anormalidad anatomíca","Dilatación de vía biliar"],usg_e))
             #pendiente autocarga da hallazgos tomográficos
             tac_a=str(bes[47])
             st.write(tac_a)
-            tac_b=tac_a.replace
-            global tachall
-            tachall= str(st.multiselect("Hallazgos tomográficos",['Distensión vesicular',"Litiasis vesicular","Hidrocolecisto","Litiasis vesicular","Lito en vía biliar","Dilatación de la vía biliar","Estriación de la grasa perivesicular","Engrosamiento de la pared","Líquido perivesicular","Pérdida de la captación del contraste","Gas dentro de la vesícula biliar","Estriación de la grasa perivesícular","Reforzamiento de la pared vesícular"]))
+            tac_b=tac_a.replace("['","")
+            tac_c=tac_b.replace("']","")
+            tac_d=tac_c.replace(" '","")
+            tac_f=tac_d.replace("'","")
+            tac_e=tac_f.split(",")          
+            tachall= st.multiselect("Hallazgos tomográficos",["","[]",'Distensión vesicular',"Litiasis vesicular","Hidrocolecisto","Litiasis vesicular","Lito en vía biliar","Dilatación de la vía biliar","Estriación de la grasa perivesicular","Engrosamiento de la pared","Líquido perivesicular","Pérdida de la captación del contraste","Gas dentro de la vesícula biliar","Estriación de la grasa perivesícular","Reforzamiento de la pared vesícular"],tac_e)
         with col1:
             global asa
             asa_a=(bes[46])
@@ -278,9 +282,170 @@ def base():
                 st.image("/Users/alonso/CxColCardio/Paginas/Imagenes/ASA.png")
         col1, col2 = st.columns(2)
         with col1:
+            sevcole_1=bes[48]
+            if sevcole_1=='Leve':
+                sev=0
+            elif sevcole_1=='Moderado':
+                sev=1
+            elif sevcole_1=='Severo':
+                sev=2
             global sevcole
             sevcole = str(st.selectbox("Severidad (Tokio 18)", [
-                                    "Leve", "Moderado", "Severo"]))
+                                    "Leve", "Moderado", "Severo"],sev))
             tokio = st.checkbox("Clasificación de Tokio 18")
             if tokio == True:
                 st.image("/Users/alonso/CxColCardio/Paginas/Imagenes/Tokio.png")
+        
+        
+    with st.expander('Signos vitales prequirúrgicos'):
+        vol1,vol2,vol3,vol4=st.columns(4)
+        with vol1:
+            FCqx=st.number_input("FCpreqx/min",1,300,80,1)
+        with vol2:
+            FRqx=st.number_input("Frpreqx/min",1,300,20,1)
+        with vol3:
+            Sistingqx=st.number_input('Sistólicapreqx',1,300,110,1)
+        with vol4:
+            Diastqx=st.number_input('Diastólicapreqx',1,300,80,1)
+        with vol1:
+            Tempqx=st.number_input('T°Cpreqx',34.1,45.1,37.1,0.1)
+
+            
+    with st.expander('Laboratorios previos a la cirugía'):
+    
+        tol1,tol2,tol3,tol4=st.columns(4)
+        with tol1:
+            global ADEcx
+            ADEcx=st.number_input("ADE",0,100,bes[49])
+        with tol2:
+            global PCRcx
+            PCRcx=st.number_input(("PCR mg/dl"),0.1,700.0,bes[50],0.1)
+        with tol3:
+            global Leucx
+            Leucx=st.number_input("Leucocitos mm3",0,100000,bes[51])
+        with tol4:
+            global ASTcx
+            ASTcx=st.number_input("AST",0,13000,bes[52])
+        with tol1:
+            global ALTcx
+            ALTcx=st.number_input("ALT",0,1092309,bes[53])
+        with tol2:
+            global Bilcx
+            Bilcx=st.number_input("Bilirrubinas totales",0.0,100.1,bes[54])
+        with tol3:
+            global FAcx
+            FAcx=st.number_input("FA",0,100000000,bes[55])
+        with tol4:
+            global INRcx
+            INRcx=st.number_input("INR",0.0,100.1,bes[56])
+        with tol1:
+            global GGTcx
+            GGTcx=st.number_input("GGT",0,12309013290,bes[57])
+        with tol2:
+            global NAcx
+            NAcx=st.number_input('Sodio',0,10209210,bes[61])
+        with tol3:
+            global Kcx
+            Kcx=st.number_input('Potasio',value=bes[58])
+        with tol4:
+            global pHcx
+            pHcx=st.number_input("PH",0.0, 8.5,bes[59])
+        with tol1:
+            global Htocx
+            Htocx=st.number_input("Hematocrito",0,100,bes[60])
+        with tol2:
+            global Creatcx
+            Creatcx=st.number_input("Creatinina",0.0,10.1,bes[62])
+        with tol4:
+            global plaqqx
+            plaqqx=st.number_input("Plaquetaspreqx",0)
+        
+    with st.expander("Datos de la cirugía"):
+        col1,col2=st.columns(2)
+        with col1:
+            global tiempevolcx
+            tiempevolcx=st.number_input("Tiempo desde el inicio de los síntomas al tratamiento quirúrgico",0,600,bes[63],1)
+            global duracioncx
+            duracioncx=st.number_input("Duración de la cirugía (minutos)",1,700000,bes[65],1)
+            recurrencia=st.checkbox("Recurrencia de lo síntomas")
+            
+            global hallazgos
+            hall_a=str(bes[80])
+            hall_b=hall_a.replace("['","")
+            hall_c=hall_b.replace(" '","")
+            hall_d=hall_c.replace("]","")
+            hall_h=hall_d.replace("'","")
+            hall_e=hall_h.split(",")
+            
+            hallazgos=str(st.multiselect('Hallazgos quirúrgicos',["","None",'Litiasis vesicular','Trombosis de artería cística','Distensión vesicular','Absceso perivesicular','Piocolecisto','Engrosamiento de pared','Necrosis de cístico','Líquido perivesicular','Absceso hepático','necrosis vesicular','perforación vesicular'],hall_e))
+        with col2:
+            tip=str(bes[64])
+            if tip=='Laparoscopica':
+                tipcx=0
+            elif tip=='Abierta':
+                tipcx=1
+            tipocx=st.selectbox("Tipo de cirugía (abierta o laparoscopica)",["Laparoscopica","Abierta"],tipcx)
+            global convcx
+            convcx=st.checkbox("Conversión de cirugía laparoscopica a abierta",bes[66])
+            global timeppostqx
+            timeppostqx=st.number_input("Días de estancia posterior a tratamiento quirúrgico de colecistitis",1,60000,bes[67],1)
+            
+            ####### continuar aquí
+        with col1:
+            vaso=bes[68]
+            if vaso =='No':
+                vespt=0
+            elif vaso=='Si':
+                vespt=1
+            usovasopr = st.selectbox("Uso de vasopresores", ["No", "Si"],key='>Postqxvasopres',index=vespt)
+            if usovasopr == "Si":
+                tipovasopr = st.multiselect("Que vasopresor se utilizó postqx", [
+                                            "Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"])
+        with col2:
+            ventprol = st.number_input("Días con ventilación mecánica", 0, 100, bes[70], 1,key='<Postqxventilación>')
+            uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,bes[71],1,key='<uci>')
+        with col1:
+            global compli
+            clavien=bes[69]
+            if clavien=='I':
+                clavpt=0
+            elif clavien=='II':
+                clavpt=1
+            elif clavien=='III':
+                clavpt=2
+            elif clavien=='IV':
+                clavpt=3
+            elif clavien=='V':
+                clavpt=4
+            compli = st.selectbox("Complicaciones postoperatorias (Clavien-Dindo", ["I", "II", "III", "IV", "V"],key='<estamera>',index=clavpt)
+            dindo=st.checkbox('Clasificación Clavien-dindo')
+            if dindo==True:
+                st.image('clavien.png')
+        with col2:
+            global recur    
+            recurp=bes[72]
+            if recurp=='No':
+                recurpt=0
+            elif recurp=='Si':
+                recurpt=1
+            recur=st.selectbox('Recurrencia de los síntomas',['No','Si'],recurpt)
+        with col1:
+            global lit
+            try:
+                tipolit=bes[79]
+                if tipolit=='Litiasica':
+                    tipolitpt=0
+                elif tipolit=='Alitiasica':
+                    tipolitpt=1
+                lit=st.selectbox('Litiasica vs alitiasica',['Litiasica','Alitiasica'],tipolitpt)
+            except:
+                lit=st.selectbox('Litiasica vs alitiasica',['Litiasica','Alitiasica'])
+                st.error("")
+            global mort
+            mortpt=bes[73]
+            if mortpt=='No':
+                morte=0
+            elif mortpt=='Si':
+                morte=1
+            mort=st.selectbox("Muerte en los primeros 30 días posquirúrgicos",["No","Si"],morte)
+            

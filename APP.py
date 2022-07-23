@@ -135,7 +135,7 @@ elif menú=='Capturar datos':
               HTOpreqx INT, NApreqx INT,Creatpreqx REAL, Tiempoinsintqx INT, tipoqx TEXT, Duracionqx INT, Conversión BOOL, 
               Diasestancia INT, postqxvasopresor TEXT, Comppostqx TEXT, Ventmecpostqx INT, DIasUCIpreqx INT, 
               Recurrsint TEXT, Muerte TEXT,Apacheing INT,Apachepreqx INT,SOFApreqx INT)''')
-    cur.execute('ALTER TABLE Basecxcol ADD Genero)')
+    cur.execute('ALTER TABLE Basecxcol ADD Plaqpreqx INT')
     con.commit()
     con.close()
     
