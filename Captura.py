@@ -143,7 +143,7 @@ def ficha_id():
                     coment=st.text_area('Comentarios')
                     com=sqlite3.connect('DB.db')
                     cur=com.cursor()
-                    cur.execute("""UPDATE Basecxcol SET Comentarios=? WHERE Nombre=?""",(coment,nimbre))
+                    cur.execute("""UPDATE Basecxcol SET Comentarios=(?) WHERE Nombre=(?)""",(coment,nimbre))
                     com.commit()
                     com.close()
                 

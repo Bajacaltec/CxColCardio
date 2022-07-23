@@ -28,6 +28,7 @@ def base():
             numbre=nambre.replace("('","")
             global nimbre
             nimbre=(numbre.replace("',)",""),)
+            con.close()
 
             cen = sqlite3.connect('DB.db')
             cor = cen.cursor()
@@ -35,11 +36,20 @@ def base():
             global bes
             bes,=cor.fetchall()
             
-        
+            cen.commit()
+            cen.close()
             st.sidebar.write(list(bes))
             global NSS
             NSS=st.text_input("NSS",bes[2])
             global edad
+            Genero = "F" in NSS
+            if Genero == True:
+            #Para modificar el markdown con HTML se usa ese codigo de abajo
+            #willkomen = '<p style="font-family:Times; color:Brown; font-size: 60px;">Bienvenida</p>'
+            #st.markdown(willkomen, unsafe_allow_html=True)
+                Gen = ("Femenino")
+            else:
+                Gen = ("Masculino")
             bestrim_edad=int(bes[1])
             edad=st.number_input('Edad',1,200,bestrim_edad,key='987')
             bestrim_peso=int(bes[3])
@@ -92,7 +102,7 @@ def base():
             tab=st.selectbox("Tabaquismo",['No','Si'],index=tab_index)
             if tab=='Si':
                 global cajetillas
-                cajetillas=st.number_input("Cajetillas/año",1,7000,1,1)
+                cajetillas=st.number_input("Cajetillas/año",1,7000,bes[8],1)
             else:
                 cajetillas='NA'
             global cronicosapache
@@ -101,7 +111,6 @@ def base():
             try:
                 cron_1=str(bes[10])
                 cron_a=cron_1.replace("['","")
-                st.write(cron_a)
                 cron_b=cron_a.replace("']","")
                 cron_final=cron_b.split(",")
                 cronicosapache=st.multiselect('Enfermedades crónicas para APACHEII',['Ninguna','Cirrosis confirmada (biopsia) ', 'NYHA Clase IV','EPOC Grave (ej. Hipercapnia, O2 domiciliario, HT pulmonar)','Diálisis crónica','Inmunocomprometidos'],cron_final)
@@ -117,7 +126,7 @@ def base():
                 cx_cardiofinal=cxcadio_b.split(",")
                 
                 Tipocxcardio =st.multiselect("Procedimientos cardiovasculares", [
-                                            "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular"],cx_cardiofinal)
+                                            "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular",'Colocación de marcapaso'],cx_cardiofinal)
             except:
                 Tipocxcardio =st.multiselect("Procedimientos cardiovasculares", [
                                             "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular"])
@@ -154,11 +163,10 @@ def base():
                 ventprol = st.number_input(
                     "Días con ventilación mecánica previo a cirugía", 0, 100, 0, 1)
         with col1:
-            global uciestpreopx
             try:
                 uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,bes[38],1)
             except:
-                            uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
+                uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,0,1)
                             
                             #Signos vitales de ingreso
         vol1,vol2,vol3,vol4=st.columns(4)
@@ -403,7 +411,7 @@ def base():
                                             "Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"])
         with col2:
             ventprol = st.number_input("Días con ventilación mecánica", 0, 100, bes[70], 1,key='<Postqxventilación>')
-            uciestpreop=st.number_input("Dias de estancia en UCI previo a cirugía",0,300,bes[71],1,key='<uci>')
+            uciestpreop=st.number_input("Dias de estancia en UCI postquirúrgico",0,300,bes[71],1,key='<uci>')
         with col1:
             global compli
             clavien=bes[69]
@@ -421,14 +429,7 @@ def base():
             dindo=st.checkbox('Clasificación Clavien-dindo')
             if dindo==True:
                 st.image('clavien.png')
-        with col2:
-            global recur    
-            recurp=bes[72]
-            if recurp=='No':
-                recurpt=0
-            elif recurp=='Si':
-                recurpt=1
-            recur=st.selectbox('Recurrencia de los síntomas',['No','Si'],recurpt)
+       
         with col1:
             global lit
             try:
@@ -448,4 +449,13 @@ def base():
             elif mortpt=='Si':
                 morte=1
             mort=st.selectbox("Muerte en los primeros 30 días posquirúrgicos",["No","Si"],morte)
+ 
+    con=sqlite3.connect('DB.db')
+    cur=con.cursor()
+    cur.execute("UPDATE Basecxcol SET Género= ? WHERE Nombre =(?)",(Gen,nimbre))
+    con.commit()
+    con.close()
+    st.success('Modificación exitosa')
+      
+    
             
