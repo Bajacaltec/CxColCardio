@@ -149,7 +149,7 @@ elif menú=="Censo":
 
 elif menú=='Resultados':
     
-    resultados.caracteristicas_base()
+    resultados.tabla1()
     
 
     

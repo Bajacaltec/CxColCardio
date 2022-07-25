@@ -14,7 +14,6 @@ from Paginas.apache import PAM, creatdef, cronicos, cronicospreqx, edas, fcdef, 
 
 from Paginas.apache import tempdef
 from Paginas.censo import insertar
-st.set_page_config(layout="wide",initial_sidebar_state="collapsed")      
         
         
 def ficha_id():
@@ -378,7 +377,7 @@ def sintomas_ccla():
         col1, col2 = st.columns(2)
         with col1:
             global sysint
-            sysint = str(st.multiselect('Sintomas compatibles',["Dolor en hipocondrio derecho", "Vesícula palpable","Signo de Murphy", "Nausea y vómito","Ictericia","Fiebre","Dolor abdominal difuso","Estreñimiento"]))
+            sysint = str(st.multiselect('Sintomas compatibles',["","Dolor en hipocondrio derecho", "Vesícula palpable","Signo de Murphy", "Nausea y vómito","Ictericia","Fiebre","Dolor abdominal difuso","Estreñimiento"]))
         with col2:
             global usghall
             usghall = str(st.multiselect("Hallazgos de ultrasonido", ["Engrosamiento de pared", "Líquido perivesicular", "Litiasis vesicular",

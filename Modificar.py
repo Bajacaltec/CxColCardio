@@ -44,12 +44,9 @@ def base():
             global edad
             Genero = "F" in NSS
             if Genero == True:
-            #Para modificar el markdown con HTML se usa ese codigo de abajo
-            #willkomen = '<p style="font-family:Times; color:Brown; font-size: 60px;">Bienvenida</p>'
-            #st.markdown(willkomen, unsafe_allow_html=True)
-                Gen = ("Femenino")
+                Gen = "Femenino"
             else:
-                Gen = ("Masculino")
+                Gen = "Masculino"
             bestrim_edad=int(bes[1])
             edad=st.number_input('Edad',1,200,bestrim_edad,key='987')
             bestrim_peso=int(bes[3])
@@ -67,14 +64,14 @@ def base():
         with st.expander('Comentarios'):
             con=sqlite3.connect('DB.db')
             cur=con.cursor()
-            cur.execute("SELECT Comentarios FROM Basecxcol WHERE Nombre=?",(nimbre))
+            cur.execute("SELECT Comentarios FROM Basecxcol WHERE NSS=?",(NSS,))
             coment_base,=cur.fetchone()
             coment=st.text_area('Actualizar comentario',coment_base,350)
             actual_boton=st.button('Actualizar')
             if actual_boton==True:
                 con=sqlite3.connect('DB.db')
                 cur=con.cursor()
-                cur.execute("""UPDATE Basecxcol SET Comentarios2=? WHERE Nombre=?""",(coment,nimbre))
+                cur.execute("""UPDATE Basecxcol SET Comentarios2=? WHERE NSS=?""",(coment,NSS))
                 st.success('Actualizado')
                 con.commit()
                 con.close()
@@ -91,7 +88,7 @@ def base():
             comor_f=comor_d.replace("[","")
             comor_final=comor_f.split(",")
             
-            comor=st.multiselect("Enfermedades crónicas", ["","Diabetes mellitus", "Hipertensión arterial", "Valvulopatia","Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Miocarditis","Miocardiopatia dilatada","Otros"],comor_final) 
+            comor=st.multiselect("Enfermedades crónicas", ["",'Bloqueo auriculoventricular','Dislipidemias','Linfoma','Fibrilación auricular',"Diabetes mellitus", "Hipertensión arterial", "Valvulopatia","Cirugía de corazón", "Infarto agudo al miocardio", "Insuficiencia cardiaca", "Miocarditis","Miocardiopatia dilatada",'Estenosis mitral',"Otros"],comor_final) 
         with col2:
             global tab
             tab_1=bes[7]
@@ -125,10 +122,10 @@ def base():
                 cxcadio_b=cxcardio_a.replace("']","")
                 cx_cardiofinal=cxcadio_b.split(",")
                 
-                Tipocxcardio =st.multiselect("Procedimientos cardiovasculares", [
+                Tipocxcardio =st.multiselect("Procedimientos cardiovasculares", ['Disminución de clase funcional ICC','Infarto agudo al miocardio',
                                             "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular",'Colocación de marcapaso'],cx_cardiofinal)
             except:
-                Tipocxcardio =st.multiselect("Procedimientos cardiovasculares", [
+                Tipocxcardio =st.multiselect("Procedimientos cardiovasculares", ['Disminución de clase funcional ICC','Infarto agudo al miocardio',
                                             "Cirugia cardiovascular", "Cateterismo cardiaco", "Reemplazo valvular"])
         with col2:
             global usovasopr
@@ -139,21 +136,30 @@ def base():
                 index_vasopres=0
             else:
                 index_vasopres=0
-            usovasopr=st.selectbox("Uso de vasopresores previos a cirugía por CCLA", ["No", "Si"],index=index_vasopres)
+            usovasoping=st.selectbox("Uso de vasopresores previos a cirugía por CCLA", ["No", "Si"],index=index_vasopres)
             
-            if usovasopr == "Si":
+            if usovasoping == "Si":
+
                 try:
                     global tipovasopr
                     tipovaso_1=str(bes[12])
                     tipo_vaso_a=tipovaso_1.replace("['","")
                     tipo_vaso_b=tipo_vaso_a.replace("']","")
                     tipo_vaso_final=tipo_vaso_b.split(",")
-                    tipovasopr = st.multiselect("Que vasopresor se utilizó", ["Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"],tipo_vaso_final)
+                    tipovasopring = st.multiselect("Que vasopresor se utilizó", ["Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"],tipo_vaso_final)
+                    tipovasopringd=str(tipovasopring)
+                    st.success('')
+
                 except:
-                    tipovasopr = st.multiselect("Que vasopresor se utilizó", ["Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"])
+                    tipovasopring = st.multiselect("Que vasopresor se utilizó", ["Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"])
+                    tipovasopringd=str(tipovasopring)
+                    st.error('')
+
 
             else:
-                tipovasopr='NA'
+                tipovasopring='NA'
+                tipovasopringd=str(tipovasopring)
+
         with col3:
             global ventprol
             try:
@@ -248,7 +254,7 @@ def base():
             sinccld=sintccla_c.replace("'","")
             sint_cclafinal=sinccld.split(",")
             global sysint
-            sysint = st.multiselect('Sintomas compatibles',["Dolor en hipocondrio derecho", "Vesícula palpable","Signo de Murphy", "Nausea y vómito","Ictericia","Fiebre","Dolor abdominal difuso","Estreñimiento"],sint_cclafinal)
+            sysint = st.multiselect('Sintomas compatibles',["[]","Dolor en hipocondrio derecho", "Vesícula palpable","Signo de Murphy", "Nausea y vómito","Ictericia","Fiebre","Dolor abdominal difuso","Estreñimiento"],sint_cclafinal)
         with col2:
             global usghall
             usg_a=str(bes[45])
@@ -257,7 +263,7 @@ def base():
             usgd=usgc.replace("]","")
             usgde=usgd.replace("'","")
             usg_e=usgde.split(",")
-            usghall = str(st.multiselect("Hallazgos de ultrasonido",['',"Engrosamiento de pared", "Líquido perivesicular", "Litiasis vesicular",
+            usghall = str(st.multiselect("Hallazgos de ultrasonido",['','Líquido libre',"Engrosamiento de pared", "Líquido perivesicular", "Litiasis vesicular",
                                         "Distensión vesicular", "Gas intravesicular", "Lodo biliar", "Absceso perivesicular", "Anormalidad anatomíca","Dilatación de vía biliar"],usg_e))
             #pendiente autocarga da hallazgos tomográficos
             tac_a=str(bes[47])
@@ -409,9 +415,11 @@ def base():
             if usovasopr == "Si":
                 tipovasopr = st.multiselect("Que vasopresor se utilizó postqx", [
                                             "Dopamina", "Dobutamina", "Noradrenalina", "Vasopresina"])
+            else:
+                tipovasopr= "NA"
         with col2:
-            ventprol = st.number_input("Días con ventilación mecánica", 0, 100, bes[70], 1,key='<Postqxventilación>')
-            uciestpreop=st.number_input("Dias de estancia en UCI postquirúrgico",0,300,bes[71],1,key='<uci>')
+            ventprolposqx = st.number_input("Días con ventilación mecánica", 0, 100, bes[70], 1,key='<Postqxventilación>')
+            uciestposqx=st.number_input("Dias de estancia en UCI postquirúrgico",0,300,bes[71],1,key='<uci>')
         with col1:
             global compli
             clavien=bes[69]
@@ -448,14 +456,35 @@ def base():
                 morte=0
             elif mortpt=='Si':
                 morte=1
-            mort=st.selectbox("Muerte en los primeros 30 días posquirúrgicos",["No","Si"],morte)
- 
-    con=sqlite3.connect('DB.db')
-    cur=con.cursor()
-    cur.execute("UPDATE Basecxcol SET Género= ? WHERE Nombre =(?)",(Gen,nimbre))
-    con.commit()
-    con.close()
-    st.success('Modificación exitosa')
-      
-    
             
+            mort=st.selectbox("Muerte en los primeros 30 días posquirúrgicos",["No","Si"],morte)
+            comord=str(comor)
+            Tipocxcardiod=str(Tipocxcardio)
+            sisintstr=str(sysint)
+            tachalld=str(tachall)
+            tipovasoprd=str(tipovasopr)
+        modificar=st.button('Modificar')
+        if modificar==True:
+            con=sqlite3.connect('DB.db')
+            cur=con.cursor()
+            cur.execute("UPDATE Basecxcol SET Género= ? WHERE NSS = ?",(Gen,NSS))
+            cur.execute("""UPDATE Basecxcol SET Edad= ?,Peso=?,Talla=?,IMC=?,Crónicos=?,Tabaquismo=?,Cajetillas=?,Diasventmec=?,Vasopresores=?,
+                        Tipovasopresor=?,PRoccardio=?,FCing=?,FRing=?,Sising=?,Diasing=?,Temping=?,ADEing=?,
+                        PCRing=?,ASTing=?,ALTing=?,Biltoting=?,FAing=?,INRing=?,GGTing=?,
+                        King=?,PHing=?,Hematocritoing=?,Naing=?,Leuing=?,Plaquetasing=?,
+                        UCIing=?,Sintomascompatccla=?,Hallazusg=?,asa=?,Hallazgtom=?,
+                        Tokyo=?,ADEpreqx=?,Leupreqx=?,ASTpreqx=?,ALTpreqx=?,Biltotpreqx=?,
+                        FApreqx=?,INRpreqx=?,GGTpreqx=?,Kpreqx=?,PHpreqx=?,HTOpreqx=?,NApreqx=?,Creatpreqx=?,Tiempoinsintqx=?,tipoqx=?,Duracionqx=?,Conversión=?,
+                        Diasestancia=?,postqxvasopresor=?,Comppostqx=?,Ventmecpostqx=?,DiasUCIpreqx=?,Recurrsint=?,Muerte=?,Tipoccla=?,Hallazgoscx=?,
+                        Fcpreqx=?,Frpreqx=?,Sistpreqx=?,Diastpreqx=?,Temppreqx=?,Tipovasoprexposqx=?,
+                        Plaqpreqx=? WHERE NSS = ?""",(edad,peso,talla,indiceMC,comord,tab,cajetillas,ventprol,usovasoping,tipovasopringd,Tipocxcardiod,FC,FR,Sisting,Diasting,Temping,
+                        ADE,PCR,AST,ALT,Bil,FA,INR,GGT,K,pHing,Hto,NA,Leuc,plaqing,uciestpreop,sisintstr,usghall,asa,tachalld,sevcole,ADEcx,Leucx,ASTcx,ALTcx,Bilcx,FAcx,INRcx,GGTcx,Kcx,pHcx,Htocx,
+                        NAcx,Creatcx,tiempevolcx,tipocx,duracioncx,convcx,timeppostqx,usovasopr,compli,ventprolposqx,uciestposqx,recurrencia,mort,lit,hallazgos,FCqx,FRqx,Sistingqx,Diastqx,
+                        Tempqx,tipovasoprd,plaqqx,NSS))
+
+            con.commit()
+            con.close()
+            st.success('Modificación exitosa')
+        
+        
+                
