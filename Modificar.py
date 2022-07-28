@@ -372,7 +372,7 @@ def base():
             Creatcx=st.number_input("Creatinina",0.0,10.1,bes[62])
         with tol4:
             global plaqqx
-            plaqqx=st.number_input("Plaquetaspreqx",0)
+            plaqqx=st.number_input("Plaquetaspreqx",0,1000000,bes[89])
         
     with st.expander("Datos de la cirugía"):
         col1,col2=st.columns(2)
