@@ -49,6 +49,7 @@ def ficha_id():
             con = sqlite3.connect('Basededatos.db')
             cur = con.cursor()
             
+            
             recabar=cur.execute("SELECT * FROM cxcolcardio WHERE Nombre=(?)",(nombre))
             global bas
             bas,=cur.fetchall()

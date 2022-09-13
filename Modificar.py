@@ -16,7 +16,6 @@ def base():
         with st.expander('Identificación y somatometría',True):
             con = sqlite3.connect('DB.db')
             cur = con.cursor()
-
             sumedad=cur.execute('''Select Nombre FROM Basecxcol''')
             nom=cur.fetchall()
             res = []
@@ -37,10 +36,58 @@ def base():
             bes,=cor.fetchall()
             
             cen.commit()
-            cen.close()
             st.sidebar.write(list(bes))
             global NSS
             NSS=st.text_input("NSS",bes[2])
+            
+            
+            # qSOFA ingreso
+            cor.execute('SELECT Sising,Glasgowing,Fring FROM Basecxcol WHERE NSS=(?)',(NSS,))
+            qsofing,=cor.fetchall()
+            qsofa_ing_sis,qsofa_ing_glas,qsofa_ing_resp,=qsofing
+            if qsofa_ing_sis<= 100:
+                qsofa_ing_sis=1
+            else:
+                qsofa_ing_sis=0
+            if qsofa_ing_glas<=13:
+                qsofa_ing_glas=1
+            else:
+                qsofa_ing_glas=0
+            if qsofa_ing_resp>=22:
+                qsofa_ing_resp=1
+            else:
+                qsofa_ing_resp=0
+
+            qsofa_ing_total=qsofa_ing_sis+qsofa_ing_glas+qsofa_ing_resp
+            cor.execute('UPDATE Basecxcol SET qSOFA=(?) WHERE NSS=(?)',(qsofa_ing_total,NSS))
+            
+            #qSOFA prequirúrgico
+            cor.execute('SELECT Sistpreqx,Frpreqx FROM Basecxcol WHERE NSS=(?)',(NSS,))
+            qsofing,=cor.fetchall()
+            qsofa_preqx_sis,qsofa_preqx_resp=qsofing
+            glaspreqx=15
+            if qsofa_preqx_sis<= 100:
+                qsofa_preq_sis=1
+            else:
+                qsofa_preq_sis=0
+            if glaspreqx<=13:
+                qsofa_preq_glas=1
+            else:
+                qsofa_preq_glas=0
+            if qsofa_preqx_resp>=22:
+                qsofa_preq_resp=1
+            else:
+                qsofa_preq_resp=0
+
+            qsofa_preq_total=qsofa_preq_sis+qsofa_preq_glas+qsofa_preq_resp
+            cor.execute('UPDATE Basecxcol SET qSOFApreqx=(?) WHERE NSS=(?)',(qsofa_preq_total,NSS))
+
+
+            cen.commit()
+            
+            #qSOFA prequirúrgico
+            
+            
             global edad
             Genero = "F" in NSS
             if Genero == True:
@@ -470,7 +517,7 @@ def base():
             cur.execute("UPDATE Basecxcol SET Género= ? WHERE NSS = ?",(Gen,NSS))
             cur.execute("""UPDATE Basecxcol SET Edad= ?,Peso=?,Talla=?,IMC=?,Crónicos=?,Tabaquismo=?,Cajetillas=?,Diasventmec=?,Vasopresores=?,
                         Tipovasopresor=?,PRoccardio=?,FCing=?,FRing=?,Sising=?,Diasing=?,Temping=?,ADEing=?,
-                        PCRing=?,ASTing=?,ALTing=?,Biltoting=?,FAing=?,INRing=?,GGTing=?,
+                        PCRing=?,ASTing=?,ALTing=?,Biltoting=?,FAing=?,INRing=?,GGTing=?,Creating=?,
                         King=?,PHing=?,Hematocritoing=?,Naing=?,Leuing=?,Plaquetasing=?,
                         UCIing=?,Sintomascompatccla=?,Hallazusg=?,asa=?,Hallazgtom=?,
                         Tokyo=?,ADEpreqx=?,Leupreqx=?,ASTpreqx=?,ALTpreqx=?,Biltotpreqx=?,
@@ -478,7 +525,7 @@ def base():
                         Diasestancia=?,postqxvasopresor=?,Comppostqx=?,Ventmecpostqx=?,DiasUCIpreqx=?,Recurrsint=?,Muerte=?,Tipoccla=?,Hallazgoscx=?,
                         Fcpreqx=?,Frpreqx=?,Sistpreqx=?,Diastpreqx=?,Temppreqx=?,Tipovasoprexposqx=?,
                         Plaqpreqx=? WHERE NSS = ?""",(edad,peso,talla,indiceMC,comord,tab,cajetillas,ventprol,usovasoping,tipovasopringd,Tipocxcardiod,FC,FR,Sisting,Diasting,Temping,
-                        ADE,PCR,AST,ALT,Bil,FA,INR,GGT,K,pHing,Hto,NA,Leuc,plaqing,uciestpreop,sisintstr,usghall,asa,tachalld,sevcole,ADEcx,Leucx,ASTcx,ALTcx,Bilcx,FAcx,INRcx,GGTcx,Kcx,pHcx,Htocx,
+                        ADE,PCR,AST,ALT,Bil,FA,INR,GGT,creating,K,pHing,Hto,NA,Leuc,plaqing,uciestpreop,sisintstr,usghall,asa,tachalld,sevcole,ADEcx,Leucx,ASTcx,ALTcx,Bilcx,FAcx,INRcx,GGTcx,Kcx,pHcx,Htocx,
                         NAcx,Creatcx,tiempevolcx,tipocx,duracioncx,convcx,timeppostqx,usovasopr,compli,ventprolposqx,uciestposqx,recurrencia,mort,lit,hallazgos,FCqx,FRqx,Sistingqx,Diastqx,
                         Tempqx,tipovasoprd,plaqqx,NSS))
 

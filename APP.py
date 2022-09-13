@@ -1,6 +1,7 @@
 from glob import glob
 from operator import truth
 from tkinter import Menu
+from unittest import result
 from matplotlib import container
 from pytest import hookspec
 import streamlit as st
@@ -135,7 +136,6 @@ elif menú=='Capturar datos':
               HTOpreqx INT, NApreqx INT,Creatpreqx REAL, Tiempoinsintqx INT, tipoqx TEXT, Duracionqx INT, Conversión BOOL, 
               Diasestancia INT, postqxvasopresor TEXT, Comppostqx TEXT, Ventmecpostqx INT, DIasUCIpreqx INT, 
               Recurrsint TEXT, Muerte TEXT,Apacheing INT,Apachepreqx INT,SOFApreqx INT)''')
-    cur.execute('ALTER TABLE Basecxcol ADD Plaqpreqx INT')
     con.commit()
     con.close()
     
@@ -148,8 +148,17 @@ elif menú=="Censo":
 
 
 elif menú=='Resultados':
-    
+    resultados.tabla1_bis()
     resultados.tabla1()
+    resultados.tabla2()
+    resultados.tabla3()
+    resultados.tabla4()
+    resultados.tabla5()
+    resultados.tabla6()
+    resultados.tablano7()
+    resultados.tablano8()
+    resultados.a_excel()
+    
     
 
     
