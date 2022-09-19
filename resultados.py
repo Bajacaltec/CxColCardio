@@ -1,6 +1,7 @@
 from modulefinder import packagePathMap
 from turtle import color, pensize, width
 from pyparsing import col
+import scipy
 from sqlalchemy import column
 import streamlit as st
 import sqlite3
@@ -1044,60 +1045,117 @@ def tablano7():
     #Leucocitosis prequirúrgica
     #morbilidad baja
     leu_morb_baja=cur.execute('SELECT AVG(Leupreqx)FROM Basecxcol WHERE (Comppostqx="I") OR (Comppostqx="II") AND (Leupreqx!=0)')
-    leumorbaja_res,=cur.fetchone()
-    
+    leumorbaja_res,=cur.fetchone()    
     
     #Morb alta
     leu_morb_alta=cur.execute('SELECT AVG(Leupreqx) FROM Basecxcol WHERE (Comppostqx="III") OR (Comppostqx="IV") AND (Leupreqx!=0)')
     leumoralta_res,=cur.fetchone()
     
     
+    cun=sqlite3.connect('DB.db')
+    cun.row_factory = lambda cursor, row: row[0]
+    # con el rowfactory se toma solo la primera parte de la columna y te la pone en forma de lista y no tupple
+    c=cun.cursor()
     #p de leucocitosis y morbilidad
+    p_leumorb=c.execute('SELECT Leupreqx FROM Basecxcol WHERE (Comppostqx="I") OR (Comppostqx="II") AND (Leupreqx!=0)')
+    pleumorb_baja=c.fetchall()
     
+    shap_pleumorbaja=stats.shapiro(pleumorb_baja)
+    
+    st.write(shap_pleumorbaja)
+    
+    p_leu_morb_alta=c.execute('SELECT Leupreqx FROM Basecxcol WHERE (Comppostqx="III") OR (Comppostqx="IV") AND (Leupreqx!=0)')
+    p_leumoralta_res=c.fetchall()
+    st.info(p_leumoralta_res)
+    pd_p_leumoralta=pd.Series(p_leumoralta_res)
+    
+    pmorbfinal=stats.mannwhitneyu(pleumorb_baja,p_leumoralta_res)
+    st.warning(pmorbfinal)
+    
+    
+    st.subheader(pleumorb_baja)
+    st.subheader(p_leumoralta_res)
+    
+    
+    con=sqlite3.connect('DB.db')
+    con.row_factory=lambda Cursor,row:row[0]
+    cur=con.cursor()
     
      #superv 
     leu_superv=cur.execute('SELECT AVG(Leupreqx) FROM Basecxcol WHERE (Comppostqx!="V") AND (Leupreqx!=0)')
-    leusuperv_res,=cur.fetchone()
+    leusuperv_res=cur.fetchone()
     
      #Mort leu 
     leu_mort=cur.execute('SELECT AVG(Leupreqx) FROM Basecxcol WHERE (Comppostqx="V") AND (Leupreqx!=0)')
-    leumort_res,=cur.fetchone()
+    leumort_res=cur.fetchone()
+    
+    #p mort leu
+    p_leu_superv=cur.execute('SELECT Leupreqx FROM Basecxcol WHERE (Comppostqx!="V") AND (Leupreqx!=0)')
+    p_leu_superv_res=cur.fetchall()
+    st.success(p_leu_superv_res)
+    st.info(stats.shapiro(p_leu_superv_res))
+    
+    p_leu_mort=cur.execute('SELECT Leupreqx FROM Basecxcol WHERE (Comppostqx="V") AND (Leupreqx!=0)')
+    p_leumort_res=cur.fetchall()
+    st.success(p_leumort_res)
+    st.info(stats.shapiro(p_leumort_res))
+    
+    p_mort_leu=stats.mannwhitneyu(p_leu_superv_res,p_leumort_res)
+    st.error(p_mort_leu)
+
+    
+    
     
     
     
     
      #ADE prequirúrgica
     #morbilidad baja
-    ADE_morb_baja=cur.execute('SELECT AVG(ADEpreqx)FROM Basecxcol WHERE (Comppostqx="I") OR (Comppostqx="II") AND (ADEpreqx!=0)')
-    ADEmorbaja_res,=cur.fetchone()
+    ADE_morb_baja=cur.execute('SELECT AVG(ADEpreqx)FROM Basecxcol WHERE (ADEpreqx!=0) AND (Comppostqx="I") OR (Comppostqx="II" AND ADEpreqx!=0)')
+    ADEmorbaja_res=cur.fetchone()
     #Morb alta
     ADE_morb_alta=cur.execute('SELECT AVG(ADEpreqx) FROM Basecxcol WHERE (Comppostqx="III") OR (Comppostqx="IV") AND (ADEpreqx!=0)')
-    ADEmoralta_res,=cur.fetchone()
+    ADEmoralta_res=cur.fetchone()
+    
+    #p_ADE_ morb
+    p_ADE_morb_baja=cur.execute('SELECT ADEpreqx FROM Basecxcol WHERE (ADEpreqx!=0 AND Comppostqx="I") OR (Comppostqx="II" AND ADEpreqx!=0) ')
+    p_ADEmorbaja_res=cur.fetchall()
+    st.subheader(p_ADEmorbaja_res)
+    #Morb alta
+    p_ADE_morb_alta=cur.execute('SELECT ADEpreqx FROM Basecxcol WHERE  (ADEpreqx!=0 AND Comppostqx="III") OR (Comppostqx="IV" AND ADEpreqx!=0) ')
+    p_ADEmoralta_res=cur.fetchall()
+    st.subheader(p_ADEmoralta_res)
+    
+    p_shapiro_morbaja=stats.shapiro(p_ADEmorbaja_res)
+    st.warning(p_shapiro_morbaja)
+    
+    p_shapiro_morb_alta=stats.shapiro(p_ADEmoralta_res)
+    st.error(p_shapiro_morb_alta)
     
      #superv 
     ade_superv=cur.execute('SELECT AVG(ADEpreqx) FROM Basecxcol WHERE (Comppostqx!="V") AND (ADEpreqx!=0)')
-    ADEsuperv_res,=cur.fetchone()
+    ADEsuperv_res=cur.fetchone()
     
      #Mort ade 
     ADE_mort=cur.execute('SELECT AVG(ADEpreqx) FROM Basecxcol WHERE (Comppostqx="V") AND (ADEpreqx!=0)')
-    ADEmort_res,=cur.fetchone()
+    ADEmort_res=cur.fetchone()
     
     
       #HTO prequirúrgica
     #morbilidad baja
     HTO_morb_baja=cur.execute('SELECT AVG(HTOpreqx)FROM Basecxcol WHERE (Comppostqx="I") OR (Comppostqx="II") AND (HTOpreqx!=0)')
-    HTOmorbaja_res,=cur.fetchone()
+    HTOmorbaja_res=cur.fetchone()
     #Morb alta
     HTO_morb_alta=cur.execute('SELECT AVG(HTOpreqx) FROM Basecxcol WHERE (Comppostqx="III") OR (Comppostqx="IV") AND (HTOpreqx!=0)')
-    HTOmoralta_res,=cur.fetchone()
+    HTOmoralta_res=cur.fetchone()
     
      #superv 
     HTO_superv=cur.execute('SELECT AVG(HTOpreqx) FROM Basecxcol WHERE (Comppostqx!="V") AND (HTOpreqx!=0)')
-    HTOsuperv_res,=cur.fetchone()
+    HTOsuperv_res=cur.fetchone()
     
      #Mort ade 
     HTO_mort=cur.execute('SELECT AVG(HTOpreqx) FROM Basecxcol WHERE (Comppostqx="V") AND (HTOpreqx!=0)')
-    HTOmort_res,=cur.fetchone()
+    HTOmort_res=cur.fetchone()
     
     
     
@@ -1106,18 +1164,18 @@ def tablano7():
       #plaquetas prequirúrgica
     #morbilidad baja
     PLT_morb_baja=cur.execute('SELECT AVG(Plaqpreqx)FROM Basecxcol WHERE (Comppostqx="I") OR (Comppostqx="II") AND (Plaqpreqx!=0)')
-    PLTmorbaja_res,=cur.fetchone()
+    PLTmorbaja_res=cur.fetchone()
     #Morb alta
     PLT_morb_alta=cur.execute('SELECT AVG(Plaqpreqx) FROM Basecxcol WHERE (Comppostqx="III") OR (Comppostqx="IV") AND (Plaqpreqx!=0)')
-    PLTmoralta_res,=cur.fetchone()
+    PLTmoralta_res=cur.fetchone()
     
      #superv 
     PLT_superv=cur.execute('SELECT AVG(Plaqpreqx) FROM Basecxcol WHERE (Comppostqx!="V") AND (Plaqpreqx!=0)')
-    PLTsuperv_res,=cur.fetchone()
+    PLTsuperv_res=cur.fetchone()
     
      #Mort ade 
     PLT_mort=cur.execute('SELECT AVG(Plaqpreqx) FROM Basecxcol WHERE (Comppostqx="V") AND (Plaqpreqx!=0)')
-    PLTmort_res,=cur.fetchone()
+    PLTmort_res=cur.fetchone()
     
      
      
@@ -1125,18 +1183,18 @@ def tablano7():
       #AST prequirúrgica
     #morbilidad baja
     AST_morb_baja=cur.execute('SELECT AVG(ASTpreqx)FROM Basecxcol WHERE (Comppostqx="I") OR (Comppostqx="II") AND (ASTpreqx!=0)')
-    ASTmorbaja_res,=cur.fetchone()
+    ASTmorbaja_res=cur.fetchone()
     #Morb alta
     AST_morb_alta=cur.execute('SELECT AVG(ASTpreqx) FROM Basecxcol WHERE (Comppostqx="III") OR (Comppostqx="IV") AND (ASTpreqx!=0)')
-    ASTmoralta_res,=cur.fetchone()
+    ASTmoralta_res=cur.fetchone()
     
      #superv 
     AST_superv=cur.execute('SELECT AVG(ASTpreqx) FROM Basecxcol WHERE (Comppostqx!="V") AND (ASTpreqx!=0)')
-    ASTsuperv_res,=cur.fetchone()
+    ASTsuperv_res=cur.fetchone()
     
      #Mort ast 
     AST_mort=cur.execute('SELECT AVG(ASTpreqx) FROM Basecxcol WHERE (Comppostqx="V") AND (ASTpreqx!=0)')
-    ASTmort_res,=cur.fetchone()
+    ASTmort_res=cur.fetchone()
      
      
      
@@ -1144,124 +1202,124 @@ def tablano7():
       #ALT prequirúrgica
     #morbilidad baja
     ALT_morb_baja=cur.execute('SELECT AVG(ALTpreqx)FROM Basecxcol WHERE (Comppostqx="I") OR (Comppostqx="II") AND (ALTpreqx!=0)')
-    ALTmorbaja_res,=cur.fetchone()
+    ALTmorbaja_res=cur.fetchone()
     #Morb alta
     ALT_morb_alta=cur.execute('SELECT AVG(ALTpreqx) FROM Basecxcol WHERE (Comppostqx="III") OR (Comppostqx="IV") AND (ALTpreqx!=0)')
-    ALTmoralta_res,=cur.fetchone()
+    ALTmoralta_res=cur.fetchone()
     
      #superv 
     ALT_superv=cur.execute('SELECT AVG(ALTpreqx) FROM Basecxcol WHERE (Comppostqx!="V") AND (ALTpreqx!=0)')
-    ALTsuperv_res,=cur.fetchone()
+    ALTsuperv_res=cur.fetchone()
     
      #Mort alt 
     ALT_mort=cur.execute('SELECT AVG(ALTpreqx) FROM Basecxcol WHERE (Comppostqx="V") AND (ALTpreqx!=0)')
-    ALTmort_res,=cur.fetchone()
+    ALTmort_res=cur.fetchone()
     
     
     
      #Bil prequirúrgica
     #morbilidad baja
     BIL_morb_baja=cur.execute('SELECT AVG(Biltotpreqx)FROM Basecxcol WHERE (Comppostqx="I") OR (Comppostqx="II") AND (Biltotpreqx!=0)')
-    BILmorbaja_res,=cur.fetchone()
+    BILmorbaja_res=cur.fetchone()
     #Morb alta
     BIL_morb_alta=cur.execute('SELECT AVG(Biltotpreqx) FROM Basecxcol WHERE (Comppostqx="III") OR (Comppostqx="IV") AND (Biltotpreqx!=0)')
-    BILmoralta_res,=cur.fetchone()
+    BILmoralta_res=cur.fetchone()
     
      #superv 
     BIL_superv=cur.execute('SELECT AVG(Biltotpreqx) FROM Basecxcol WHERE (Comppostqx!="V") AND (Biltotpreqx!=0)')
-    BILsuperv_res,=cur.fetchone()
+    BILsuperv_res=cur.fetchone()
     
      #Mort bil 
     BIL_mort=cur.execute('SELECT AVG(Biltotpreqx) FROM Basecxcol WHERE (Comppostqx="V") AND (Biltotpreqx!=0)')
-    BILmort_res,=cur.fetchone()
+    BILmort_res=cur.fetchone()
     
     
     
      #INR prequirúrgica
     #morbilidad baja
     INR_morb_baja=cur.execute('SELECT AVG(INRpreqx)FROM Basecxcol WHERE (Comppostqx="I") OR (Comppostqx="II") AND (INRpreqx!=0)')
-    INRmorbaja_res,=cur.fetchone()
+    INRmorbaja_res=cur.fetchone()
     #Morb alta
     INR_morb_alta=cur.execute('SELECT AVG(INRpreqx) FROM Basecxcol WHERE (Comppostqx="III") OR (Comppostqx="IV") AND (INRpreqx!=0)')
-    INRmoralta_res,=cur.fetchone()
+    INRmoralta_res=cur.fetchone()
     
      #superv 
     INR_superv=cur.execute('SELECT AVG(INRpreqx) FROM Basecxcol WHERE (Comppostqx!="V") AND (INRpreqx!=0)')
-    INRsuperv_res,=cur.fetchone()
+    INRsuperv_res=cur.fetchone()
     
      #Mort bil 
     INR_mort=cur.execute('SELECT AVG(INRpreqx) FROM Basecxcol WHERE (Comppostqx="V") AND (INRpreqx!=0)')
-    INRmort_res,=cur.fetchone()
+    INRmort_res=cur.fetchone()
     
     
      #CREAT prequirúrgica
     #morbilidad baja
     CRE_morb_baja=cur.execute('SELECT AVG(Creatpreqx)FROM Basecxcol WHERE (Comppostqx="I") OR (Comppostqx="II") AND (Creatpreqx!=0)')
-    CREmorbaja_res,=cur.fetchone()
+    CREmorbaja_res=cur.fetchone()
     #Morb alta
     CRE_morb_alta=cur.execute('SELECT AVG(Creatpreqx) FROM Basecxcol WHERE (Comppostqx="III") OR (Comppostqx="IV") AND (Creatpreqx!=0)')
-    CREmoralta_res,=cur.fetchone()
+    CREmoralta_res=cur.fetchone()
     
      #superv 
     CRE_superv=cur.execute('SELECT AVG(Creatpreqx) FROM Basecxcol WHERE (Comppostqx!="V") AND (Creatpreqx!=0)')
-    CREsuperv_res,=cur.fetchone()
+    CREsuperv_res=cur.fetchone()
     
      #Mort bil 
     CRE_mort=cur.execute('SELECT AVG(Creatpreqx) FROM Basecxcol WHERE (Comppostqx="V") AND (Creatpreqx!=0)')
-    CREmort_res,=cur.fetchone()
+    CREmort_res=cur.fetchone()
      
      
      
      #Tiempo de evolución
     #morbilidad baja
     TEv_morb_baja=cur.execute('SELECT AVG(Tiempoinsintqx)FROM Basecxcol WHERE (Comppostqx="I") OR (Comppostqx="II") AND (Tiempoinsintqx!=0)')
-    TEVmorbaja_res,=cur.fetchone()
+    TEVmorbaja_res=cur.fetchone()
     #Morb alta
     TEV_morb_alta=cur.execute('SELECT AVG(Tiempoinsintqx) FROM Basecxcol WHERE (Comppostqx="III") OR (Comppostqx="IV") AND (Tiempoinsintqx!=0)')
-    TEVmoralta_res,=cur.fetchone()
+    TEVmoralta_res=cur.fetchone()
     
      #superv 
     TEV_superv=cur.execute('SELECT AVG(Tiempoinsintqx) FROM Basecxcol WHERE (Comppostqx!="V") AND (Tiempoinsintqx!=0)')
-    TEVsuperv_res,=cur.fetchone()
+    TEVsuperv_res=cur.fetchone()
     
      #Mort bil 
     TEV_mort=cur.execute('SELECT AVG(Tiempoinsintqx) FROM Basecxcol WHERE (Comppostqx="V") AND (Tiempoinsintqx!=0)')
-    TEVmort_res,=cur.fetchone()
+    TEVmort_res=cur.fetchone()
     
     
      #Tiempo quirúrgico
     #morbilidad baja
     Tqx_morb_baja=cur.execute('SELECT AVG(Duracionqx)FROM Basecxcol WHERE (Comppostqx="I") OR (Comppostqx="II") AND (Duracionqx!=0)')
-    Tqxmorbaja_res,=cur.fetchone()
+    Tqxmorbaja_res=cur.fetchone()
     #Morb alta
     Tqx_morb_alta=cur.execute('SELECT AVG(Duracionqx) FROM Basecxcol WHERE (Comppostqx="III") OR (Comppostqx="IV") AND (Duracionqx!=0)')
-    Tqxmoralta_res,=cur.fetchone()
+    Tqxmoralta_res=cur.fetchone()
     
      #superv 
     Tqx_superv=cur.execute('SELECT AVG(Duracionqx) FROM Basecxcol WHERE (Comppostqx!="V") AND (Duracionqx!=0)')
-    Tqxsuperv_res,=cur.fetchone()
+    Tqxsuperv_res=cur.fetchone()
     
      #Mort bil 
     Tqx_mort=cur.execute('SELECT AVG(Duracionqx) FROM Basecxcol WHERE (Comppostqx="V") AND (Duracionqx!=0)')
-    Tqxmort_res,=cur.fetchone()
+    Tqxmort_res=cur.fetchone()
     
     
     
     #qSOFA
     #morbilidad baja
     qSOFA_morb_baja=cur.execute('SELECT AVG(qSOFApreqx)FROM Basecxcol WHERE (Comppostqx="I") OR (Comppostqx="II")')
-    qSOFAmorbaja_res,=cur.fetchone()
+    qSOFAmorbaja_res=cur.fetchone()
     #Morb alta
     qSOFA_morb_alta=cur.execute('SELECT AVG(qSOFApreqx) FROM Basecxcol WHERE (Comppostqx="III") OR (Comppostqx="IV")')
-    qSOFAmoralta_res,=cur.fetchone()
+    qSOFAmoralta_res=cur.fetchone()
     
      #superv 
     qSOFA_superv=cur.execute('SELECT AVG(qSOFApreqx) FROM Basecxcol WHERE (Comppostqx!="V") ')
-    qSOFAsuperv_res,=cur.fetchone()
+    qSOFAsuperv_res=cur.fetchone()
     
      #Mort bil 
     qSOFA_mort=cur.execute('SELECT AVG(qSOFApreqx) FROM Basecxcol WHERE (Comppostqx="V") ')
-    qSOFAmort_res,=cur.fetchone()
+    qSOFAmort_res=cur.fetchone()
     
     
     data_bioquimico=[(leumorbaja_res,leumoralta_res,leusuperv_res,leumort_res),
@@ -1356,3 +1414,6 @@ def tablano8():
     df_motvingreso=pd.DataFrame(data_motivingreso,index_motvingreso,col_motinvgreso)
     st.table(df_motvingreso)
     
+
+  
+  

@@ -21,13 +21,14 @@ import Captura
 import resultados
 import Presentación
 from annotated_text import annotated_text
+import resultado_final
 
 
      
 
 
 hol1,hol2,hol3=st.columns(3)
-menú=st.sidebar.selectbox("Menú",['Capturar datos','Modificar','Censo','Resultados','Presentación'])
+menú=st.sidebar.selectbox("Menú",['Capturar datos','Modificar','Censo','Resultados','Presentación','Resultados finales'])
 
 
 
@@ -173,6 +174,11 @@ elif menú=='Presentación':
         
 elif menú=='Modificar':
     Modificar.base()
+    
+elif menú=='Resultados finales':
+    resultado_final.tabla_boquim_morbmorta()
+    resultado_final.tabla_boquim_morbmorta_2()
+    resultado_final.tabla_ordinales()
         
 
     
