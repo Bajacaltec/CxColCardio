@@ -655,10 +655,87 @@ def tabla_ordinales():
     fish=stats.chi
     asaI_p='???'
     
-    data_asa=[(asaI_baja,asaI_porcentaje_baja,asaI_alta,asaI_porcentaje_alta,asaI_p)]
-    index_asa=['ASA I']
+    
+    #ASAII
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="II" AND Comppostqx="I" ) OR (asa="II" AND Comppostqx= "II" )')
+    asaII_baja=cur.fetchone()
+    
+    asaII_porcentaje_baja=asaII_baja/18
+    
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="II" AND Comppostqx="III" ) OR (asa="II" AND Comppostqx= "IV" )OR (asa="II" AND Comppostqx= "V" )')
+    asaII_alta=cur.fetchone()
+    
+    asaII_porcentaje_alta=asaII_alta/18
+    fish=stats.chi
+    asaII_p='???'
+    
+    
+     #ASAIIII
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="III" AND Comppostqx="I" ) OR (asa="III" AND Comppostqx= "II" )')
+    asaIII_baja=cur.fetchone()
+    
+    asaIII_porcentaje_baja=asaIII_baja/18
+    
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="III" AND Comppostqx="III" ) OR (asa="III" AND Comppostqx= "IV" )OR (asa="III" AND Comppostqx= "V" )')
+    asaIII_alta=cur.fetchone()
+    
+    asaIII_porcentaje_alta=asaIII_alta/18
+    fish=stats.chi
+    asaIII_p='?'
+    
+    data_asa=[(asaI_baja,asaI_porcentaje_baja,asaI_alta,asaI_porcentaje_alta,asaI_p),
+              (asaII_baja,asaII_porcentaje_baja,asaII_alta,asaII_porcentaje_alta,asaII_p),
+              (asaIII_baja,asaIII_porcentaje_baja,asaIII_alta,asaIII_porcentaje_alta,asaIII_p)]
+    index_asa=['ASA I','ASA II','ASA III']
     col_asa=['CD I y II','%','CD III y IV','%%','p']
     
     df_asa=pd.DataFrame(data_asa,index_asa,col_asa)
+    obs_asa=np.array([[1.,4.,3.],[1.,4.,5.]])
+    asaIII_pe=stats.chi2_contingency(obs_asa,)
+    st.write(asaIII_pe)
     st.dataframe(df_asa)
 
+def tabla_litiasis():
+    st.info('Litiasis vs alitiasis')
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    
+    #Litiasica
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "I" AND Tipoccla = "Litiasica") OR (Comppostqx = "II" AND Tipoccla = "Litiasica")')
+    lit_morb_baja=cur.fetchone()
+    
+    #litiásica morb alta
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "III" AND Tipoccla = "Litiasica") OR (Comppostqx = "IV" AND Tipoccla = "Litiasica") OR (Comppostqx = "V" AND Tipoccla = "Litiasica")')
+    lit_morb_alta=cur.fetchone()
+    
+    #aLitiasica
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "I" AND Tipoccla = "Alitiasica") OR (Comppostqx = "II" AND Tipoccla = "Alitiasica")')
+    alit_morb_baja=cur.fetchone()
+    
+    #alitiásica morb alta
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "III" AND Tipoccla = "Alitiasica") OR (Comppostqx = "IV" AND Tipoccla = "Alitiasica") OR (Comppostqx = "V" AND Tipoccla = "Alitiasica")')
+    alit_morb_alta=cur.fetchone()
+    
+    data_lit=[[alit_morb_baja,alit_morb_alta],[lit_morb_baja,lit_morb_alta]]
+    dataalt=[[82,9],[3,5]]
+    ore=stats.fisher_exact(data_lit)
+    st.subheader(ore)
+    dt_lit=[(alit_morb_baja,alit_morb_baja/18,alit_morb_alta,alit_morb_alta/18),
+            (lit_morb_baja,lit_morb_baja/18,lit_morb_alta,lit_morb_alta/18)]
+    index_lit=['Alitiásica','Litiásica']
+    col_lit=[' CD I y II','Frec alit', ' CD >III',' Frec litiasica']
+    df_lit=pd.DataFrame(dt_lit,index_lit,col_lit)
+    dfvol=pd.DataFrame.F(df_lit)
+    st.dataframe(dfvol)
+    ore=stats.fisher_exact(data_lit)
+
+    
+    #hice una prueba de fishers con los datos de la cole liaitiasica vs alitiasica sale 
+    #p de 1 es para una prueba de 2x2
+    #    morb baja  morb alta
+    #lit
+    #alit
+    
+    
+    
