@@ -726,9 +726,10 @@ def tabla_litiasis():
     index_lit=['Alitiásica','Litiásica']
     col_lit=[' CD I y II','Frec alit', ' CD >III',' Frec litiasica']
     df_lit=pd.DataFrame(dt_lit,index_lit,col_lit)
-    dfvol=pd.DataFrame.F(df_lit)
+    dfvol=pd.DataFrame(df_lit)
     st.dataframe(dfvol)
     ore=stats.fisher_exact(data_lit)
+    st.write(ore)
 
     
     #hice una prueba de fishers con los datos de la cole liaitiasica vs alitiasica sale 
