@@ -180,6 +180,7 @@ elif menú=='Resultados finales':
     resultado_final.tabla_boquim_morbmorta_2()
     resultado_final.tabla_ordinales()
     resultado_final.tabla_litiasis()
+    resultado_final.tokyo_categórica()
         
 
     

@@ -13,6 +13,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from itertools import chain
 import altair as alt
+import rpy2.robjects.numpy2ri
+from rpy2.robjects.packages import importr
+rpy2.robjects.numpy2ri.activate()
 from scipy import stats
 plt.rcdefaults()
 from scipy.stats import ttest_ind
@@ -680,14 +683,59 @@ def tabla_ordinales():
     asaIII_alta=cur.fetchone()
     
     asaIII_porcentaje_alta=asaIII_alta/18
-    fish=stats.chi
     asaIII_p='?'
+
+    
+    #ASA IV
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="IV" AND Comppostqx="I" ) OR (asa="IV" AND Comppostqx= "II" )')
+    asaIV_baja=cur.fetchone()
+    
+    asaIV_porcentaje_baja=asaIV_baja/18
+    
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="IV" AND Comppostqx="III" ) OR (asa="IV" AND Comppostqx= "IV" )OR (asa="IV" AND Comppostqx= "V" )')
+    asaIV_alta=cur.fetchone()
+    
+    asaIV_porcentaje_alta=asaIV_alta/18
+    
+    asaIV_p='?'
+    
+    #ASA V
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="V" AND Comppostqx="I" ) OR (asa="V" AND Comppostqx= "II" )')
+    asaV_baja=cur.fetchone()
+    
+    asaV_porcentaje_baja=asaV_baja/18
+    
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="V" AND Comppostqx="III" ) OR (asa="V" AND Comppostqx= "IV" )OR (asa="V" AND Comppostqx= "V" )')
+    asaV_alta=cur.fetchone()
+    
+    asaV_porcentaje_alta=asaV_alta/18
+    
+    asaV_p='?'
+    
+    
+        #ASA VI
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="VI" AND Comppostqx="I" ) OR (asa="VI" AND Comppostqx= "II" )')
+    asaVI_baja=cur.fetchone()
+    
+    asaVI_porcentaje_baja=asaVI_baja/18
+    
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="VI" AND Comppostqx="III" ) OR (asa="VI" AND Comppostqx= "IV" )OR (asa="VI" AND Comppostqx= "V" )')
+    asaVI_alta=cur.fetchone()
+    
+    asaVI_porcentaje_alta=asaVI_alta/18
+    
+    asaVI_p='?'
+
     
     data_asa=[(asaI_baja,asaI_porcentaje_baja,asaI_alta,asaI_porcentaje_alta,asaI_p),
               (asaII_baja,asaII_porcentaje_baja,asaII_alta,asaII_porcentaje_alta,asaII_p),
-              (asaIII_baja,asaIII_porcentaje_baja,asaIII_alta,asaIII_porcentaje_alta,asaIII_p)]
-    index_asa=['ASA I','ASA II','ASA III']
-    col_asa=['CD I y II','%','CD III y IV','%%','p']
+              (asaIII_baja,asaIII_porcentaje_baja,asaIII_alta,asaIII_porcentaje_alta,asaIII_p),
+              (asaIV_baja,asaIV_porcentaje_baja,asaIV_alta,asaIV_porcentaje_alta,asaIV_p),
+              (asaV_baja,asaV_porcentaje_baja,asaV_alta,asaV_porcentaje_alta,asaV_p),
+            (asaVI_baja,asaVI_porcentaje_baja,asaVI_alta,asaVI_porcentaje_alta,asaVI_p),
+]
+    index_asa=['ASA I','ASA II','ASA III','ASA IV','ASA V','ASA VI']
+    col_asa=['CD I y II','%','CD >III','%%','p']
     
     df_asa=pd.DataFrame(data_asa,index_asa,col_asa)
     obs_asa=np.array([[1.,4.,3.],[1.,4.,5.]])
@@ -718,19 +766,20 @@ def tabla_litiasis():
     alit_morb_alta=cur.fetchone()
     
     data_lit=[[alit_morb_baja,alit_morb_alta],[lit_morb_baja,lit_morb_alta]]
-    dataalt=[[82,9],[3,5]]
-    ore=stats.fisher_exact(data_lit)
-    st.subheader(ore)
-    dt_lit=[(alit_morb_baja,alit_morb_baja/18,alit_morb_alta,alit_morb_alta/18),
+    x,ore,=stats.fisher_exact(data_lit)
+    dt_lit=[(alit_morb_baja,alit_morb_baja/18,alit_morb_alta,alit_morb_alta/18,ore),
             (lit_morb_baja,lit_morb_baja/18,lit_morb_alta,lit_morb_alta/18)]
     index_lit=['Alitiásica','Litiásica']
-    col_lit=[' CD I y II','Frec alit', ' CD >III',' Frec litiasica']
+    col_lit=[' CD I y II','Frec alit', ' CD >III',' Frec litiasica','p']
     df_lit=pd.DataFrame(dt_lit,index_lit,col_lit)
-    dfvol=pd.DataFrame(df_lit)
-    st.dataframe(dfvol)
-    ore=stats.fisher_exact(data_lit)
-    st.write(ore)
+    st.dataframe(df_lit)
 
+    
+    
+    
+    #colecistitis aguda
+    
+    
     
     #hice una prueba de fishers con los datos de la cole liaitiasica vs alitiasica sale 
     #p de 1 es para una prueba de 2x2
@@ -739,4 +788,45 @@ def tabla_litiasis():
     #alit
     
     
+def tokyo_categórica():
+    st.info('Tokyo-morbimorta')
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    #tokyo leve
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "I" AND Tokyo = "Leve") OR (Comppostqx = "II" AND Tokyo = "Leve")')
+    tokyo_morb_baja=cur.fetchone()
     
+    #tokyo leve morb alta
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "III" AND Tokyo = "Leve") OR (Comppostqx = "IV" AND Tokyo = "Leve") OR (Comppostqx = "V" AND Tokyo= "Leve")')
+    tokyo_morb_alta=cur.fetchone() 
+    
+    p_tokyo_leve='?'  
+    
+    #tokyo moderado
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "I" AND Tokyo = "Moderado") OR (Comppostqx = "II" AND Tokyo = "Moderado")')
+    tokyoII_morb_baja=cur.fetchone()
+    
+    #tokyo moderado morb alta
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "III" AND Tokyo = "Moderado") OR (Comppostqx = "IV" AND Tokyo = "Moderado") OR (Comppostqx = "V" AND Tokyo= "Moderado")')
+    tokyoII_morb_alta=cur.fetchone() 
+    
+    p_tokyo_moderado='?'  
+    
+    #tokyo severo
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "I" AND Tokyo = "Severo") OR (Comppostqx = "II" AND Tokyo = "Severo")')
+    tokyoIII_morb_baja=cur.fetchone()
+    
+    #tokyo moderado morb alta
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "III" AND Tokyo = "Severo") OR (Comppostqx = "IV" AND Tokyo = "Severo") OR (Comppostqx = "V" AND Tokyo= "Severo")')
+    tokyoIII_morb_alta=cur.fetchone() 
+    
+    p_tokyo_severo='0.16'  
+    
+    index_tokyo=['Tokyo I','Tokyo II','Tokyo III'] 
+    column_tokyo=['CD I y II','CD >III','p']
+    data_tokyo=[(tokyo_morb_baja,tokyo_morb_alta,p_tokyo_leve),
+                (tokyoII_morb_baja,tokyoII_morb_alta,p_tokyo_moderado),
+                (tokyoIII_morb_baja,tokyoIII_morb_alta,p_tokyo_severo)]
+    tokyo_df=pd.DataFrame(data_tokyo,index_tokyo,column_tokyo)
+    st.dataframe(tokyo_df)
