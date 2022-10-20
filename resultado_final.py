@@ -1,3 +1,5 @@
+from ctypes.wintypes import PPOINT
+from lib2to3.pgen2 import pgen
 from modulefinder import packagePathMap
 from statistics import mean, pvariance, variance
 import statistics
@@ -13,9 +15,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from itertools import chain
 import altair as alt
-import rpy2.robjects.numpy2ri
-from rpy2.robjects.packages import importr
-rpy2.robjects.numpy2ri.activate()
+
 from scipy import stats
 plt.rcdefaults()
 from scipy.stats import ttest_ind
@@ -670,7 +670,7 @@ def tabla_ordinales():
     
     asaII_porcentaje_alta=asaII_alta/18
     fish=stats.chi
-    asaII_p='???'
+    asaII_p='0.1362'
     
     
      #ASAIIII
@@ -830,3 +830,375 @@ def tokyo_categórica():
                 (tokyoIII_morb_baja,tokyoIII_morb_alta,p_tokyo_severo)]
     tokyo_df=pd.DataFrame(data_tokyo,index_tokyo,column_tokyo)
     st.dataframe(tokyo_df)
+
+def motivo():
+    st.info('Motivo de ingreso, análisis ordinal')
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    
+    #Patología vesicular de inicio
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (PRoccardio LIKE "%[]%" AND Comppostqx="I")  OR (PRoccardio LIKE "%[]%" AND Comppostqx="II")' )
+    colnomor_res=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (PRoccardio LIKE "%[]%"AND Comppostqx="III") OR (PRoccardio LIKE "%[]%"AND Comppostqx="IV") OR (PRoccardio LIKE "%[]%"AND Comppostqx="V")' )
+    colsimor_res=cur.fetchone()
+    
+    
+    #infarto agudo al miocardio con morbilidad baja
+    iam_nomorb=cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (PRoccardio LIKE "%Infarto%" OR PRoccardio LIKE "%Cateterismo%") AND (Comppostqx="I" OR Comppostqx="II")' )
+    iamnomor_res=cur.fetchone()
+    
+    iam_mort=cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (PRoccardio LIKE "%Infarto%" OR PRoccardio LIKE "%Cateterismo%") AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")' )
+    iammorta_res=cur.fetchone()
+    
+    
+     #Arritmia
+    arritmia_nomorb=cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (PRoccardio LIKE "%marcapaso%" ) AND (Comppostqx="I" OR Comppostqx="II")' )
+    arritmia_nomor_res=cur.fetchone()
+    
+    arritmia_mort=cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (PRoccardio LIKE "%marcapaso%") AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")' )
+    arritmia_morta_res=cur.fetchone()
+    
+    
+    
+    #Cirugía
+    cirugía_nomorb=cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (PRoccardio LIKE "%Cirugia%" OR PRoccardio Like "%Reemplazo%") AND (Comppostqx="I" OR Comppostqx="II")' )
+    cx_nomor_res=cur.fetchone()
+    
+    cx_mort=cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (PRoccardio LIKE "%Cirugia%" OR PRoccardio Like "%Reemplazo%") AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")' )
+    cx_morta_res=cur.fetchone()
+    
+    
+    #ICC
+    IC_nomorb=cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (PRoccardio LIKE "%funcional%" ) AND (Comppostqx="I" OR Comppostqx="II")' )
+    IC_nomor_res=cur.fetchone()
+    
+    
+    IC_mort=cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (PRoccardio LIKE "%funcional%" ) AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")' )
+    IC_morta_res=cur.fetchone()
+    
+    #Dataframe
+    data=[(colnomor_res,colnomor_res/18,colsimor_res,colsimor_res/18),
+          (iamnomor_res,iamnomor_res/18,iammorta_res,iammorta_res/18),
+          (arritmia_nomor_res,arritmia_nomor_res/18,arritmia_morta_res,arritmia_morta_res/18),
+          (cx_nomor_res,cx_nomor_res/18,cx_morta_res,cx_morta_res/18),
+          (IC_nomor_res,IC_nomor_res/18,IC_morta_res,IC_morta_res/18)]
+    index_motiv=['CCLA','IAM','Arritmia','Cirugía cardiovascular','ICC']
+    column_motiv=['CD I y II','%','CD>III','%%']
+    motiv_df=pd.DataFrame(data,index_motiv,column_motiv)
+    st.dataframe(motiv_df)
+    hu=np.array([[36.6,63.4],[41.7,58.3]])
+    re=stats.fisher_exact(hu)
+    st.write(re)
+    
+    
+def hallazgos_mort():
+    st.info('Hallazgos transquirúrgicos y morbimortalidad')
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    
+    #Distensión
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%Distensión%" AND (Comppostqx="I" OR Comppostqx="II")')
+    hall_distensión_baja=cur.fetchone()
+    
+    porc_distension_baja=hall_distensión_baja/18
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%Distensión%" AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    hall_distensión_alta=cur.fetchone()
+    
+    porc_distension_alta=hall_distensión_alta/18
+    tabla=[5,4],[6,3]
+    o,p_distensión,=stats.fisher_exact(tabla)
+    
+    #Necrosis
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%necrosis vesicular%" AND (Comppostqx="I" OR Comppostqx="II")')
+    hall_necrosisves_baja=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%necrosis vesicular%" AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    hall_necrosisves_alta=cur.fetchone()
+    
+    tabla_necro=[4,6],[7,1]
+    o,y_distensión,=stats.fisher_exact(tabla_necro)
+    
+    
+    #NEcrosis cístico
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%Necrosis de cístico%" AND (Comppostqx="I" OR Comppostqx="II")')
+    hall_necrosiscist_baja=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%Necrosis de cístico%" AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    hall_necrosiscist_alta=cur.fetchone()
+    
+    tabla_necrocist=[hall_necrosiscist_baja,10],[hall_necrosiscist_alta,6]
+    h,p_necrocist=stats.fisher_exact(tabla_necrocist)
+    
+    
+    #Líquido perivesicular
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%Líquido perivesicular%" AND (Comppostqx="I" OR Comppostqx="II")')
+    hall_liqperives_baja=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%Líquido perivesicular%" AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    hall_liqperives_alta=cur.fetchone()
+    
+    u,p_liq=stats.fisher_exact(([2,1],[9,6]))
+    
+    
+    #Piocolecisto
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%Piocolecisto%" AND (Comppostqx="I" OR Comppostqx="II")')
+    hall_piocolecisto_baja=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%Piocolecisto%" AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    hall_piocolecisto_alta=cur.fetchone()
+    
+    ug,p_pio=stats.fisher_exact(([7,3],[4,4]))
+    
+    
+    
+    
+    #Engrosamiento de pared
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%Engrosamiento%" AND (Comppostqx="I" OR Comppostqx="II")')
+    hall_engrosamiento_baja=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%Engrosamiento%" AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    hall_engrosamiento_alta=cur.fetchone()
+    
+    ugr,p_engrosamiento=stats.fisher_exact(([6,2],[5,5]))
+    
+    
+    
+     #Perforación vesicular
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%Perforación%" AND (Comppostqx="I" OR Comppostqx="II")')
+    hall_perforación_baja=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%perforación%" AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    hall_perforación_alta=cur.fetchone()
+    
+    uggg,p_perforación=stats.fisher_exact(([1,3],[10,4]))
+    
+    
+    
+     #abscesco peri vesicular
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%Absceso%" AND (Comppostqx="I" OR Comppostqx="II")')
+    hall_absceso_baja=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgoscx LIKE "%Absceso%" AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    hall_absceso_alta=cur.fetchone()
+    
+    ugggee,p_absceso=stats.fisher_exact(([1,0],[10,7]))
+    
+    data_hallzgos=[(hall_distensión_baja,hall_distensión_alta,p_distensión),(hall_necrosisves_baja,hall_necrosisves_alta,y_distensión),
+                   (hall_necrosiscist_baja,hall_necrosiscist_baja,p_necrocist),
+                   (hall_liqperives_baja,hall_liqperives_alta,p_liq),
+                   (hall_piocolecisto_baja,hall_piocolecisto_alta,p_pio),
+                   (hall_engrosamiento_baja,hall_engrosamiento_alta,p_engrosamiento),
+                   (hall_perforación_baja,hall_perforación_alta,p_perforación),
+                   (hall_absceso_baja,hall_absceso_alta,p_absceso)]
+    index_hallazgos=['Distensión vesicular','Necrosis vesicular','Necrosis cístico','Líquido perivesicular',
+                     'Piocolecisto','Pared engrosada','Perforación vesicular','Absceso perivesicular']
+    col_hallzgos=['CD I y II','CD >III','p']
+    df_hallazgos=pd.DataFrame(data_hallzgos,index_hallazgos,col_hallzgos)
+    st.dataframe(df_hallazgos)
+    
+    
+def tokyo_no_trend():
+    st.info('Análisis no trend de ASA y Tokyo vs morbimorta')
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    
+     #tokyo leve
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "I" AND Tokyo = "Leve") OR (Comppostqx = "II" AND Tokyo = "Leve")')
+    tokyo_morb_baja=cur.fetchone()
+    
+    #tokyo leve morb alta
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "III" AND Tokyo = "Leve") OR (Comppostqx = "IV" AND Tokyo = "Leve") OR (Comppostqx = "V" AND Tokyo= "Leve")')
+    tokyo_morb_alta=cur.fetchone() 
+    
+    z,p_tokyo_leve,=stats.fisher_exact(([tokyo_morb_baja,tokyo_morb_alta],[7,6])) 
+    
+    
+    #tokyo mod
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "I" AND Tokyo = "Moderado") OR (Comppostqx = "II" AND Tokyo = "Moderado")')
+    tokyo_mode_baja=cur.fetchone()
+    
+    #tokyo leve morb alta
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "III" AND Tokyo = "Moderado") OR (Comppostqx = "IV" AND Tokyo = "Moderado") OR (Comppostqx = "V" AND Tokyo= "Moderado")')
+    tokyo_mode_alta=cur.fetchone() 
+    
+    zi,tokyomod_p,=stats.fisher_exact(([tokyo_mode_baja,tokyo_mode_alta],[7,1])) 
+    
+    
+    
+     #tokyo sev
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "I" AND Tokyo = "Severo") OR (Comppostqx = "II" AND Tokyo = "Severo")')
+    tokyo_sev_baja=cur.fetchone()
+    
+    #tokyo leve morb alta
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE (Comppostqx = "III" AND Tokyo = "Severo") OR (Comppostqx = "IV" AND Tokyo = "Severo") OR (Comppostqx = "V" AND Tokyo= "Severo")')
+    tokyo_sev_alta=cur.fetchone() 
+    
+    zi,tokyosev_p,=stats.fisher_exact(([tokyo_sev_baja,tokyo_sev_alta],[4,7])) 
+    
+    data_tokyo=[(tokyo_morb_baja,tokyo_morb_alta,p_tokyo_leve),
+                (tokyo_mode_baja,tokyo_mode_alta,tokyomod_p),
+                (tokyo_sev_baja,tokyo_sev_alta,tokyosev_p)]
+    indextokyo=['Tokyo I','Tokyo II','Tokyo III']
+    col_tokyo=['CD I y II','CD>III','p']
+    df_tokyo=pd.DataFrame(data_tokyo,indextokyo,col_tokyo)
+    st.dataframe(df_tokyo)
+    
+def asa_notrend():
+    st.info('ASA no trend')
+    #ASA
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    #ASA I es cero no tenemos pacientes
+    #ASAII
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="II" AND Comppostqx="I" ) OR (asa="II" AND Comppostqx= "II" )')
+    asaII_baja=cur.fetchone()
+        
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="II" AND Comppostqx="III" ) OR (asa="II" AND Comppostqx= "IV" )OR (asa="II" AND Comppostqx= "V" )')
+    asaII_alta=cur.fetchone()
+    
+    gu,p_asaII=stats.fisher_exact(([asaII_baja,asaII_alta],[9,7]))
+    
+    
+    #ASAIII
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="III" AND Comppostqx="I" ) OR (asa="III" AND Comppostqx= "II" )')
+    asaIII_baja=cur.fetchone()
+        
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="III" AND Comppostqx="III" ) OR (asa="III" AND Comppostqx= "IV" )OR (asa="III" AND Comppostqx= "V" )')
+    asaIII_alta=cur.fetchone()
+    
+    gug,p_asaIII=stats.fisher_exact(([asaIII_baja,asaIII_alta],[8,6]))
+    
+    
+    #ASAIV
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="IV" AND Comppostqx="I" ) OR (asa="IV" AND Comppostqx= "II" )')
+    asaIV_baja=cur.fetchone()
+        
+    cur.execute('SELECT Count(*) FROM Basecxcol WHERE (asa="IV" AND Comppostqx="III" ) OR (asa="IV" AND Comppostqx= "IV" )OR (asa="IV" AND Comppostqx= "V" )')
+    asaIV_alta=cur.fetchone()
+    
+    guge,p_asaIV=stats.fisher_exact(([asaIV_baja,asaIV_alta],[5,1]))
+    
+    data_asa=[(asaII_baja,asaII_alta,p_asaII),
+              (asaIII_baja,asaIII_alta,p_asaIII),
+              (asaIV_baja,asaIV_alta,p_asaIV)]
+    index_asa=['ASA II','ASA III','ASA IV']
+    col_asa=['CD I y II','CD >III','p']
+    df_asa=pd.DataFrame(data_asa,index_asa,col_asa)
+    st.dataframe(df_asa)
+    
+    
+
+    
+def tablano8():
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    st.info('Laboratorios prequirúrgicos')
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    
+    #ADE preqx vs morbimorta
+    cur.execute('SELECT ADEpreqx From Basecxcol WHERE ADEpreqx != 0 AND (Comppostqx="I" OR Comppostqx="II")')
+    adepreqx_baja=cur.fetchall()
+    adepreqx_baja_avg=np.average(adepreqx_baja)
+    
+    #ADE preqx vs morbimorta
+    cur.execute('SELECT ADEpreqx From Basecxcol WHERE ADEpreqx != 0 AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    adepreqx_alta=cur.fetchall()
+    adepreqx_alta_avg=np.average(adepreqx_alta)
+    
+    i,p_ade=stats.ttest_ind(adepreqx_baja,adepreqx_alta,equal_var=False)
+    
+    #DF
+    data_preqx=[(adepreqx_baja,adepreqx_baja_avg,adepreqx_alta,adepreqx_alta_avg,p_ade)]
+    index_preqx=['ADE']
+    Col_preqx=['ADE baja','ADE prom baja','ADE alta','ADE prom alta','p']
+    df_preqx=pd.DataFrame(data_preqx,index_preqx,Col_preqx)
+    st.dataframe(df_preqx)
+    
+    
+def tabla_extras():
+    st.info('Extras')
+    #Genero, edad, BMI, tabaquismo
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    #genero masculino morb baja
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Género="Masculino" AND (Comppostqx="I" OR Comppostqx="II")')
+    masculino_baja=cur.fetchone()
+    
+    #genero masculino morb alta
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Género="Masculino" AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    masculino_alta=cur.fetchone()
+    
+    #genero femenino morb baja
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Género="Femenino" AND (Comppostqx="I" OR Comppostqx="II")')
+    femenino_baja=cur.fetchone()
+    
+    #genero femenino morb alta
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Género="Femenino" AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    femenino_alta=cur.fetchone()
+    
+    j,p_genero=stats.fisher_exact(([5,5],[6,2]))
+    
+    
+    index_genero=['Hombre','Mujer']
+    col_genero=['CD I y II','CD >III','p']
+    df_genero=pd.DataFrame([(masculino_baja,masculino_alta,p_genero),
+                            (femenino_baja,femenino_alta)],index_genero,col_genero)
+    st.dataframe(df_genero)
+    
+    
+    #Edad morb baja
+    cur.execute('SELECT Edad From Basecxcol WHERE Edad!=0 AND (Comppostqx="I" OR Comppostqx="II")')
+    edad_baja=cur.fetchall()
+    edad_baja_avg=np.average(edad_baja)
+    
+    #Edad morb alta
+    cur.execute('SELECT Edad From Basecxcol WHERE Edad!=0 AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    edad_alta=cur.fetchall()
+    edad_alta_avg=np.average(edad_alta)
+    
+    x,p_edad=stats.ttest_ind(edad_baja,edad_alta)
+    
+    data_edad=[(edad_baja,edad_baja_avg,edad_alta,edad_alta_avg,p_edad)]
+    index_edad=['Edad']
+    col_edad=['CD I y II','Prom', 'CD > III','Promedio','p']
+    #Df
+    df_edad=pd.DataFrame(data_edad,index_edad,col_edad)
+    st.dataframe(df_edad)
+    
+    
+    #BMI morb baja
+    cur.execute('SELECT IMC From Basecxcol WHERE IMC!=0 AND (Comppostqx="I" OR Comppostqx="II")')
+    IMC_baja=cur.fetchall()
+    IMC_baja_avg=np.average(IMC_baja)
+    
+    #BMI morb alta
+    cur.execute('SELECT IMC From Basecxcol WHERE IMC!=0 AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    IMC_alta=cur.fetchall()
+    IMC_alta_avg=np.average(IMC_alta)
+    
+    xx,p_IMC=stats.ttest_ind(IMC_baja,IMC_alta)
+    
+    data_IMC=[(IMC_baja,IMC_baja_avg,IMC_alta,IMC_alta_avg,p_IMC)]
+    index_IMC=['IMC']
+    col_IMC=['CD I y II','Prom', 'CD > III','Promedio','p']
+    #Df
+    df_IMC=pd.DataFrame(data_IMC,index_IMC,col_IMC)
+    st.dataframe(df_IMC)
+    
+    
+    
+    
+    
+    
+    

@@ -181,6 +181,12 @@ elif menú=='Resultados finales':
     resultado_final.tabla_ordinales()
     resultado_final.tabla_litiasis()
     resultado_final.tokyo_categórica()
+    resultado_final.motivo()
+    resultado_final.hallazgos_mort()
+    resultado_final.tokyo_no_trend()
+    resultado_final.asa_notrend()
+    resultado_final.tablano8()
+    resultado_final.tabla_extras()
         
 
     
