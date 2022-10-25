@@ -187,6 +187,14 @@ elif menú=='Resultados finales':
     resultado_final.asa_notrend()
     resultado_final.tablano8()
     resultado_final.tabla_extras()
+    resultado_final.ventilacionmec()
+    resultado_final.tabaquismo()
+    resultado_final.vasopresposqx()
+    resultado_final.padecimiento_dias()
+    resultado_final.vasopresores_preqx()
+    resultado_final.edad_60omas()
+    resultado_final.tabla_comparativa_ingpreqx()
+    
         
 
     

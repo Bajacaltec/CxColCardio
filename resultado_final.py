@@ -3,6 +3,7 @@ from lib2to3.pgen2 import pgen
 from modulefinder import packagePathMap
 from statistics import mean, pvariance, variance
 import statistics
+from tkinter import PhotoImage
 from turtle import color, pensize, width
 from matplotlib.cbook import safe_first_element
 from pyparsing import col
@@ -1195,6 +1196,437 @@ def tabla_extras():
     #Df
     df_IMC=pd.DataFrame(data_IMC,index_IMC,col_IMC)
     st.dataframe(df_IMC)
+    
+def ventilacionmec():
+    st.info('Ventilación mecanica y morbimortalidad')
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    #genero masculino morb baja
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Diasventmec!=0 AND (Comppostqx="I" OR Comppostqx="II")')
+    ventmec_baja=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Diasventmec!=0 AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    ventmec_alta=cur.fetchone()
+    
+    yu,p_ventmec,=stats.fisher_exact(([ventmec_baja,ventmec_alta],[9,2]))
+    #df
+    index_ventmec=['Ventilación mecánica']
+    col_ventmec=['CD I y II', 'CD>III','p']
+    data_ventmec=[(ventmec_baja,ventmec_alta,p_ventmec)]
+    st.dataframe(pd.DataFrame(data_ventmec,index_ventmec,col_ventmec))
+    
+    
+def tabaquismo():
+    st.info('Tabaquismo y morbimortalidad')
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    #genero masculino morb baja
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Tabaquismo="Si" AND (Comppostqx="I" OR Comppostqx="II")')
+    tab_baja=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Tabaquismo="Si" AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    tab_alta=cur.fetchone()
+    
+    yu,p_tab,=stats.fisher_exact(([tab_baja,tab_alta],[7,2]))
+    #df
+    index_tab=['Tabaquismo ']
+    col_tab=['CD I y II', 'CD>III','p']
+    data_tab=[(tab_baja,tab_alta,p_tab)]
+    st.dataframe(pd.DataFrame(data_tab,index_tab,col_tab))
+    
+def vasopresposqx():
+    st.info('Vasopresor postqx y morbimortalidad')
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    #genero masculino morb baja
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE postqxvasopresor="Si" AND (Comppostqx="I" OR Comppostqx="II")')
+    vasopresposqx_baja=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE postqxvasopresor="Si" AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    vasopresorposqx_alta=cur.fetchone()
+    
+    yu,p_vasopres,=stats.fisher_exact(([vasopresposqx_baja,vasopresorposqx_alta],[9,1]))
+    #df
+    index_vasopres=['Vasopresor posquirúrgico ']
+    col_vasopres=['CD I y II', 'CD>III','p']
+    data_vasopres=[(vasopresposqx_baja,vasopresorposqx_alta,p_vasopres)]
+    st.dataframe(pd.DataFrame(data_vasopres,index_vasopres,col_vasopres))
+    
+    
+def pade_sint():
+    st.info('Duración de cirugía y morbimortalidad')
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    #genero masculino morb baja
+    cur.execute('SELECT Tiempoinsintqx FROM Basecxcol WHERE Tiempoinsintqx!=1 AND (Comppostqx="I" OR Comppostqx="II")')
+    duraciónqx_baja=cur.fetchall()
+    st.write(duraciónqx_baja)
+    ave_duracion_baja=np.average(duraciónqx_baja)
+    
+    t,shapiro_duracionbaja=stats.shapiro(duraciónqx_baja)
+    st.write(shapiro_duracionbaja)
+    
+    cur.execute('SELECT Tiempoinsintqx FROM Basecxcol WHERE Tiempoinsintqx!=1 AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    duraciónqx_alta=cur.fetchall()
+    st.write(duraciónqx_alta)
+    aveg_duracion_alta=np.average(duraciónqx_alta)
+    data_tt=np.array(duraciónqx_baja)
+    dta_bb=np.array(duraciónqx_alta)
+    yu,p_duracionqx,=stats.mannwhitneyu(data_tt,dta_bb)
+    #df
+    index_duracion=['Duración cirugía ']
+    col_duracion=['CD I y II', 'CD>III','p']
+    data_duracion=[(ave_duracion_baja,aveg_duracion_alta,p_duracionqx)]
+    st.dataframe(pd.DataFrame(data_duracion,index_duracion,col_duracion))
+    st.write(duraciónqx_baja)
+
+    
+    
+def padecimiento_dias():
+    st.info('Padecimiento actual y morbimortalidad')
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    #genero masculino morb baja
+    cur.execute('SELECT Tiempoinsintqx FROM Basecxcol WHERE Comppostqx="I" OR Comppostqx="II"')
+    Tiempoinsintqx_baja=cur.fetchall()
+    st.write(Tiempoinsintqx_baja)
+    ave_tiempoinsintqx_baja=np.average(Tiempoinsintqx_baja)
+    
+    t,shapiro__tiempoinsintqxbaja=stats.shapiro(Tiempoinsintqx_baja)
+    st.write(Tiempoinsintqx_baja)
+    
+    cur.execute('SELECT Tiempoinsintqx FROM Basecxcol WHERE Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V"')
+    Tiempoinsintqx_alta=cur.fetchall()
+    st.write(Tiempoinsintqx_alta)
+    aveg_duracion_alta=np.average(Tiempoinsintqx_alta)
+    data_tt=np.array(Tiempoinsintqx_baja)
+    dta_bb=np.array(Tiempoinsintqx_alta)
+    yu,p_tiempoinsintqx,=stats.mannwhitneyu(data_tt,dta_bb)
+    #df
+    index_duracion=['Tiempo de inicio de padecimiento actual']
+    col_duracion=['CD I y II', 'CD>III','p']
+    data_duracion=[(ave_tiempoinsintqx_baja,aveg_duracion_alta,p_tiempoinsintqx)]
+    st.dataframe(pd.DataFrame(data_duracion,index_duracion,col_duracion))
+    st.write(Tiempoinsintqx_baja)
+
+
+def vasopresores_preqx():
+    st.info('Vasopresor prequirúrgico y morbimortalidad')
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    #genero masculino morb baja
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Vasopresores="Si" AND (Comppostqx="I" OR Comppostqx="II")')
+    Vasopresores_baja=cur.fetchall()
+    st.write(Vasopresores_baja)
+    ave_Vasopresores_baja=np.average(Vasopresores_baja)
+    
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Vasopresores="Si" AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    Vasopresores_alta=cur.fetchall()
+    aveg_duracion_alta=np.average(Vasopresores_alta)
+    data_tt=np.array(Vasopresores_baja)
+    dta_bb=np.array(Vasopresores_alta)
+    yu,p_vasopresores,= stats.fisher_exact(([4,3],[7,3]))
+    #df
+    index_duracion=['Uso de vasopresores prequirúrgicos']
+    col_duracion=['CD I y II', 'CD>III','p']
+    data_duracion=[(ave_Vasopresores_baja,aveg_duracion_alta,p_vasopresores)]
+    st.dataframe(pd.DataFrame(data_duracion,index_duracion,col_duracion))
+    st.write(Vasopresores_baja)
+
+
+def edad_60omas():
+    st.info('60 o mas años y morbimortalidad')
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    #genero masculino morb baja
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Edad>=60 AND (Comppostqx="I" OR Comppostqx="II")')
+    edad_baja=cur.fetchall()
+    
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Edad>=60 AND (Comppostqx="III" OR Comppostqx="IV" OR Comppostqx="V")')
+    edad_alta=cur.fetchall()
+    yu,p_vasopresores,= stats.fisher_exact(([8,7],[3,0]))
+    #df
+    index_duracion=['Edad >60']
+    col_duracion=['CD I y II', 'CD>III','p']
+    data_duracion=[(edad_baja,edad_alta,p_vasopresores)]
+    st.dataframe(pd.DataFrame(data_duracion,index_duracion,col_duracion))
+
+
+
+def tabla_comparativa_ingpreqx():
+    st.info('Comparativa de variables ingreso vs prequirúrgicas')
+    
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    
+    #FC
+    cur.execute('SELECT FCing FROM Basecxcol  WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"')
+    fcing_av=cur.fetchall()
+    fcing_average=np.average(fcing_av)
+    st.success(fcing_average)
+    
+    cur.execute('SELECT FCpreqx FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    fc_preqx_avg=cur.fetchall()
+    fcpreqx_average=np.average(fc_preqx_avg)
+    
+    i,p_fc=stats.ttest_rel(fcing_av,fc_preqx_avg)
+    st.write(p_fc)
+    
+    
+    #FR
+    cur.execute('SELECT FRing FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    fr_ing=cur.fetchall()
+    fr_average=np.average(fr_ing)
+   
+    
+    cur.execute('SELECT FRpreqx FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    fr_preqx=cur.fetchall()
+    frpreqx_average=np.average(fr_preqx)
+    
+    di,p_fr=stats.ttest_rel(fr_ing,fr_preqx)
+    st.write(p_fr)
+
+    
+    
+    #Sistólica
+    cur.execute('SELECT Sising FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    sis_ing_avg=cur.fetchall()
+    sis_average=np.average(sis_ing_avg)
+    
+    cur.execute('SELECT Sistpreqx FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"')  
+    sis_preqx_avg=cur.fetchall()
+    sispreqx_average=np.average(sis_preqx_avg)
+    
+    dief,p_sis=stats.ttest_rel(sis_ing_avg,sis_preqx_avg)
+    st.write(p_sis)
+    
+    
+    #Diastólica
+    cur.execute('SELECT Diasing FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    diasting_avg=cur.fetchall()
+    diasting_average=np.average(diasting_avg)
+    
+    cur.execute('SELECT Diastpreqx FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    diast_preqx_avg=cur.fetchall()
+    diastpreqx_average=np.average(diast_preqx_avg)
+    
+    diefe,p_dias=stats.ttest_rel(diasting_avg,diast_preqx_avg)
+    st.write(p_dias)
+    
+    
+    #Temp
+    cur.execute('SELECT Temping FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    temp_ing_avg=cur.fetchall()
+    temp_average=np.average(temp_ing_avg)
+    
+    cur.execute('SELECT Temppreqx FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    temp_preqx=cur.fetchall()
+    temppreqx_average=np.average(temp_preqx)
+    
+    diefee,p_temp=stats.ttest_rel(temp_ing_avg,temp_preqx)
+    st.write(p_temp)
+    
+    
+    #Leu
+    cur.execute('SELECT Leuing FROM Basecxcol WHERE Leuing !=1 AND (Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III")') 
+    leu_ing_avg=cur.fetchall()
+    st.write(leu_ing_avg)
+    
+    cur.execute('SELECT Leupreqx FROM Basecxcol WHERE Leupreqx!=1 AND (Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III")') 
+    leu_preqx=cur.fetchall()
+    st.write(leu_preqx)
+    #los arrays son diferentes por el 1 en el ultimo paciente que tiene leucos de 1 en ingreso y 11 de preqx, se va a quitar y se hcen los arrays manuales
+    
+    a=[6,15,14,5,22,15]
+    leuing_average=np.average(a)
+    b=[17,10,18,14,22,23]
+    
+    leupreqx_average=np.average(b)
+    fer,p_leu=stats.ttest_rel(a,b)
+    
+    
+    #HTO
+    cur.execute('SELECT Hematocritoing FROM Basecxcol WHERE Hematocritoing!=1 AND (Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III")') 
+    hto_ing_avg=cur.fetchall()
+    st.error(hto_ing_avg)
+    
+    cur.execute('SELECT HTOpreqx FROM Basecxcol WHERE  HTOpreqx!=1 AND (Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III")') 
+    hto_preqx=cur.fetchall()
+    st.warning(hto_preqx)
+    
+    #Igual tenian arrays de diferente tamaño se hizo la comparativa manual
+    c=[38, 46, 35, 33, 50, 50]
+    htoing_average=np.average(c)
+    d=[37, 43, 27, 31, 50, 47]
+    hto_preqx_average=np.average(d)
+    fder,p_hto=stats.ttest_rel(c,d)
+    st.write(p_hto)
+
+     
+    
+    #ADE hay uno de los pacientes que no tiene ADE así que se hizo manual el Array
+    e=[13,12,13,22,15,13]
+    f=[ 13,12,16,20,15,13]
+    cur.execute('SELECT ADEing FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    ade_ing_avg=e
+    
+    cur.execute('SELECT ADEpreqx FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    ade_preqx=f
+    
+
+    
+    adepreqx_average=np.average(f)
+    adeing_average=np.average(e)
+    fdere,p_ADE=stats.ttest_rel(e,f)
+    st.write(p_ADE)
+    
+    
+    
+    #plaq tampoco tenemos un dato asi que se removió para la comparativa y el array se hizo manual
+    h=[102,257,248,183,176,202]
+    i=[106,360,668,106,176,223]
+    
+    cur.execute('SELECT Plaquetasing FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    plaq_ing_avg=h
+    
+    cur.execute('SELECT Plaqpreqx FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    plaq_preqx=i
+    
+    
+    plaqing_average=np.average(h)
+    plaqpreqx_average=np.average(i)
+
+
+    
+    fdere,p_plaq=stats.ttest_rel(h,i)
+    st.write(p_plaq)
+   
+    #AST
+    cur.execute('SELECT ASTing FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    ast_ing_avg=cur.fetchall()
+    asting_average=np.average(ast_ing_avg)
+    
+    cur.execute('SELECT ASTpreqx FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    ast_preqx=cur.fetchall()
+    astpreqx_average=np.average(ast_preqx)
+    
+    fdere,p_AST=stats.ttest_rel(ast_ing_avg,ast_preqx)
+    st.write(p_AST)
+    
+    
+    #ALT
+    cur.execute('SELECT ALTing FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    alt_ing_avg=cur.fetchall()
+    alting_average=np.average(alt_ing_avg)
+    
+    cur.execute('SELECT ALTpreqx FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    alt_preqx=cur.fetchall()
+    altpreqx_average=np.average(alt_preqx)
+    
+    fder,p_alt=stats.ttest_rel(alt_ing_avg,alt_preqx)
+    st.write(p_alt)
+    
+    
+     #Bil los arrays estaban incompletos se eliminarion los valores 1 y 0
+     
+    j=[2.65,0.87,1.08,0.87]
+    k=[3.03,1.17,1.08,1.23]
+    cur.execute('SELECT Biltoting FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    bil_ing_avg=j
+    
+    cur.execute('SELECT Biltotpreqx FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    bil_preqx=k
+    
+   
+    biling_average=np.average(j)
+
+    bilpreqx_average=np.average(k)
+
+    
+    fdeeer,p_bil=stats.ttest_rel(j,k)
+    st.write(p_bil)
+    
+    
+         #INR
+    cur.execute('SELECT INRing FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    INR_ing_avg=cur.fetchall()
+    INRing_average=np.average(INR_ing_avg)
+    
+    cur.execute('SELECT INRpreqx FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    INR_preqx=cur.fetchall()
+    INRpreqx_average=np.average(INR_preqx)
+    
+    fder,p_INR=stats.ttest_rel(INR_ing_avg,INR_preqx)
+    st.write(p_INR)
+    
+    
+        #Creatinina arrays incompletos se realizo manual
+        
+    k=[1.07,1.53,0.96,1.1,]
+    l=[0.98,1.81,0.96,1.37]
+    cur.execute('SELECT Creating FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    Creat_ing_avg=k
+    creaing_average=np.average(Creat_ing_avg)
+    
+    cur.execute('SELECT Creatpreqx FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    Creat_preqx=l
+    creatpreqx_average=np.average(Creat_preqx)
+    
+    fder,p_Creat=stats.ttest_rel(Creat_ing_avg,Creat_preqx)
+    st.write(p_Creat)
+    
+   
+      #qSOFA
+    cur.execute('SELECT qSOFA FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    qsofa_ing_avg=cur.fetchall()
+    qsofaing_average=np.average(qsofa_ing_avg)
+    
+    cur.execute('SELECT qSOFApreqx FROM Basecxcol WHERE Comppostqx="V" OR Comppostqx="IV" OR Comppostqx="III"') 
+    qsofa_preqx=cur.fetchall()
+    qsofapreqx_average=np.average(qsofa_preqx)
+    
+    fder,p_qSOFA=stats.ttest_rel(qsofa_ing_avg,qsofa_preqx)
+    st.write(p_qSOFA)
+    
+    
+    
+    
+    data_comp=[(fcing_av,fcing_average,fc_preqx_avg,fcpreqx_average,p_fc),(fr_ing,fr_average,fr_preqx,frpreqx_average,p_fr),
+               (sis_ing_avg,sis_average,sis_preqx_avg,sispreqx_average,p_sis),(diasting_avg,diasting_average,diast_preqx_avg,diastpreqx_average,p_dias),
+               (temp_ing_avg,temp_average,temp_preqx,temppreqx_average,p_temp),(leu_ing_avg,leuing_average,leu_preqx,leupreqx_average,p_leu),
+               (hto_ing_avg,htoing_average,hto_preqx,hto_preqx_average,p_hto),(ade_ing_avg,adeing_average,ade_preqx,adepreqx_average,p_ADE),
+               (plaq_ing_avg,plaqing_average,plaq_preqx,plaqpreqx_average,p_plaq),(ast_ing_avg,asting_average,ast_preqx,astpreqx_average,p_AST),
+               (alt_ing_avg,alting_average,alt_preqx,altpreqx_average,p_alt),(bil_ing_avg,biling_average,bil_preqx,bilpreqx_average,p_bil),
+               (INR_ing_avg,INRing_average,INR_preqx,INRpreqx_average,p_INR),(Creat_ing_avg,creaing_average,Creat_preqx,creatpreqx_average,p_Creat),
+               (qsofa_ing_avg,qsofaing_average,qsofa_preqx,qsofapreqx_average,p_qSOFA)]
+    data_comp_index=['Frecuencia cardiáca/min *','Frecuencia respiratoria/min CD<III','Presión sistólica mmHg CD<III','Presión diastólica mmHg CD>III ',
+                     'Temperatura °C CD >III','Leucocitos mm3 CD>III','Hematocrito CD>III',
+                     'ADE CD>III','Plaquetas mm3 CD>III','AST mg/dl CD>III','ALT mg/dl CD>III',
+                     'Bilirrubina total mg/dl CD>III','INR CD>III','Creatinina (mg/dl) CD>III',
+                     'qSOFA CD>III']
+    data_comp_columns=['Ingreso','Promedio','Prequirúrgica','Promedio 2','p']
+    df_comparacion=pd.DataFrame(data_comp,index=data_comp_index,columns=data_comp_columns)
+    dfcomp_arevs=df_comparacion.T
+    st.dataframe(df_comparacion )
+    
+    #Seleccionar los  labs de ingreso y prequirúrgicos de los pacients con morbi-morta elevados en una fila
+    #Seleciconar los labs de ingreso y prequirúrgicos de los pacientes con morbi-morta bajos en otra fila
+    
+    # en el articulo de laurila comparan el SOFA en admisión entre dos grupos (muertos vs vivos) y luego prequirúrgico
+    #entre muertos y vivos
+    
+    
+    
     
     
     
