@@ -1629,8 +1629,61 @@ def tabla_comparativa_ingpreqx():
     
     
     
+def imagen():
+    st.info('Estudios de imagen')
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+    #Hallazgos por ultrasonido
     
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazusg LIKE "%perivesicular%"')
+    usg_liqperi=cur.fetchone()
     
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazusg LIKE "%Engrosamiento%"')
+    usg_engros=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazusg LIKE "%Distensión%"')
+    usg_diste=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazusg LIKE "%Litiasis%"')
+    usg_lit=cur.fetchone()
+    st.write(usg_lit)
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazusg LIKE "%Lodo%"')
+    usg_Lodo=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazusg LIKE "%Dilatación%"')
+    usg_dil=cur.fetchone()
+    
+    #Hallazgos TAC
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgtom LIKE "%Estriación%"')
+    tac_estriacion=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgtom LIKE "%Hidrocolecisto%" OR Hallazgtom LIKE "%Distensión%" ')
+    tac_hidro=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgtom LIKE "%Líquido%"')
+    tac_líquido=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgtom LIKE "%Engrosamiento%"')
+    tac_engrosamiento=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgtom LIKE "%Litiasis%"')
+    tac_litiasis=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgtom LIKE "%Reforzamiento%"')
+    tac_reforz=cur.fetchone()
+    
+    cur.execute('SELECT COUNT(*) FROM Basecxcol WHERE Hallazgtom LIKE "%Lito%"')
+    tac_litobil=cur.fetchone()
+    
+    data_imagen=[usg_liqperi,usg_engros,usg_lit,usg_Lodo,usg_dil,tac_estriacion,tac_hidro,tac_líquido,tac_engrosamiento,tac_litiasis,tac_reforz,tac_litobil]
+    index_imagen=['Líquido perivesicular','Engrosamiento de pared','Litiasis vesicular','Lodo vesicular','Hidrocolecisto',
+                  'Estriación de grasa perivesicular (TC)','Hidrocolecisto(TC)','Líquido perivesicular(TC)',
+                  'Engrosamiento de pared(TC)','Litiasis vesicular(TC)','Captación de contraste vesicular(TC)','Lito en via biliar(TC)']
+    col_imagen=['Hallazgos']
+    df_imagen=pd.DataFrame(data_imagen,index_imagen,col_imagen)
+    st.dataframe(df_imagen,width=800)
     
     
     

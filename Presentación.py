@@ -273,21 +273,23 @@ def comorbilidades_res():
 def resultados_biométricos():
     if diapo=='Demográficas':
         st.title('Características demográficas')
+        demo=pd.read_excel('demografica.xlsx')
+        st.table(demo)
 
-        col1,col2=st.columns(2)
-        with col1:
-            st.subheader('Edad')
-            resultados.edad()
-            st.info('Media 62')
-            st.info('El rango va de 24 a 92 años')
-            st.info('La mediana es de 63')
-        with col2:
-            st.subheader('Género')
-            resultados.contar_genero()
+        
         
 def sintomas_ccla():
     if diapo=='Síntomas':
-        resultados.sintomas_ccla()
+        st.subheader('Comparativa de patrones bioquímicos al ingreso y prequirúrgicos')
+
+        col1,col2=st.columns(2)
+        with col1:
+                tabla=pd.read_excel('prueba2.xlsx')
+                tablapruebadf=st.dataframe(tabla,600,600)
+                
+                
+        with col2:
+            st.info('Aquí mas info')
 
 def desencadenantes_enfermedad():
     if diapo=='Desencadenante de padecimiento actual':

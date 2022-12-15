@@ -385,7 +385,7 @@ def tabla4():
     cur=con.cursor()
     
     #FC
-    cur.execute('SELECT AVG(FCing) FROM Basecxcol WHERE Muerte!="Si" OR Comppostqx!="V" OR Comppostqx!="IV" OR Comppostqx!="III"')
+    cur.execute('SELECT AVG(FCing) FROM Basecxcol WHERE Muerte!="Si" AND (Comppostqx="V" OR Comppostqx!="IV" OR Comppostqx!="III")')
     fcing_av,=cur.fetchone()
     
     cur.execute('SELECT AVG(FCpreqx) FROM Basecxcol WHERE Muerte!="Si" OR Comppostqx!="V" OR Comppostqx!="IV" OR Comppostqx!="III"') 

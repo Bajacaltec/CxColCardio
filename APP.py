@@ -194,6 +194,7 @@ elif menú=='Resultados finales':
     resultado_final.vasopresores_preqx()
     resultado_final.edad_60omas()
     resultado_final.tabla_comparativa_ingpreqx()
+    resultado_final.imagen()
     
         
 
