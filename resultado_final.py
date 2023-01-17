@@ -1,5 +1,6 @@
 from ctypes.wintypes import PPOINT
 from lib2to3.pgen2 import pgen
+from locale import ALT_DIGITS
 from modulefinder import packagePathMap
 from statistics import mean, pvariance, variance
 import statistics
@@ -1686,4 +1687,245 @@ def imagen():
     st.dataframe(df_imagen,width=800)
     
     
+
+def kruskallwallis():
+    st.error('Test Kruskall-wallis')
+    con=sqlite3.connect('DB.db')
+    con.row_factory = lambda cursor, row: row[0]
+    cur=con.cursor()
+   
+    #Leucocitosis
+    cur.execute('SELECT Leupreqx FROM Basecxcol WHERE Leupreqx!=0 AND (Comppostqx ="I" OR Comppostqx="II")')
+    Leu_I_II=cur.fetchall()
     
+    avg_leuI_II=np.average(Leu_I_II)
+    
+    x,shap_LeuI=stats.shapiro(Leu_I_II)
+    
+    cur.execute('SELECT Leupreqx FROM Basecxcol WHERE Leupreqx!=0 AND (Comppostqx ="III" OR Comppostqx="IV")')
+    Leu_III_IV=cur.fetchall()
+    
+    avg_leuIII_IV=np.average(Leu_III_IV)
+    
+    shap_III_IV='stats.shapiro(Leu_III_IV)'
+    
+    cur.execute('SELECT Leupreqx FROM Basecxcol WHERE Leupreqx!=0 AND Comppostqx ="V"')
+    Leu_V=cur.fetchall()
+    
+    avg_leuV=np.average(Leu_V)
+    
+    k,shap_V=stats.shapiro(Leu_V)
+
+    h,kruskal_leu=stats.kruskal(Leu_I_II,Leu_III_IV,Leu_V)
+   #termina leucocitos
+   
+   #ADE
+   
+   #ADE I y II
+    cur.execute('SELECT ADEpreqx FROM Basecxcol WHERE ADEpreqx!=0 AND (Comppostqx ="I" OR Comppostqx="II")')
+    ADE_I_II=cur.fetchall()
+    
+    avg_ADEI_II=np.average(ADE_I_II)
+    
+    x,shap_ADEI=stats.shapiro(ADE_I_II)
+    
+     #ADE III y IV
+    cur.execute('SELECT ADEpreqx FROM Basecxcol WHERE ADEpreqx!=0 AND (Comppostqx ="III" OR Comppostqx="IV")')
+    ADE_III_IV=cur.fetchall()
+    
+    avg_ADEIII_IV=np.average(ADE_III_IV)
+    
+    shap_ADEIII_IV='stats.shapiro(ADE_III_IV)'
+    
+    #ADE V
+    cur.execute('SELECT ADEpreqx FROM Basecxcol WHERE ADEpreqx!=0 AND Comppostqx ="V" ')
+    ADE_V=cur.fetchall()
+    
+    avg_ADE_V=np.average(ADE_V)
+    
+    l,shap_ADE_V=stats.shapiro(ADE_V)
+   
+    o,kruskal_ade=stats.kruskal(ADE_I_II,ADE_III_IV,ADE_V)
+    
+    
+    #HTO
+    #ADE I y II
+    cur.execute('SELECT HTOpreqx FROM Basecxcol WHERE HTOpreqx!=0 AND (Comppostqx ="I" OR Comppostqx="II")')
+    HTO_I=cur.fetchall()
+    
+    avg_HTOI=np.average(HTO_I)
+    
+    u,shap_HTOI=stats.shapiro(HTO_I)
+    
+    #HTO III
+    cur.execute('SELECT HTOpreqx FROM Basecxcol WHERE HTOpreqx!=0 AND (Comppostqx ="III" OR Comppostqx="IV")')
+    HTOIII=cur.fetchall()
+    
+    avg_HTOIII_IV=np.average(HTOIII)
+    
+    'shap_HTOIII=stats.shapiro(HTOIII)'
+    
+     #HTO V
+    cur.execute('SELECT HTOpreqx FROM Basecxcol WHERE HTOpreqx!=0 AND Comppostqx ="V" ')
+    HTO_V=cur.fetchall()
+    
+    avg_HTO_V=np.average(HTO_V)
+    
+    t,shap_HTO_V=stats.shapiro(HTO_V)
+   
+    i,kruskal_HTO=stats.kruskal(HTO_I,HTOIII,HTO_V)
+   
+    
+    #Plaquetas
+    #Plaq
+    cur.execute('SELECT Plaqpreqx FROM Basecxcol WHERE Plaqpreqx!=0 AND (Comppostqx ="I" OR Comppostqx="II")')
+    Plaq_I=cur.fetchall()
+    
+    avg_PlaqI=np.average(Plaq_I)
+    
+    u,shap_PlaqI=stats.shapiro(Plaq_I)
+    
+    #Plaq III
+    cur.execute('SELECT Plaqpreqx FROM Basecxcol WHERE Plaqpreqx!=0 AND (Comppostqx ="III" OR Comppostqx="IV")')
+    PlaqIII=cur.fetchall()
+    
+    avg_PlaqIII_IV=np.average(PlaqIII)
+    
+    'shap_PlaqIII=stats.shapiro(PlaqIII)'
+    
+     #Plaq V
+    cur.execute('SELECT Plaqpreqx FROM Basecxcol WHERE Plaqpreqx!=0 AND Comppostqx ="V" ')
+    Plaq_V=cur.fetchall()
+    
+    avg_Plaq_V=np.average(Plaq_V)
+    
+    t,shap_Plaq_V=stats.shapiro(Plaq_V)
+   
+    i,kruskal_Plaq=stats.kruskal(Plaq_I,PlaqIII,Plaq_V)
+    
+    #AST
+    #AST
+    cur.execute('SELECT ASTpreqx FROM Basecxcol WHERE ASTpreqx!=0 AND (Comppostqx ="I" OR Comppostqx="II")')
+    AST_I=cur.fetchall()
+    
+    avg_ASTI=np.average(AST_I)
+    
+    u,shap_ASTI=stats.shapiro(AST_I)
+    
+    #AST III
+    cur.execute('SELECT ASTpreqx FROM Basecxcol WHERE ASTpreqx!=0 AND (Comppostqx ="III" OR Comppostqx="IV")')
+    ASTIII=cur.fetchall()
+    
+    avg_ASTIII_IV=np.average(ASTIII)
+    
+    'shap_ASTIII=stats.shapiro(ASTIII)'
+    
+     #AST V
+    cur.execute('SELECT ASTpreqx FROM Basecxcol WHERE ASTpreqx!=0 AND Comppostqx ="V" ')
+    AST_V=cur.fetchall()
+    
+    avg_AST_V=np.average(AST_V)
+    
+    t,shap_AST_V=stats.shapiro(AST_V)
+   
+    i,kruskal_AST=stats.kruskal(AST_I,ASTIII,AST_V)
+   
+    #ALT
+    
+    #ALT
+    cur.execute('SELECT ALTpreqx FROM Basecxcol WHERE ALTpreqx!=0 AND (Comppostqx ="I" OR Comppostqx="II")')
+    ALT_I=cur.fetchall()
+    
+    avg_ALTI=np.average(ALT_I)
+    
+    u,shap_ALTI=stats.shapiro(ALT_I)
+    
+    #ALT III
+    cur.execute('SELECT ALTpreqx FROM Basecxcol WHERE ALTpreqx!=0 AND (Comppostqx ="III" OR Comppostqx="IV")')
+    ALTIII=cur.fetchall()
+    
+    avg_ALTIII_IV=np.average(ALTIII)
+    
+    'shap_ALTIII=stats.shapiro(ALTIII)'
+    
+     #ALT V
+    cur.execute('SELECT ALTpreqx FROM Basecxcol WHERE ALTpreqx!=0 AND Comppostqx ="V" ')
+    ALT_V=cur.fetchall()
+    
+    avg_ALT_V=np.average(ALT_V)
+    
+    t,shap_ALT_V=stats.shapiro(ALT_V)
+   
+    i,kruskal_ALT=stats.kruskal(ALT_I,ALTIII,ALT_V)
+    
+    #Bilt tot preqx
+    #Biltotpreqx
+    cur.execute('SELECT Biltotpreqx FROM Basecxcol WHERE Biltotpreqx!=0 AND (Comppostqx ="I" OR Comppostqx="II")')
+    Biltotpreqx_I=cur.fetchall()
+    
+    avg_BiltotpreqxI=np.average(Biltotpreqx_I)
+    
+    u,shap_BiltotpreqxI=stats.shapiro(Biltotpreqx_I)
+    
+    #Biltotpreqx III
+    cur.execute('SELECT Biltotpreqx FROM Basecxcol WHERE Biltotpreqx!=0 AND (Comppostqx ="III" OR Comppostqx="IV")')
+    BiltotpreqxIII=cur.fetchall()
+    
+    avg_BiltotpreqxIII_IV=np.average(BiltotpreqxIII)
+    
+    'shap_BiltotpreqxIII=stats.shapiro(BiltotpreqxIII)'
+    
+     #Biltotpreqx V
+    cur.execute('SELECT Biltotpreqx FROM Basecxcol WHERE Biltotpreqx!=0 AND Comppostqx ="V" ')
+    Biltotpreqx_V=cur.fetchall()
+    
+    avg_Biltotpreqx_V=np.average(Biltotpreqx_V)
+    
+    t,shap_Biltotpreqx_V=stats.shapiro(Biltotpreqx_V)
+   
+    i,kruskal_Biltotpreqx=stats.kruskal(Biltotpreqx_I,BiltotpreqxIII,Biltotpreqx_V)
+    
+    
+    #INR
+    #INRpreqx
+    cur.execute('SELECT INRpreqx FROM Basecxcol WHERE INRpreqx!=0 AND (Comppostqx ="I" OR Comppostqx="II")')
+    INRpreqx_I=cur.fetchall()
+    
+    avg_INRpreqxI=np.average(INRpreqx_I)
+    
+    u,shap_INRpreqxI=stats.shapiro(INRpreqx_I)
+    
+    #INRpreqx III
+    cur.execute('SELECT INRpreqx FROM Basecxcol WHERE INRpreqx!=0 AND (Comppostqx ="III" OR Comppostqx="IV")')
+    INRpreqxIII=cur.fetchall()
+    
+    avg_INRpreqxIII_IV=np.average(INRpreqxIII)
+    
+    'shap_INRpreqxIII=stats.shapiro(INRpreqxIII)'
+    
+     #INRpreqx V
+    cur.execute('SELECT INRpreqx FROM Basecxcol WHERE INRpreqx!=0 AND Comppostqx ="V" ')
+    INRpreqx_V=cur.fetchall()
+    
+    avg_INRpreqx_V=np.average(INRpreqx_V)
+    
+    t,shap_INRpreqx_V=stats.shapiro(INRpreqx_V)
+   
+    i,kruskal_INRpreqx=stats.kruskal(INRpreqx_I,INRpreqxIII,INRpreqx_V)
+    
+    data_1=[(Leu_I_II,avg_leuI_II,shap_LeuI,Leu_III_IV,avg_leuIII_IV,'-',Leu_V,avg_leuV,shap_V,kruskal_leu),
+            (ADE_I_II,avg_ADEI_II,shap_ADEI,ADE_III_IV,avg_ADEIII_IV,shap_ADEIII_IV,ADE_V,avg_ADE_V,shap_ADE_V,kruskal_ade),
+             (HTO_I,avg_HTOI,shap_HTOI,HTOIII,avg_HTOIII_IV,'shap_HTOIII',HTO_V,avg_HTO_V,shap_HTO_V,kruskal_HTO),
+             (Plaq_I,avg_PlaqI,shap_PlaqI,PlaqIII,avg_PlaqIII_IV,'shap_PlaqIII',Plaq_V,avg_Plaq_V,shap_Plaq_V,kruskal_Plaq),
+            (AST_I,avg_ASTI,shap_ASTI,ASTIII,avg_ASTIII_IV,'shap_ASTIII',AST_V,avg_AST_V,shap_AST_V,kruskal_AST),
+            (ALT_I,avg_ALTI,shap_ALTI,ALTIII,avg_ALTIII_IV,'shap_ALTIII',ALT_V,avg_ALT_V,shap_ALT_V,kruskal_ALT),
+            (Biltotpreqx_I,avg_BiltotpreqxI,shap_BiltotpreqxI,BiltotpreqxIII,avg_BiltotpreqxIII_IV,'shap_BiltotpreqxIII',Biltotpreqx_V,avg_Biltotpreqx_V,shap_Biltotpreqx_V,kruskal_Biltotpreqx),
+            (INRpreqx_I,avg_INRpreqxI,shap_INRpreqxI,INRpreqxIII,avg_INRpreqxIII_IV,'shap_INRpreqxIII',INRpreqx_V,avg_INRpreqx_V,shap_INRpreqx_V,kruskal_INRpreqx)]
+
+
+
+
+    index=['Leucocitosis','ADE','HTO','Plaquetas cel/mm3','AST mg/dl','ALT mg/dl','Bilirrubina total mg/dl','INR']
+    columnas='CD I y II','CD I y II (m)','Shapiro I y II','CD III y IV',' III y IV (m)','Shapiro III y IV' ,'CD V',' CD V (m)','Shapiro V',' Kruskall-Wallis'
+    df_kruskal=pd.DataFrame(data_1,index,columnas)
+    st.dataframe(df_kruskal)

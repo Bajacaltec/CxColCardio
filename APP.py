@@ -195,6 +195,7 @@ elif menú=='Resultados finales':
     resultado_final.edad_60omas()
     resultado_final.tabla_comparativa_ingpreqx()
     resultado_final.imagen()
+    resultado_final.kruskallwallis()
     
         
 
