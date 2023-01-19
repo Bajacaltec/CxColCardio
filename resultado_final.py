@@ -1913,6 +1913,93 @@ def kruskallwallis():
    
     i,kruskal_INRpreqx=stats.kruskal(INRpreqx_I,INRpreqxIII,INRpreqx_V)
     
+    
+    #Creatinina
+    
+     #Creatpreqx
+    cur.execute('SELECT Creatpreqx FROM Basecxcol WHERE Creatpreqx!=0 AND (Comppostqx ="I" OR Comppostqx="II")')
+    Creatpreqx_I=cur.fetchall()
+    
+    avg_CreatpreqxI=np.average(Creatpreqx_I)
+    
+    u,shap_CreatpreqxI=stats.shapiro(Creatpreqx_I)
+    
+    #Creatpreqx III
+    cur.execute('SELECT Creatpreqx FROM Basecxcol WHERE Creatpreqx!=0 AND (Comppostqx ="III" OR Comppostqx="IV")')
+    CreatpreqxIII=cur.fetchall()
+    
+    avg_CreatpreqxIII_IV=np.average(CreatpreqxIII)
+    
+    'shap_CreatpreqxIII=stats.shapiro(CreatpreqxIII)'
+    
+     #Creatpreqx V
+    cur.execute('SELECT Creatpreqx FROM Basecxcol WHERE Creatpreqx!=0 AND Comppostqx ="V" ')
+    Creatpreqx_V=cur.fetchall()
+    
+    avg_Creatpreqx_V=np.average(Creatpreqx_V)
+    
+    t,shap_Creatpreqx_V=stats.shapiro(Creatpreqx_V)
+   
+    i,kruskal_Creatpreqx=stats.kruskal(Creatpreqx_I,CreatpreqxIII,Creatpreqx_V)
+    
+    
+    #Tiempo de síntomas a tratamiento quirúrgico
+    
+     #Tiempo
+    cur.execute('SELECT Tiempoinsintqx FROM Basecxcol WHERE Tiempoinsintqx!=0 AND (Comppostqx ="I" OR Comppostqx="II")')
+    Tiempoinsintqx_I=cur.fetchall()
+    
+    avg_TiempoinsintqxI=np.average(Tiempoinsintqx_I)
+    
+    u,shap_TiempoinsintqxI=stats.shapiro(Tiempoinsintqx_I)
+    
+    #Tiempoinsintqx III
+    cur.execute('SELECT Tiempoinsintqx FROM Basecxcol WHERE Tiempoinsintqx!=0 AND (Comppostqx ="III" OR Comppostqx="IV")')
+    TiempoinsintqxIII=cur.fetchall()
+    
+    avg_TiempoinsintqxIII_IV=np.average(TiempoinsintqxIII)
+    
+    'shap_TiempoinsintqxIII=stats.shapiro(TiempoinsintqxIII)'
+    
+     #Tiempoinsintqx V
+    cur.execute('SELECT Tiempoinsintqx FROM Basecxcol WHERE Tiempoinsintqx!=0 AND Comppostqx ="V" ')
+    Tiempoinsintqx_V=cur.fetchall()
+    
+    avg_Tiempoinsintqx_V=np.average(Tiempoinsintqx_V)
+    
+    y,shap_Tiempoinsintqx_V=stats.shapiro(Tiempoinsintqx_V)
+   
+    r,kruskal_Tiempoinsintqx=stats.kruskal(Tiempoinsintqx_I,TiempoinsintqxIII,Tiempoinsintqx_V)
+    
+    
+    #qSOFA
+    
+     #qSOFA
+    cur.execute('SELECT qSOFApreqx FROM Basecxcol WHERE Comppostqx ="I" OR Comppostqx="II"')
+    qSOFA_I=cur.fetchall()
+    
+    avg_qSOFAI=np.average(qSOFA_I)
+    
+    u,shap_qSOFAI=stats.shapiro(qSOFA_I)
+    
+    #qSOFA III
+    cur.execute('SELECT qSOFApreqx FROM Basecxcol WHERE Comppostqx ="III" OR Comppostqx="IV"')
+    qSOFAIII=cur.fetchall()
+    
+    avg_qSOFAIII_IV=np.average(qSOFAIII)
+    
+    'shap_qSOFAIII=stats.shapiro(qSOFAIII)'
+    
+     #qSOFA V
+    cur.execute('SELECT qSOFApreqx FROM Basecxcol WHERE Comppostqx ="V" ')
+    qSOFA_V=cur.fetchall()
+    
+    avg_qSOFA_V=np.average(qSOFA_V)
+    
+    y,shap_qSOFA_V=stats.shapiro(qSOFA_V)
+   
+    r,kruskal_qSOFA=stats.kruskal(qSOFA_I,qSOFAIII,qSOFA_V)
+    
     data_1=[(Leu_I_II,avg_leuI_II,shap_LeuI,Leu_III_IV,avg_leuIII_IV,'-',Leu_V,avg_leuV,shap_V,kruskal_leu),
             (ADE_I_II,avg_ADEI_II,shap_ADEI,ADE_III_IV,avg_ADEIII_IV,shap_ADEIII_IV,ADE_V,avg_ADE_V,shap_ADE_V,kruskal_ade),
              (HTO_I,avg_HTOI,shap_HTOI,HTOIII,avg_HTOIII_IV,'shap_HTOIII',HTO_V,avg_HTO_V,shap_HTO_V,kruskal_HTO),
@@ -1920,12 +2007,18 @@ def kruskallwallis():
             (AST_I,avg_ASTI,shap_ASTI,ASTIII,avg_ASTIII_IV,'shap_ASTIII',AST_V,avg_AST_V,shap_AST_V,kruskal_AST),
             (ALT_I,avg_ALTI,shap_ALTI,ALTIII,avg_ALTIII_IV,'shap_ALTIII',ALT_V,avg_ALT_V,shap_ALT_V,kruskal_ALT),
             (Biltotpreqx_I,avg_BiltotpreqxI,shap_BiltotpreqxI,BiltotpreqxIII,avg_BiltotpreqxIII_IV,'shap_BiltotpreqxIII',Biltotpreqx_V,avg_Biltotpreqx_V,shap_Biltotpreqx_V,kruskal_Biltotpreqx),
-            (INRpreqx_I,avg_INRpreqxI,shap_INRpreqxI,INRpreqxIII,avg_INRpreqxIII_IV,'shap_INRpreqxIII',INRpreqx_V,avg_INRpreqx_V,shap_INRpreqx_V,kruskal_INRpreqx)]
+            (INRpreqx_I,avg_INRpreqxI,shap_INRpreqxI,INRpreqxIII,avg_INRpreqxIII_IV,'shap_INRpreqxIII',INRpreqx_V,avg_INRpreqx_V,shap_INRpreqx_V,kruskal_INRpreqx),
+            (Creatpreqx_I,avg_CreatpreqxI,shap_CreatpreqxI,CreatpreqxIII,avg_CreatpreqxIII_IV,'shap_CreatpreqxIII',Creatpreqx_V,avg_Creatpreqx_V,shap_Creatpreqx_V,kruskal_Creatpreqx),
+            (Tiempoinsintqx_I,avg_TiempoinsintqxI,shap_TiempoinsintqxI,TiempoinsintqxIII,avg_TiempoinsintqxIII_IV,'shap_TiempoinsintqxIII',Tiempoinsintqx_V,avg_Tiempoinsintqx_V,shap_Tiempoinsintqx_V,kruskal_Tiempoinsintqx),
+            (qSOFA_I,avg_qSOFAI,shap_qSOFAI,qSOFAIII,avg_qSOFAIII_IV,'shap_qSOFAIII',qSOFA_V,avg_qSOFA_V,shap_qSOFA_V,kruskal_qSOFA)]
 
 
 
 
-    index=['Leucocitosis','ADE','HTO','Plaquetas cel/mm3','AST mg/dl','ALT mg/dl','Bilirrubina total mg/dl','INR']
+
+
+    index=['Leucocitosis','ADE','HTO','Plaquetas cel/mm3','AST mg/dl','ALT mg/dl','Bilirrubina total mg/dl','INR',
+           'Creatinina mg/dl','Tiempo de evolución (dias)','qSOFA']
     columnas='CD I y II','CD I y II (m)','Shapiro I y II','CD III y IV',' III y IV (m)','Shapiro III y IV' ,'CD V',' CD V (m)','Shapiro V',' Kruskall-Wallis'
     df_kruskal=pd.DataFrame(data_1,index,columnas)
     st.dataframe(df_kruskal)
