@@ -2,7 +2,7 @@ from ctypes.wintypes import PPOINT
 from lib2to3.pgen2 import pgen
 from locale import ALT_DIGITS
 from modulefinder import packagePathMap
-from statistics import mean, pvariance, variance
+from statistics import mean, pvariance, stdev, variance
 import statistics
 from tkinter import PhotoImage
 from turtle import color, pensize, width
@@ -1699,6 +1699,8 @@ def kruskallwallis():
     Leu_I_II=cur.fetchall()
     
     avg_leuI_II=np.average(Leu_I_II)
+    leuIdeve=stdev(Leu_I_II)
+    st.success(leuIdeve)
     
     x,shap_LeuI=stats.shapiro(Leu_I_II)
     
