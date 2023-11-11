@@ -22,13 +22,14 @@ import resultados
 import Presentación
 from annotated_text import annotated_text
 import resultado_final
+import tiempo
 
 
      
 
 
 hol1,hol2,hol3=st.columns(3)
-menú=st.sidebar.selectbox("Menú",['Capturar datos','Modificar','Censo','Resultados','Presentación','Resultados finales'])
+menú=st.sidebar.selectbox("Menú",['Capturar datos','Modificar','Censo','Resultados','Presentación','Resultados finales','Tiempo'])
 
 
 
@@ -198,6 +199,10 @@ elif menú=='Resultados finales':
     resultado_final.kruskallwallis()
     
         
+elif menú=='Tiempo':
+    st.write('Tiempo y comparativa')
+    tiempo.tablas_tiempo()
+    
 
     
 
