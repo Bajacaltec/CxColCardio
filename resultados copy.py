@@ -487,7 +487,7 @@ def caracteristicas_base():
     #                              Inicio de síntomas                              #
     # ---------------------------------------------------------------------------- #
     #Tiempo de inicio de síntomas hasta cirugía
-    tiempo_qxcount=cur.execute('''SELECT Tiempoinsintqx FROM Basecxcol ORDER BY DiasUCIposqx ASC  ''')
+    tiempo_qxcount=cur.execute('''SELECT COUNT(Tiempoinsintqx) FROM Basecxcol ORDER BY DiasUCIposqx ASC  ''')
     tiempo_sintqx=tiempo_qxcount.fetchall()
     
 
