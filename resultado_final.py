@@ -52,7 +52,7 @@ def tabla_boquim_morbmorta():
     h,p_leumorb,=stats.mannwhitneyu(leu_morb_CDbaja,leu_morb_alta)
     
     
-     #ADE morb baja
+    #ADE morb baja
     cur.execute('Select ADEpreqx FROM Basecxcol WHERE (ADEpreqx!=0 AND Comppostqx="I") OR (ADEpreqx!=0 AND Comppostqx="II")')
     ADE_morb_CDbaja=cur.fetchall()
     avg_ADE_morb=mean(ADE_morb_CDbaja)
@@ -316,7 +316,6 @@ def tabla_boquim_morbmorta():
 
     df_bioquim_morbimorta1=pd.DataFrame(data_bio_morbimorta,index_biomorbimorta,col_biomorbimorta)
     st.dataframe(df_bioquim_morbimorta1)
-    df_bioquim_morbimorta1.to_excel('/Users/alonso/CxColCardio/Tablafinal.xlsx',sheet_name='Tabla 1',index=false)
     
    
 
@@ -634,10 +633,6 @@ def tabla_boquim_morbmorta_2():
     df_bioquim_morbimorta=pd.DataFrame(data_bio_morbimorta,index_biomorbimorta,col_biomorbimorta)
     st.dataframe(df_bioquim_morbimorta)
     
-    #para mandar los archivos en hojas separadas hay que usar el writer de pandas
-    with pd.ExcelWriter('/Users/alonso/CxColCardio/Tablafinal.xlsx') as writer:  
-        df_bioquim_morbimorta1.to_excel(writer, sheet_name='Morbilidad y significancia')
-        df_bioquim_morbimorta.to_excel(writer, sheet_name='Morbimorta significancia')
 
 def tabla_ordinales():
     st.success('Variables ordinales')
@@ -742,7 +737,6 @@ def tabla_ordinales():
     df_asa=pd.DataFrame(data_asa,index_asa,col_asa)
     obs_asa=np.array([[1.,4.,3.],[1.,4.,5.]])
     asaIII_pe=stats.chi2_contingency(obs_asa,)
-    st.write(asaIII_pe)
     st.dataframe(df_asa)
 
 def tabla_litiasis():
